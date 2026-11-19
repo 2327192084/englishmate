@@ -9,37 +9,29 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
-import type { PracticeMode, UserWord } from '@/types';
+import type { UserWord } from '@/types';
 import { db, getMeta, setMeta } from '@/db';
 import { loadBankIndex, loadWords, listCustomBanks, CATEGORY_LABEL } from '@/data/wordbanks';
 import { buildRound, buildChoices } from '@/data/round';
-import { buildPlan, flattenPlan, FLOW_PRESETS, type FlowPreset } from '@/lib/flow';
+import {
+  buildPlan,
+  flattenPlan,
+  FLOW_PRESETS,
+  isGrouped,
+  primaryMode,
+  type FlowPreset,
+} from '@/lib/flow';
 import { usePractice } from '@/store/practice';
 import { useSettings } from '@/store/settings';
 import { recordAttempt, saveSession, todayCounts } from '@/services/learning';
 import { TypingArea } from '@/components/TypingArea';
 import { Chip, Progress, Skeleton } from '@/components/ui';
-import {
-  IconArrowRight,
-  IconLightning,
-  IconRefresh,
-  IconVolume,
-  IconX,
-  IconCheck,
-} from '@/components/Icons';
+import { IconArrowRight, IconRefresh, IconVolume, IconX, IconCheck } from '@/components/Icons';
 import type { WordbankMeta } from '@/types';
 import { speak } from '@/lib/speech';
 import { playFinishSound } from '@/lib/sound';
 
-const MODES: { id: PracticeMode; name: string; hint: string }[] = [
-  { id: 'typing', name: '跟打', hint: '看词打字，实时校验' },
-  { id: 'dictation', name: '听写', hint: '听发音拼写' },
-  { id: 'recall', name: '默写', hint: '看释义写单词' },
-  { id: 'choice', name: '辨认', hint: '四选一快速过词' },
-];
-
 const LAST_BANK_KEY = 'lastBankId';
-const LAST_MODE_KEY = 'lastMode';
 
 export default function PracticePage() {
   const [params, setParams] = useSearchParams();
@@ -49,7 +41,6 @@ export default function PracticePage() {
 
   const [banks, setBanks] = useState<WordbankMeta[] | null>(null);
   const [bankId, setBankId] = useState<string>('');
-  const [mode, setMode] = useState<PracticeMode>('typing');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [counts, setCounts] = useState({ todayNew: 0, todayReviewed: 0 });
@@ -63,11 +54,10 @@ export default function PracticePage() {
   useEffect(() => {
     let alive = true;
     void (async () => {
-      const [idx, custom, lastBank, lastMode] = await Promise.all([
+      const [idx, custom, lastBank] = await Promise.all([
         loadBankIndex(),
         listCustomBanks(),
         getMeta<string>(LAST_BANK_KEY, ''),
-        getMeta<string>(LAST_MODE_KEY, 'typing'),
       ]);
       if (!alive) return;
       const all = [...idx.banks, ...custom];
@@ -75,8 +65,6 @@ export default function PracticePage() {
       const wanted = params.get('bank');
       const pick = wanted ?? (all.find((b) => b.id === lastBank)?.id || all[0]?.id || '');
       setBankId(pick);
-      const m = (params.get('mode') as PracticeMode | null) ?? (lastMode as PracticeMode);
-      if (MODES.some((x) => x.id === m)) setMode(m);
       setCounts(await todayCounts());
     })();
     return () => {
@@ -85,12 +73,10 @@ export default function PracticePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /** URL 里的 bank/mode 变化时同步 */
+  /** URL 里的 bank 变化时同步 */
   useEffect(() => {
     const qBank = params.get('bank');
-    const qMode = params.get('mode') as PracticeMode | null;
     if (qBank && qBank !== bankId) setBankId(qBank);
-    if (qMode && MODES.some((x) => x.id === qMode) && qMode !== mode) setMode(qMode);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params]);
 
@@ -118,13 +104,14 @@ export default function PracticePage() {
     try {
       const words = await loadWords(bankId);
       const remainingNew = Math.max(0, settings.dailyNewTarget - counts.todayNew);
+      const buildMode = primaryMode(settings.flowPreset);
       const round = buildRound({
         bankId,
         allWords: words,
         known,
-        size: mode === 'choice' ? Math.max(10, roundSize) : roundSize,
+        size: buildMode === 'choice' ? Math.max(10, roundSize) : roundSize,
         newQuota: remainingNew,
-        mode,
+        mode: buildMode,
       });
       if (round.entries.length === 0) {
         setError('这个词库暂时没有可练的词，换一个词库试试。');
@@ -132,21 +119,21 @@ export default function PracticePage() {
       }
 
       /**
-       * 生成练习流程。
+       * 按「练习方式」展开成线性队列。
        *
-       * 辨认模式是"快速过词"，不适合再串跟打/默写，所以强制走单模式；
-       * 其余模式按用户选的流程模板展开成线性队列——
-       * 这样"同一批词先跟打、立刻默写、再进下一组"的语义得以保留，
-       * 而练习界面仍然只需要处理一个 queue + index。
+       * 现在只有 flowPreset 一个选择器，mode 由它派生
+       * （single 步骤取第一步的模式）。辨认方式就是 steps=[choice]，
+       * 不需要再特判——它天然只练一遍、不串别的模式。
        */
-      const presetId: FlowPreset = mode === 'choice' ? 'followOnly' : settings.flowPreset;
+      const presetId = settings.flowPreset;
+      const startMode = primaryMode(presetId);
       const flow = buildPlan(round.entries, presetId, settings.groupSize);
       const items = flattenPlan(flow);
 
+      // 出题时也要按主模式决定队列特征（辨认需要更多词）
       await setMeta(LAST_BANK_KEY, bankId);
-      await setMeta(LAST_MODE_KEY, mode);
       p.start({
-        mode,
+        mode: startMode,
         bankId,
         queue: items.map((i) => i.entry),
         reasons: round.reasons,
@@ -155,7 +142,6 @@ export default function PracticePage() {
       setParams((prev) => {
         const next = new URLSearchParams(prev);
         next.set('bank', bankId);
-        next.set('mode', mode);
         return next;
       });
     } catch (e) {
@@ -167,7 +153,6 @@ export default function PracticePage() {
     bankId,
     counts.todayNew,
     known,
-    mode,
     p,
     roundSize,
     setParams,
@@ -312,103 +297,96 @@ export default function PracticePage() {
         </p>
       </header>
 
-      {/* 模式 */}
-      <section className="mb-6">
-        <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">练习模式</h2>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {MODES.map((m) => {
-            const active = m.id === mode;
-            return (
-              <button
-                key={m.id}
-                type="button"
-                onClick={() => {
-                  setMode(m.id);
-                  setParams((prev) => {
-                    const next = new URLSearchParams(prev);
-                    next.set('mode', m.id);
-                    return next;
-                  });
-                }}
-                className={`tf-card flex flex-col items-start gap-1 px-3 py-3 text-left transition-colors ${
-                  active ? 'border-accent bg-accent/10' : 'hover:border-accent/50'
-                }`}
-              >
-                <span className={`text-sm font-semibold ${active ? 'text-accent' : 'text-ink'}`}>
-                  {m.name}
-                </span>
-                <span className="text-[11px] leading-tight text-muted">{m.hint}</span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
       {/*
-        流程选择：决定"一批词练几轮"。
-        辨认模式是快速过词，不参与流程编排，所以这里对辨认模式隐藏。
+        练习方式：唯一的练法选择器。
+        原来这里是「练习模式」+「练习流程」两个并列选择器，概念重叠
+        （"只跟打"与"跟打模式"是同一件事），用户要做两次含义相近的选择。
+        现在合并为一组，分"组合练法"与"单一练法"两类展示。
       */}
-      {mode !== 'choice' && (
-        <section className="mb-6">
-          <h2 className="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-muted">
-            <span>练习流程</span>
-            <span className="normal-case text-muted/70">
-              {FLOW_PRESETS[settings.flowPreset].steps.length > 1
-                ? `每组 ${settings.groupSize} 词循环`
-                : '整批过一遍'}
-            </span>
-          </h2>
-          <div className="grid gap-2 sm:grid-cols-3">
-            {(Object.keys(FLOW_PRESETS) as FlowPreset[]).map((key) => {
-              const tpl = FLOW_PRESETS[key];
-              const active = settings.flowPreset === key;
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => void update({ flowPreset: key })}
-                  className={`tf-card flex flex-col items-start gap-1 px-3 py-2.5 text-left transition-colors ${
-                    active ? 'border-accent bg-accent/10' : 'hover:border-accent/50'
-                  }`}
-                >
-                  <span className={`text-sm font-semibold ${active ? 'text-accent' : 'text-ink'}`}>
-                    {tpl.name}
-                  </span>
-                  <span className="text-[11px] leading-tight text-muted">{tpl.hint}</span>
-                  <span className="mt-0.5 flex flex-wrap gap-1">
-                    {tpl.steps.map((st) => (
+      <section className="mb-6">
+        <h2 className="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-muted">
+          <span>练习方式</span>
+          <span className="normal-case text-muted/70">
+            {isGrouped(settings.flowPreset) ? `每组 ${settings.groupSize} 词循环` : '整批过一遍'}
+          </span>
+        </h2>
+
+        {[
+          { key: 'main' as const, label: '组合练法 · 同批词层层加深' },
+          { key: 'single' as const, label: '单一练法 · 整批过一遍' },
+        ].map(({ key: grp, label }) => {
+          const keys = (Object.keys(FLOW_PRESETS) as FlowPreset[]).filter(
+            (k) => FLOW_PRESETS[k].group === grp,
+          );
+          if (keys.length === 0) return null;
+          return (
+            <div key={grp} className="mb-3 last:mb-0">
+              <div className="mb-1.5 flex items-center gap-2">
+                <span className="text-[11px] font-medium text-muted">{label}</span>
+                <div className="h-px flex-1 bg-line" />
+              </div>
+              <div className="grid gap-2 sm:grid-cols-3">
+                {keys.map((key) => {
+                  const tpl = FLOW_PRESETS[key];
+                  const active = settings.flowPreset === key;
+                  const recommended = key === 'listenWrite';
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => void update({ flowPreset: key })}
+                      className={`tf-card relative flex flex-col items-start gap-1 px-3 py-2.5 text-left transition-colors ${
+                        active ? 'border-accent bg-accent/10' : 'hover:border-accent/50'
+                      }`}
+                    >
+                      {recommended && (
+                        <span className="absolute right-2 top-2 rounded bg-correct/15 px-1 py-0.5 text-[9px] font-medium text-correct">
+                          推荐
+                        </span>
+                      )}
                       <span
-                        key={st.id}
-                        className={`rounded px-1.5 py-0.5 text-[10px] ${
-                          active ? 'bg-accent/15 text-accent' : 'bg-surface2 text-muted'
-                        }`}
+                        className={`pr-10 text-sm font-semibold ${active ? 'text-accent' : 'text-ink'}`}
                       >
-                        {st.label}
+                        {tpl.name}
                       </span>
-                    ))}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-          {settings.flowPreset !== 'followOnly' && (
-            <div className="mt-2 flex items-center gap-2 text-[11px] text-muted">
-              <span>每组词数</span>
-              <input
-                type="range"
-                min={3}
-                max={15}
-                step={1}
-                value={settings.groupSize}
-                onChange={(e) => void update({ groupSize: Number(e.target.value) })}
-                className="w-28 accent-[rgb(var(--tf-accent))]"
-              />
-              <span className="tf-mono tabular-nums text-ink">{settings.groupSize}</span>
-              <span className="text-muted/70">一组练完立刻换模式再练，比逐词过一遍记得牢</span>
+                      <span className="text-[11px] leading-tight text-muted">{tpl.hint}</span>
+                      <span className="mt-1 flex flex-wrap gap-1">
+                        {tpl.steps.map((st) => (
+                          <span
+                            key={st.id}
+                            className={`rounded px-1.5 py-0.5 text-[10px] ${
+                              active ? 'bg-accent/15 text-accent' : 'bg-surface2 text-muted'
+                            }`}
+                          >
+                            {st.label}
+                          </span>
+                        ))}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          )}
-        </section>
-      )}
+          );
+        })}
+
+        {isGrouped(settings.flowPreset) && (
+          <div className="mt-2 flex items-center gap-2 text-[11px] text-muted">
+            <span>每组词数</span>
+            <input
+              type="range"
+              min={3}
+              max={15}
+              step={1}
+              value={settings.groupSize}
+              onChange={(e) => void update({ groupSize: Number(e.target.value) })}
+              className="w-28 accent-[rgb(var(--tf-accent))]"
+            />
+            <span className="tf-mono tabular-nums text-ink">{settings.groupSize}</span>
+            <span className="text-muted/70">一组练完立刻换方式再练，比逐词过一遍记得牢</span>
+          </div>
+        )}
+      </section>
 
       {/* 词库 */}
       <section className="mb-6">
@@ -535,17 +513,6 @@ export default function PracticePage() {
         >
           {loading ? '加载词库…' : '开始'}
           {!loading && <IconArrowRight width={15} height={15} />}
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            void update({ dailyNewTarget: Math.min(100, settings.dailyNewTarget + 10) })
-          }
-          className="tf-btn text-xs"
-          title="把每日新词目标提高 10 个"
-        >
-          <IconLightning width={14} height={14} />
-          多练 10 个
         </button>
       </div>
 

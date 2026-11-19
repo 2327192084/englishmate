@@ -96,15 +96,22 @@ export interface WordbankMeta {
 export type PracticeMode = 'typing' | 'dictation' | 'recall' | 'choice';
 
 /**
- * 流程模板标识：
- * - followOnly  只跟打一遍（最快）
- * - listenWrite 跟打 → 默写（同一批词循环，记忆效果优先）
- * - fullChain   跟打 → 默写 → 听写（三层线索递进）
+ * 练习方式（原来叫"流程模板"）。
  *
- * 与 PracticeMode 的区别：PracticeMode 是「一个词用什么方式练」，
- * FlowPreset 是「一批词按什么顺序走几轮」。
+ * 这是**唯一**的练法选择器，取代了原先并列的「练习模式」+「练习流程」。
+ * 每个方式都是一条完整练法，由 1~3 个步骤组成：
+ *
+ *   组合式（同一批词层层抽线索，推荐）
+ *     listenWrite   跟打 → 默写
+ *     fullChain     跟打 → 默写 → 听写
+ *   单一式（整批词过一遍）
+ *     followOnly    只跟打
+ *     dictationOnly 只听写
+ *     recallOnly    只默写
+ *     choice        只辨认（四选一）
  */
-export type FlowPresetId = 'followOnly' | 'listenWrite' | 'fullChain';
+export type FlowPresetId =
+  'followOnly' | 'listenWrite' | 'fullChain' | 'dictationOnly' | 'recallOnly' | 'choice';
 
 export interface ModeMeta {
   id: PracticeMode;

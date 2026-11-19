@@ -28,9 +28,16 @@ export function Layout({ children }: { children: ReactNode }) {
   const isPractice = loc.pathname.startsWith('/practice');
 
   return (
-    <div className="flex min-h-full flex-col md:flex-row">
-      {/* 侧边栏 */}
-      <aside className="hidden w-56 shrink-0 flex-col border-r border-line bg-surface px-3 py-5 md:flex">
+    <div className="flex h-full flex-col overflow-hidden md:flex-row">
+      {/*
+        侧边栏固定在视口内，只有 <main> 自己滚动。
+        - 容器 h-full + overflow-hidden：锁住整页高度，不让 body 产生滚动条
+        - aside 用 sticky top-0 h-screen：内容再长也停在原位
+        - main 用 overflow-y-auto：滚动只发生在右侧内容区
+        原来容器是 min-h-full（高度随内容长），aside 没有 sticky，
+        页面一长整块侧栏就跟着滚出视口 —— 这就是"功能区跟着下滑"的原因。
+      */}
+      <aside className="hidden w-56 shrink-0 flex-col border-r border-line bg-surface px-3 py-5 md:sticky md:top-0 md:flex md:h-screen">
         <div className="px-2">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent text-white">
@@ -122,7 +129,9 @@ export function Layout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className={`min-w-0 flex-1 ${isPractice ? '' : 'pb-20 md:pb-0'}`}>{children}</main>
+      <main className={`min-w-0 flex-1 overflow-y-auto ${isPractice ? '' : 'pb-20 md:pb-0'}`}>
+        {children}
+      </main>
 
       {/* 移动端底部导航 */}
       {!isPractice && (

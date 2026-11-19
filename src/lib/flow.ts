@@ -53,23 +53,38 @@ export interface PlanCursor {
   wordIndex: number;
 }
 
-/** 预设流程模板 */
-export type FlowPreset = 'followOnly' | 'listenWrite' | 'fullChain';
+/**
+ * 预设练习方式。
+ *
+ * ── 为什么把"模式"和"流程"合并成一个概念 ──────────────────────────────────
+ * 原来页面上有两个独立选择器：「练习模式」（跟打/听写/默写/辨认）和
+ * 「练习流程」（只跟打/跟打+默写/跟打+默写+听写）。
+ * 这两者是重叠的——"只跟打"和"跟打模式"完全是同一件事，
+ * 用户被迫做两次含义相近的选择，还容易选出矛盾组合。
+ *
+ * 现在统一为「练习方式」：每一项都是一条完整的、语义清晰的练法，
+ * 由 1~3 个步骤组成。用户只需选一次。
+ */
+export type FlowPreset =
+  'followOnly' | 'listenWrite' | 'fullChain' | 'dictationOnly' | 'recallOnly' | 'choice';
 
 export const FLOW_PRESETS: Record<
   FlowPreset,
-  { name: string; hint: string; steps: FlowStep[]; loopInGroup: boolean }
+  {
+    name: string;
+    hint: string;
+    steps: FlowStep[];
+    loopInGroup: boolean;
+    /** 归组展示用 */
+    group: 'main' | 'single';
+  }
 > = {
-  followOnly: {
-    name: '只跟打',
-    hint: '看词打字，最快过一遍，适合快速扩充词汇面',
-    loopInGroup: false,
-    steps: [{ id: 'followWrite', mode: 'typing', scope: 'all', label: '跟打', hint: '照着打出来' }],
-  },
+  /* ── 组合练法：同一批词层层抽线索 ── */
   listenWrite: {
     name: '跟打 + 默写',
-    hint: '一组词先跟打，立刻默写同一批，趁记忆还热提取一次',
+    hint: '一组词先跟打，趁记忆还热立刻默写同一批。最推荐的日常练法。',
     loopInGroup: true,
+    group: 'main',
     steps: [
       { id: 'followWrite', mode: 'typing', scope: 'group', label: '跟打', hint: '照着打出来' },
       { id: 'recall', mode: 'recall', scope: 'group', label: '默写', hint: '看释义写出单词' },
@@ -77,15 +92,59 @@ export const FLOW_PRESETS: Record<
   },
   fullChain: {
     name: '跟打 + 默写 + 听写',
-    hint: '三层递进：每条线索依次抽掉，最深的一层是只听音',
+    hint: '三层递进，每条线索依次抽掉，最深的一层是只听音。记忆最牢，也最耗时。',
     loopInGroup: true,
+    group: 'main',
     steps: [
       { id: 'followWrite', mode: 'typing', scope: 'group', label: '跟打', hint: '照着打出来' },
       { id: 'recall', mode: 'recall', scope: 'group', label: '默写', hint: '看释义写出单词' },
       { id: 'dictation', mode: 'dictation', scope: 'group', label: '听写', hint: '听发音拼写' },
     ],
   },
+
+  /* ── 单一练法：整批词过一遍 ── */
+  followOnly: {
+    name: '只跟打',
+    hint: '看词打字，最快过一遍。适合快速扩充词汇量、或刚接触新词库时热身。',
+    loopInGroup: false,
+    group: 'single',
+    steps: [{ id: 'followWrite', mode: 'typing', scope: 'all', label: '跟打', hint: '照着打出来' }],
+  },
+  dictationOnly: {
+    name: '只听写',
+    hint: '只听发音、不看单词，靠听觉拼写。检验听力与拼写的对应关系。',
+    loopInGroup: false,
+    group: 'single',
+    steps: [
+      { id: 'dictation', mode: 'dictation', scope: 'all', label: '听写', hint: '听发音拼写' },
+    ],
+  },
+  recallOnly: {
+    name: '只默写',
+    hint: '只看中文释义、不看单词，直接写出拼写。检验主动词汇量。',
+    loopInGroup: false,
+    group: 'single',
+    steps: [{ id: 'recall', mode: 'recall', scope: 'all', label: '默写', hint: '看释义写出单词' }],
+  },
+  choice: {
+    name: '只辨认',
+    hint: '四选一快速过词，不练拼写。适合考前快速回忆、或碎片时间刷词。',
+    loopInGroup: false,
+    group: 'single',
+    steps: [{ id: 'identify', mode: 'choice', scope: 'all', label: '辨认', hint: '选出正确释义' }],
+  },
 };
+
+/** 该方式是否支持"每组词数"设置（只有分组循环才需要） */
+export function isGrouped(preset: FlowPreset): boolean {
+  return FLOW_PRESETS[preset]?.loopInGroup ?? false;
+}
+
+/** 该方式的主模式（用于单步流程时复用旧的状态机） */
+export function primaryMode(preset: FlowPreset): PracticeMode {
+  const steps = FLOW_PRESETS[preset]?.steps ?? [];
+  return steps[0]?.mode ?? 'typing';
+}
 
 export const DEFAULT_GROUP_SIZE = 7;
 
