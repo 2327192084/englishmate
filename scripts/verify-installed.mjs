@@ -27,7 +27,8 @@ const readDb = (page) =>
         q.onsuccess = () => {
           const db = q.result;
           const names = [...db.objectStoreNames];
-          if (!names.includes('userWords')) return resolve({ words: 0, sessions: 0, noStore: true });
+          if (!names.includes('userWords'))
+            return resolve({ words: 0, sessions: 0, noStore: true });
           const tx = db.transaction(['userWords', 'sessions'], 'readonly');
           const w = tx.objectStore('userWords').count();
           const s = tx.objectStore('sessions').count();
@@ -50,7 +51,10 @@ async function main() {
   console.log('1) 启动后数据库:', JSON.stringify(before));
 
   // 先确保点一次窗口以获得焦点（练习区靠 keydown）
-  await page.locator('[role="application"]').count().catch(() => 0);
+  await page
+    .locator('[role="application"]')
+    .count()
+    .catch(() => 0);
 
   console.log('2) 开始一轮');
   await page.getByRole('button', { name: '开始', exact: true }).click();
@@ -63,7 +67,11 @@ async function main() {
       if (!host) return null;
       const kids = host.querySelectorAll(':scope > span');
       const raw = kids.length
-        ? [...kids].map((k) => (k.querySelector('span') ? k.querySelector('span').textContent : k.textContent)).join('')
+        ? [...kids]
+            .map((k) =>
+              k.querySelector('span') ? k.querySelector('span').textContent : k.textContent,
+            )
+            .join('')
         : host.textContent;
       return raw.replace(/\u00a0/g, ' ').replace(/\s/g, '');
     });

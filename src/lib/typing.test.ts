@@ -9,6 +9,7 @@ import {
   normalizeChar,
   isWrongAt,
   noUnfixedErrors,
+  sameChar,
 } from './typing';
 import { computeAccuracy, computeWpm } from './stats';
 
@@ -39,9 +40,45 @@ describe('打字引擎', () => {
     expect(s.lastError).toBe(false);
   });
 
-  it('大小写敏感由调用方决定，引擎本身严格比较', () => {
+  it('大小写不敏感：小写打大写的词也算对', () => {
     let s = initTyping('Cat');
     s = typeChar(s, 'c', 1000);
+    expect(s.cursor).toBe(1);
+    expect(s.errors).toBe(0);
+  });
+
+  it('大小写不敏感：大写打小写的词也算对', () => {
+    let s = initTyping('cat');
+    s = typeChar(s, 'C', 1000);
+    expect(s.cursor).toBe(1);
+    expect(s.errors).toBe(0);
+  });
+
+  it('CapsLock 全大写能打完整个词', () => {
+    let s = initTyping('english');
+    for (const ch of 'ENGLISH') s = typeChar(s, ch, 1000);
+    expect(isComplete(s)).toBe(true);
+    expect(s.errors).toBe(0);
+  });
+
+  it('大小写混着打也算对', () => {
+    let s = initTyping('Liberty');
+    for (const ch of 'lIbErTy') s = typeChar(s, ch, 1000);
+    expect(isComplete(s)).toBe(true);
+    expect(s.errors).toBe(0);
+  });
+
+  it('全角字符归一后判对（中文输入法常见）', () => {
+    let s = initTyping('hello');
+    // ｈｅｌｌｏ 全角
+    for (const ch of 'ｈｅｌｌｏ') s = typeChar(s, ch, 1000);
+    expect(isComplete(s)).toBe(true);
+    expect(s.errors).toBe(0);
+  });
+
+  it('打错一个字母仍然判错（不能因放宽大小写而变宽松）', () => {
+    let s = initTyping('Cat');
+    s = typeChar(s, 'k', 1000);
     expect(s.cursor).toBe(0);
     expect(s.errors).toBe(1);
   });
@@ -91,6 +128,20 @@ describe('打字引擎', () => {
     expect(normalizeChar('’')).toBe("'");
     expect(normalizeChar('“')).toBe('"');
     expect(normalizeChar('—')).toBe('-');
+  });
+
+  it('全角 ASCII 归一成半角', () => {
+    expect(normalizeChar('ａ')).toBe('a');
+    expect(normalizeChar('Ｚ')).toBe('Z');
+    expect(normalizeChar('１')).toBe('1');
+    expect(normalizeChar('　')).toBe(' ');
+  });
+
+  it('sameChar：大小写、全角、弯引号都算相同', () => {
+    expect(sameChar('A', 'a')).toBe(true);
+    expect(sameChar('ａ', 'a')).toBe(true);
+    expect(sameChar('’', "'")).toBe(true);
+    expect(sameChar('a', 'b')).toBe(false);
   });
 });
 

@@ -38,6 +38,8 @@ export function TypingArea() {
   const p = usePractice();
   const settings = useSettings((s) => s.settings);
   const inputRef = useRef<HTMLDivElement>(null);
+  /** 输入法是否正在组字；组字期间必须忽略所有按键 */
+  const composingRef = useRef(false);
   const [now, setNow] = useState(Date.now());
   const cur = p.current();
 
@@ -72,6 +74,20 @@ export function TypingArea() {
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (p.phase !== 'running') return;
+
+      /**
+       * ── 输入法（IME）处理 ────────────────────────────────────────────
+       * 中文输入法开着时，按键会先进入组字缓冲区：
+       *   - 组字过程中 e.key 可能是 'Process' 或拼音字母
+       *   - 选中候选后浏览器还会补发一次 compositionend，并可能再触发 keydown
+       * 如果不管，拼音字母会被当成答题内容（打 'nihao' 就判一堆错），
+       * 即使用户最终选了正确的英文单词也救不回来。
+       *
+       * 做法：组字期间的按键一律不处理；等 compositionend 拿到最终字符再喂给引擎。
+       */
+      if (e.nativeEvent.isComposing || composingRef.current) return;
+      if (e.key === 'Process') return;
+
       const k = e.key;
 
       if (k === ' ' || k === 'Enter') {
@@ -143,6 +159,41 @@ export function TypingArea() {
     focus();
   };
 
+  /**
+   * 输入法组字开始：标记状态，后续 keydown 全部忽略。
+   * （中文输入法下，用户可能只是想输拼音，不能当成答题）
+   */
+  const onCompositionStart = () => {
+    composingRef.current = true;
+  };
+
+  /**
+   * 组字结束：把最终提交的字符喂给引擎。
+   *
+   * 注意两个坑：
+   *  1. 要在微任务后再清 composing 标记 —— 部分浏览器会在 compositionend
+   *     之后立刻补一个 keydown，此时若标记已清，同一个字符会被录入两次。
+   *  2. 一次 commit 可能是多个字符（比如整词上屏），逐字符处理。
+   */
+  const onCompositionEnd = (e: React.CompositionEvent) => {
+    const text = e.data ?? '';
+    const s = usePractice.getState();
+    if (s.phase === 'running' && text) {
+      for (const ch of text) {
+        const before = usePractice.getState().wordMistakes;
+        s.input(ch, settings.strictCorrection);
+        const after = usePractice.getState().wordMistakes;
+        if (settings.keySound) {
+          playKeySound(settings.keyVolume, after > before ? 'error' : 'down');
+        }
+      }
+    }
+    // 延后一拍再解除，避免紧跟其后的 keydown 重复录入
+    window.setTimeout(() => {
+      composingRef.current = false;
+    }, 0);
+  };
+
   if (!cur) return null;
 
   const typed = p.typing.target.slice(0, p.typing.cursor);
@@ -153,6 +204,8 @@ export function TypingArea() {
       ref={inputRef}
       tabIndex={0}
       onKeyDown={onKeyDown}
+      onCompositionStart={onCompositionStart}
+      onCompositionEnd={onCompositionEnd}
       onClick={(e) => {
         const t = e.target as HTMLElement;
         if (t.closest('button')) return;

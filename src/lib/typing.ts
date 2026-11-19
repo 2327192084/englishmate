@@ -63,7 +63,15 @@ export function typeChar(s: TypingState, ch: string, now: number, strict = true)
   const expected = s.target[s.cursor];
   const keystrokes = s.keystrokes + 1;
   const startedAt = s.startedAt ?? now;
-  const isRight = ch === expected;
+  /**
+   * 大小写不敏感比较。
+   *
+   * 这是打字练习，不是拼写考试。用户开着 CapsLock、或者 Shift 没来得及松、
+   * 或者目标词本身是专有名词（Liberty / English），都不该因为大小写被判错——
+   * 判错还会连带污染 WPM 与正确率、把好词塞进错词本。
+   * 显示上仍然保留原始大小写，只是比较时归一。
+   */
+  const isRight = sameChar(ch, expected);
 
   if (isRight) {
     const cursor = s.cursor + 1;
@@ -125,11 +133,37 @@ export function typeBackspace(s: TypingState): TypedResult {
 type TypedResult = TypingState;
 
 /**
- * 比较大小写不敏感（单词练习里大写只出现在专有名词，不该因此判错），
- * 但保留原始目标串用于渲染。
+ * 归一化输入字符：弯引号/破折号 → 键盘可打的形式，全角 → 半角。
+ *
+ * 全角转换很关键：中文输入法开着时，用户即使切到英文模式，
+ * 也常打出全角字符（ｈｅｌｌｏ）。这类输入在视觉上"正确"，
+ * 但码位不同，不归一会全部判错。
  */
 export function normalizeChar(ch: string): string {
-  return ch.replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/[—–]/g, '-');
+  return (
+    ch
+      .replace(/[’‘]/g, "'")
+      .replace(/[“”]/g, '"')
+      .replace(/[—–]/g, '-')
+      // 全角 ASCII（U+FF01..U+FF5E）映射回半角
+      .replace(/[\uFF01-\uFF5E]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0))
+      // 全角空格
+      .replace(/\u3000/g, ' ')
+  );
+}
+
+/**
+ * 单个字符是否算"打对了"。
+ *
+ * 判定顺序：先做符号/全角归一，再比较大小写不敏感。
+ * 这样 CapsLock、Shift、输入法全角都能正确通过。
+ */
+export function sameChar(input: string, expected: string): boolean {
+  const a = normalizeChar(input);
+  const b = normalizeChar(expected);
+  if (a === b) return true;
+  // 大小写不敏感（toLowerCase 对单个字符安全，不会像 toLocaleLowerCase 那样改变长度）
+  return a.toLowerCase() === b.toLowerCase();
 }
 
 /** 已用毫秒，未开始返回 0 */

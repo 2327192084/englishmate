@@ -364,4 +364,89 @@ describe('练习流程', () => {
       expect(w.card.reps).toBe(1);
     }
   });
+
+  describe('大小写与输入法', () => {
+    it('CapsLock 状态打小写词仍算对', async () => {
+      await startRound();
+      const word = usePractice.getState().current()!.w;
+      const area = screen.getByRole('application');
+      // 全程大写输入
+      for (const ch of word.toUpperCase()) {
+        await act(async () => {
+          fireEvent.keyDown(area, { key: ch });
+        });
+      }
+      const st = usePractice.getState();
+      expect(st.typing.cursor).toBe(word.length);
+      expect(st.wordMistakes).toBe(0);
+    });
+
+    it('全角字符输入仍算对', async () => {
+      await startRound();
+      const word = usePractice.getState().current()!.w;
+      const area = screen.getByRole('application');
+      const full = (c: string) => String.fromCharCode(c.charCodeAt(0) + 0xfee0);
+      for (const ch of word) {
+        await act(async () => {
+          fireEvent.keyDown(area, { key: full(ch) });
+        });
+      }
+      const st = usePractice.getState();
+      expect(st.typing.cursor).toBe(word.length);
+      expect(st.wordMistakes).toBe(0);
+    });
+
+    it('输入法组字期间按键不录入、不判错', async () => {
+      await startRound();
+      const area = screen.getByRole('application');
+      const word = usePractice.getState().current()!.w;
+
+      // 组字开始
+      await act(async () => {
+        fireEvent.compositionStart(area);
+      });
+      // 组字中间打拼音字母，一个都不该被当成答题
+      for (const ch of 'nihao') {
+        await act(async () => {
+          fireEvent.keyDown(area, { key: ch, isComposing: true });
+        });
+      }
+      let st = usePractice.getState();
+      expect(st.typing.cursor).toBe(0);
+      expect(st.wordMistakes).toBe(0);
+
+      // 上屏：提交完整单词
+      await act(async () => {
+        fireEvent.compositionEnd(area, { data: word });
+      });
+      await act(async () => {
+        await new Promise((r) => setTimeout(r, 30));
+      });
+
+      st = usePractice.getState();
+      expect(st.typing.cursor).toBe(word.length);
+      expect(st.wordMistakes).toBe(0);
+    });
+
+    it('组字结束后紧跟的 keydown 不会重复录入', async () => {
+      await startRound();
+      const area = screen.getByRole('application');
+      const word = usePractice.getState().current()!.w;
+
+      await act(async () => {
+        fireEvent.compositionStart(area);
+      });
+      await act(async () => {
+        fireEvent.compositionEnd(area, { data: word[0] });
+      });
+      // 浏览器可能在 compositionend 后立刻补一个 keydown
+      await act(async () => {
+        fireEvent.keyDown(area, { key: word[0] });
+      });
+
+      const st = usePractice.getState();
+      // 只应该前进一格，不能是两格
+      expect(st.typing.cursor).toBe(1);
+    });
+  });
 });
