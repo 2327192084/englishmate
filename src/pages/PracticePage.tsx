@@ -428,38 +428,63 @@ export default function PracticePage() {
             <Skeleton className="h-16" />
           </div>
         ) : (
-          <div className="grid gap-2 sm:grid-cols-2">
-            {banks.map((b) => {
-              const active = b.id === bankId;
+          /*
+           * 词库按类别分组显示。
+           * 现在有 16 个词库，平铺成一张大网格会让用户在十几张卡片里找目标，
+           * 分组后能先锁定"我要考试词还是程序员词"，再挑具体词库。
+           */
+          <div className="space-y-3">
+            {(['basic', 'exam', 'programming'] as const).map((cat) => {
+              const list = banks.filter((b) => b.category === cat);
+              if (list.length === 0) return null;
               return (
-                <button
-                  key={b.id}
-                  type="button"
-                  onClick={() => {
-                    setBankId(b.id);
-                    setParams((prev) => {
-                      const next = new URLSearchParams(prev);
-                      next.set('bank', b.id);
-                      return next;
-                    });
-                  }}
-                  className={`tf-card flex items-start justify-between gap-3 px-3 py-2.5 text-left transition-colors ${
-                    active ? 'border-accent bg-accent/10' : 'hover:border-accent/50'
-                  }`}
-                >
-                  <div className="min-w-0">
-                    <div
-                      className={`truncate text-sm font-medium ${active ? 'text-accent' : 'text-ink'}`}
-                    >
-                      {b.name}
-                    </div>
-                    <div className="mt-0.5 truncate text-[11px] text-muted">{b.description}</div>
+                <div key={cat}>
+                  <div className="mb-1.5 flex items-center gap-2">
+                    <span className="text-[11px] font-medium text-muted">
+                      {CATEGORY_LABEL[cat]}
+                    </span>
+                    <span className="text-[10px] text-muted/50">{list.length}</span>
+                    <div className="h-px flex-1 bg-line" />
                   </div>
-                  <div className="shrink-0 text-right">
-                    <div className="tf-mono text-xs tabular-nums text-muted">{b.count}</div>
-                    <div className="text-[10px] text-muted/70">{CATEGORY_LABEL[b.category]}</div>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {list.map((b) => {
+                      const active = b.id === bankId;
+                      return (
+                        <button
+                          key={b.id}
+                          type="button"
+                          onClick={() => {
+                            setBankId(b.id);
+                            setParams((prev) => {
+                              const next = new URLSearchParams(prev);
+                              next.set('bank', b.id);
+                              return next;
+                            });
+                          }}
+                          className={`tf-card flex items-start justify-between gap-3 px-3 py-2.5 text-left transition-colors ${
+                            active ? 'border-accent bg-accent/10' : 'hover:border-accent/50'
+                          }`}
+                        >
+                          <div className="min-w-0">
+                            <div
+                              className={`truncate text-sm font-medium ${
+                                active ? 'text-accent' : 'text-ink'
+                              }`}
+                            >
+                              {b.name}
+                            </div>
+                            <div className="mt-0.5 truncate text-[11px] text-muted">
+                              {b.description}
+                            </div>
+                          </div>
+                          <div className="shrink-0 text-right">
+                            <div className="tf-mono text-xs tabular-nums text-muted">{b.count}</div>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
-                </button>
+                </div>
               );
             })}
           </div>

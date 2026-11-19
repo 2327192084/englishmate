@@ -75,6 +75,51 @@ async function readBz2Lines(filePath, onLine) {
   return n;
 }
 
+/**
+ * 常见词形还原：把一个带屈折的 token 还原成可能的基础形式。
+ *
+ * 为什么需要：Tatoeba 的句子里 "elect" 常以 elected / electing / elects 出现，
+ * 只按原形精确匹配会漏掉大量句子（实测 54% → 预计能到 70%+）。
+ * 这里用规则覆盖英文最常见的屈折，比引入词形数据库轻量得多。
+ */
+function lemmaCandidates(token) {
+  const out = [token];
+  const t = token;
+
+  // 复数 / 第三人称单数
+  if (t.endsWith('ies') && t.length > 4) out.push(t.slice(0, -3) + 'y');
+  if (t.endsWith('es') && t.length > 3) out.push(t.slice(0, -2));
+  if (t.endsWith('s') && !t.endsWith('ss') && t.length > 2) out.push(t.slice(0, -1));
+
+  // 过去式 / 过去分词
+  if (t.endsWith('ied') && t.length > 4) out.push(t.slice(0, -3) + 'y');
+  if (t.endsWith('ed') && t.length > 3) {
+    out.push(t.slice(0, -2)); // walk-ed -> walk
+    out.push(t.slice(0, -1)); // 去 d：love-d -> love
+    // 双写辅音：stop-ped -> stop
+    if (t.length > 4 && t[t.length - 3] === t[t.length - 4]) out.push(t.slice(0, -3));
+  }
+
+  // 现在分词
+  if (t.endsWith('ing') && t.length > 4) {
+    out.push(t.slice(0, -3)); // walk-ing
+    out.push(t.slice(0, -3) + 'e'); // mak-ing -> make
+    if (t.length > 5 && t[t.length - 4] === t[t.length - 5]) out.push(t.slice(0, -4)); // run-ning
+  }
+
+  // 比较级 / 最高级
+  if (t.endsWith('er') && t.length > 3) {
+    out.push(t.slice(0, -2));
+    out.push(t.slice(0, -1));
+  }
+  if (t.endsWith('est') && t.length > 4) {
+    out.push(t.slice(0, -3));
+    out.push(t.slice(0, -2));
+  }
+
+  return out;
+}
+
 async function main() {
   await mkdir(CACHE, { recursive: true });
 
@@ -175,7 +220,18 @@ async function main() {
     if (!tokens) return;
     const hitWords = new Set();
     for (const t of tokens) {
-      if (targetWords.has(t)) hitWords.add(t);
+      // 先试原形，命中就省掉还原计算
+      if (targetWords.has(t)) {
+        hitWords.add(t);
+        continue;
+      }
+      // 再试各屈折还原形式
+      for (const cand of lemmaCandidates(t)) {
+        if (cand !== t && targetWords.has(cand)) {
+          hitWords.add(cand);
+          break;
+        }
+      }
     }
     if (hitWords.size === 0) return;
 

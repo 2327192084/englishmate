@@ -30,8 +30,13 @@ const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(SCRIPT_DIR, '..');
 const DICT_DIR = path.join(ROOT, 'public', 'dicts');
 
-/** 契约常量：与任务书 / src/types.ts 保持一致 */
-const BANK_IDS = ['cet4', 'cet6', 'kaoyan', 'ielts', 'toefl', 'gre', 'gaokao', 'linux'];
+/**
+ * 词库清单**从 index.json 动态读取**，不再硬编码。
+ *
+ * 原来这里写死了 8 个 id，每加一个词库就要改脚本，且断言 "banks 应为 8 项"
+ * 会误报。改为以 index.json 为准，脚本只校验「索引与实际文件是否一致」。
+ */
+let BANK_IDS = [];
 const META_KEYS = ['category', 'count', 'description', 'id', 'name', 'source'];
 const CATEGORIES = new Set(['exam', 'programming', 'basic']);
 const MIN_WORDS = 100;
@@ -46,8 +51,25 @@ const fail = (scope, message) => problems.push(`[${scope}] ${message}`);
 
 /* ------------------------------ A. 词库 ------------------------------ */
 
+async function loadBankIds() {
+  try {
+    const raw = await readFile(path.join(DICT_DIR, 'index.json'), 'utf8');
+    const idx = JSON.parse(raw);
+    BANK_IDS = (idx.banks || []).map((b) => b.id);
+    return idx;
+  } catch (e) {
+    fail('index', `无法读取 index.json：${e.message}`);
+    return null;
+  }
+}
+
 async function checkDicts() {
   console.log('■ 词库产物');
+  await loadBankIds();
+  if (BANK_IDS.length === 0) {
+    fail('index', 'index.json 里没有任何词库');
+    return;
+  }
   const metas = new Map();
   let totalWords = 0;
   let totalBytes = 0;
@@ -157,8 +179,8 @@ async function checkDicts() {
     if (typeof index.generatedAt !== 'string' || Number.isNaN(Date.parse(index.generatedAt))) {
       fail('index', 'generatedAt 不是合法 ISO 时间');
     }
-    if (!Array.isArray(index.banks) || index.banks.length !== BANK_IDS.length) {
-      fail('index', `banks 应为 ${BANK_IDS.length} 项`);
+    if (!Array.isArray(index.banks) || index.banks.length === 0) {
+      fail('index', 'banks 为空');
     } else {
       const indexIds = index.banks.map((b) => b.id).sort();
       if (indexIds.join(',') !== [...BANK_IDS].sort().join(','))
