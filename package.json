@@ -1,10 +1,10 @@
 {
-  "name": "typeflow",
+  "name": "englishmate",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "license": "MIT",
-  "description": "TypeFlow · 打字即学习的开源英语学习应用（桌面版）",
+  "description": "EnglishMate · 打字即学习的开源英语学习应用",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

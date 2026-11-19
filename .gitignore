@@ -32,3 +32,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 *.log
+
+# 打包产物（Electron 构建输出，不应进版本库：内含 215MB exe 等二进制）
+release/
+*.exe
+*.dll
+*.pak
+*.dat
