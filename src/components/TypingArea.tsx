@@ -121,6 +121,23 @@ export function TypingArea() {
         }
         return;
       }
+      /**
+       * 发音快捷键：Tab。
+       *
+       * Tab 原本是"跳过当前词"，已按用户要求移除（与 Space 重复），
+       * 现在这个键空出来，正好给发音——练听写时反复听一个词是高频操作，
+       * 鼠标去点按钮太打断节奏。
+       *
+       * 为什么不用 Ctrl+某键：单手按组合键会分散打字注意力，
+       * 而 Tab 在左手小指位置，按一下就能重听，不打断双手姿势。
+       */
+      if (k === 'Tab') {
+        e.preventDefault();
+        const now = usePractice.getState().current();
+        if (now) speak(now.w, { accent: settings.accent, rate: settings.speechRate });
+        return;
+      }
+
       if (k === 'Backspace') {
         e.preventDefault();
         p.backspace();
@@ -161,6 +178,8 @@ export function TypingArea() {
       settings.keySound,
       settings.keyVolume,
       settings.strictCorrection,
+      settings.accent,
+      settings.speechRate,
     ],
   );
 
@@ -288,16 +307,27 @@ export function TypingArea() {
         {/* 音标 + 发音 */}
         <div className="flex items-center gap-2 text-xs text-muted">
           {cur.p && <span className="tf-mono opacity-70">{cur.p}</span>}
+          {/*
+            发音按钮。
+            原来只有 14px 的灰色图标，夹在音标与"详情"之间，几乎不会被注意到
+            （用户反馈"想加个发音按钮"——其实它一直在，只是看不见）。
+            改成带描边和文字的按钮，并区分美音/英音标签。
+          */}
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
               speak(cur.w, { accent: settings.accent, rate: settings.speechRate });
             }}
-            className="rounded-md p-1 text-muted hover:bg-surface2 hover:text-accent"
-            aria-label="朗读"
+            className="inline-flex items-center gap-1 rounded-md border border-line bg-surface2 px-2 py-1 text-[11px] font-medium text-ink transition-colors hover:border-accent hover:text-accent"
+            aria-label={`朗读 ${cur.w}`}
+            title={`用${settings.accent === 'en-US' ? '美音' : '英音'}朗读（可在设置里切换口音）`}
           >
-            <IconVolume width={14} height={14} />
+            <IconVolume width={13} height={13} />
+            发音
+            <span className="text-[10px] font-normal text-muted">
+              {settings.accent === 'en-US' ? '美' : '英'}
+            </span>
           </button>
           {/* 详情入口：默写/听写模式下隐藏——那时看详情等于看答案 */}
           {!hidden && (
@@ -350,6 +380,7 @@ export function TypingArea() {
         <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-lg border border-line/70 bg-surface2/40 px-3 py-2 text-xs text-muted">
           <Hint keys={['字母']} label="输入" />
           <Hint keys={['Space']} label="下一个" />
+          <Hint keys={['Tab']} label="再听一遍" />
           <Hint keys={['⌫']} label="退格" />
           <Hint keys={['Esc']} label="退出" />
         </div>

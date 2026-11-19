@@ -10,6 +10,7 @@ import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, waitFor, act, fireEvent, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { db, clearAllData } from '@/db';
+import * as speech from '@/lib/speech';
 import { usePractice } from '@/store/practice';
 import { useSettings } from '@/store/settings';
 import App from '@/App';
@@ -643,5 +644,24 @@ describe('练习流程', () => {
       expect(new Set(items.map((i) => i.mode))).toEqual(new Set(['typing']));
       expect(items).toHaveLength(2);
     });
+  });
+
+  it('Tab 键触发发音且不跳词', async () => {
+    await startRound();
+    const area = screen.getByRole('application');
+    const word = usePractice.getState().current()!.w;
+    const speakSpy = vi.spyOn(speech, 'speak').mockImplementation(() => {});
+
+    const beforeProgress = usePractice.getState().index;
+    await act(async () => {
+      fireEvent.keyDown(area, { key: 'Tab' });
+    });
+
+    // 应调用发音，且朗读的是当前词
+    expect(speakSpy).toHaveBeenCalled();
+    expect(speakSpy.mock.calls.at(-1)?.[0]).toBe(word);
+    // 不应跳词
+    expect(usePractice.getState().index).toBe(beforeProgress);
+    speakSpy.mockRestore();
   });
 });
