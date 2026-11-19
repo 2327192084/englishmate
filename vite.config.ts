@@ -7,7 +7,7 @@ import { fileURLToPath, URL } from 'node:url';
  * 盘符根目录而 404。所以桌面构建需要相对 base。
  * 用环境变量区分：npm run build:desktop 走 './'，Web 构建继续用 '/'。
  */
-const isDesktopBuild = process.env.TYPEFLOW_DESKTOP === '1';
+const isDesktopBuild = process.env.ENGLISHMATE_DESKTOP === '1';
 
 export default defineConfig({
   base: isDesktopBuild ? './' : '/',

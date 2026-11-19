@@ -2,14 +2,14 @@
  * electron-builder 配置
  *
  * 目标形态与桌面上的 openLearner 一致：
- *  - NSIS 安装包，默认装到 %LOCALAPPDATA%\Programs\TypeFlow
+ *  - NSIS 安装包，默认装到 %LOCALAPPDATA%\Programs\EnglishMate
  *  - 创建桌面 + 开始菜单快捷方式
  *  - 支持自选安装目录
  */
 module.exports = {
-  appId: 'cc.typeflow.app',
-  productName: 'TypeFlow',
-  copyright: 'Copyright © 2026 TypeFlow contributors',
+  appId: 'cc.englishmate.app',
+  productName: 'EnglishMate',
+  copyright: 'Copyright © 2026 EnglishMate contributors',
 
   directories: {
     output: 'release',
@@ -35,7 +35,7 @@ module.exports = {
     // 没有代码签名证书。关掉 exe 的签名/图标重写步骤：
     // 本机环境下该步骤依赖远程工具链，会静默卡住整个打包流程。
     signAndEditExecutable: false,
-    artifactName: 'TypeFlow-${version}-setup.${ext}',
+    artifactName: 'EnglishMate-${version}-setup.${ext}',
   },
 
   nsis: {
@@ -44,10 +44,10 @@ module.exports = {
     allowToChangeInstallationDirectory: true,
     createDesktopShortcut: true,
     createStartMenuShortcut: true,
-    shortcutName: 'TypeFlow',
+    shortcutName: 'EnglishMate',
     // 卸载时保留用户学习数据，避免误删进度
     deleteAppDataOnUninstall: false,
     installerIcon: undefined,
-    uninstallDisplayName: 'TypeFlow 打字即学习',
+    uninstallDisplayName: 'EnglishMate 打字即学习',
   },
 };

@@ -44,7 +44,7 @@ export function Layout({ children }: { children: ReactNode }) {
               <IconKeyboard width={17} height={17} />
             </div>
             <div>
-              <div className="text-sm font-semibold leading-tight text-ink">TypeFlow</div>
+              <div className="text-sm font-semibold leading-tight text-ink">EnglishMate</div>
               <div className="text-[10px] leading-tight text-muted">打字即学习</div>
             </div>
           </div>
@@ -108,7 +108,7 @@ export function Layout({ children }: { children: ReactNode }) {
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-accent text-white">
             <IconKeyboard width={15} height={15} />
           </div>
-          <span className="text-sm font-semibold text-ink">TypeFlow</span>
+          <span className="text-sm font-semibold text-ink">EnglishMate</span>
         </div>
         <div className="flex items-center gap-1">
           <button

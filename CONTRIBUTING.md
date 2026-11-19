@@ -1,6 +1,6 @@
 # 贡献指南
 
-感谢你愿意参与 TypeFlow。这是一份尽量简短的实用文档。
+感谢你愿意参与 EnglishMate。这是一份尽量简短的实用文档。
 
 ## 开发环境
 
@@ -84,7 +84,7 @@ serendipity,意外发现
 ```
 
 ```json
-// 2. TypeFlow 格式
+// 2. EnglishMate 格式
 [{ "w": "ubiquitous", "t": "无处不在的", "p": "/juːˈbɪkwɪtəs/" }]
 ```
 

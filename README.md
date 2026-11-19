@@ -1,4 +1,4 @@
-# TypeFlow · 打字即学习
+# EnglishMate · 打字即学习
 
 > 把「背单词、练打字、磨语感」合成一件事的开源英语学习 Web 应用。
 
@@ -13,7 +13,7 @@
 ## 这是什么
 
 主流背单词 App 让你「看单词、选释义」——属于被动识别，认得字但写不出来。
-TypeFlow 反过来：**让你在键盘上把单词敲出来**。
+EnglishMate 反过来：**让你在键盘上把单词敲出来**。
 
 打字时你同时在做三件事：
 
@@ -25,7 +25,7 @@ TypeFlow 反过来：**让你在键盘上把单词敲出来**。
 
 ## 功能
 
-### 已实现（v0.1 · MVP）
+### 已实现
 
 | 模块                       | 能力                                                                                 |
 | -------------------------- | ------------------------------------------------------------------------------------ |
@@ -56,7 +56,7 @@ TypeFlow 反过来：**让你在键盘上把单词敲出来**。
 ```bash
 # 需要 Node 18+
 git clone <your-repo-url>
-cd typeflow
+cd englishmate
 npm install
 npm run dev          # http://localhost:5173
 ```
@@ -97,6 +97,19 @@ npm run dicts:rich -- --offline      # 只用已有缓存，不联网
 | 集成   | `services/learning.test.ts`   | 真实 IndexedDB 上的作答→卡片→会话→统计闭环、备份恢复          |
 | 渲染   | `App.test.tsx`                | 7 个页面能挂载、主题切换                                      |
 | 端到端 | `pages/PracticeFlow.test.tsx` | 键盘事件驱动完整一轮并落库、跳过错词、辨认判定                |
+
+## 桌面版
+
+除了 Web，也提供 Windows 桌面客户端（Electron），数据同样存在本地：
+
+```bash
+npm run build:desktop     # 构建前端产物
+npm run dist:win          # 打包（需要网络下载 electron-builder 工具链）
+```
+
+桌面版与 Web 版的差异只有一处：页面通过自定义协议 `app://englishmate/` 加载，
+而不是 `file://`。原因是在 `file://` 下 Chromium 会把 origin 视为不透明源，
+**IndexedDB 直接不可用**，而本项目所有学习数据都存在 IndexedDB 里。
 
 ## 技术栈
 

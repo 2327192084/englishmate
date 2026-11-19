@@ -1,6 +1,6 @@
 # 文章语料来源与许可
 
-本文档记录 TypeFlow 文章语料（`public/articles/index.json`）每一部分的**实测来源、许可结论与处理方式**。
+本文档记录 EnglishMate 文章语料（`public/articles/index.json`）每一部分的**实测来源、许可结论与处理方式**。
 所有结论均为本机实测，不是凭记忆填写。
 
 ---

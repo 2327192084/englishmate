@@ -1,4 +1,4 @@
-# TypeFlow 桌面版启动器
+# EnglishMate 桌面版启动器
 #
 # 为什么用 .bat 而不是直接双击 exe：
 # 部分 Windows 环境下 Chromium 的沙箱在任何 JS 执行前就初始化失败，
@@ -13,10 +13,10 @@
 @echo off
 setlocal
 set "APP_DIR=%~dp0"
-set "EXE=%APP_DIR%TypeFlow.exe"
+set "EXE=%APP_DIR%EnglishMate.exe"
 
 if not exist "%EXE%" (
-    echo [ERROR] TypeFlow.exe not found.
+    echo [ERROR] EnglishMate.exe not found.
     echo Expected: %EXE%
     echo.
     pause

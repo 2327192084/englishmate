@@ -33,7 +33,7 @@ export default function SettingsPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `typeflow-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `englishmate-backup-${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
     flash('已导出备份文件');
@@ -254,7 +254,7 @@ export default function SettingsPage() {
           </button>
         </div>
         <p className="mt-2 text-[11px] leading-relaxed text-muted">
-          TypeFlow 不收集任何个人信息，所有数据都在这台设备的浏览器里（IndexedDB）。
+          EnglishMate 不收集任何个人信息，所有数据都在这台设备的浏览器里（IndexedDB）。
           清理浏览器数据会导致记录丢失，建议定期导出备份。
         </p>
       </Section>
@@ -263,7 +263,7 @@ export default function SettingsPage() {
       <Section title="关于">
         <div className="space-y-1.5 text-[11px] leading-relaxed text-muted">
           <p>
-            <strong className="text-ink">TypeFlow</strong> ·
+            <strong className="text-ink">EnglishMate</strong> ·
             打字即学习。开源、免费、无广告、无内购。
           </p>
           <p>

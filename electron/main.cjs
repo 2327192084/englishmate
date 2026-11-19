@@ -1,13 +1,13 @@
 /**
- * TypeFlow · Electron 主进程
+ * EnglishMate · Electron 主进程
  *
  * ── 为什么用自定义协议 app:// 而不是直接 loadFile ──────────────────────────
  * 实测：file:// 下 Chromium 的 IndexedDB 会直接返回 `UnknownError`（origin 是 "file://"，
  * 是不透明源，存储被禁用）。而本项目所有学习数据都存在 IndexedDB 里，
  * 用 file:// 打开会卡在"正在加载本地数据…"永不进入。
  *
- * 解决办法是注册一个标准、安全的自定义协议 app://typeflow/，把 dist 目录映射上去。
- * 这样页面有了正常的 origin（app://typeflow），IndexedDB / localStorage /
+ * 解决办法是注册一个标准、安全的自定义协议 app://englishmate/，把 dist 目录映射上去。
+ * 这样页面有了正常的 origin（app://englishmate），IndexedDB / localStorage /
  * fetch 相对路径全部恢复正常语义，也不需要给 file 协议开特权。
  *
  * 安全边界：
@@ -24,7 +24,7 @@ const isDev = !app.isPackaged && process.env.NODE_ENV !== 'production';
 const DEV_URL = process.env.VITE_DEV_SERVER_URL || 'http://127.0.0.1:5173';
 
 const SCHEME = 'app';
-const APP_HOST = 'typeflow';
+const APP_HOST = 'englishmate';
 const APP_ORIGIN = `${SCHEME}://${APP_HOST}`;
 /**
  * dist 目录的位置随运行方式而变：
@@ -72,13 +72,13 @@ protocol.registerSchemesAsPrivileged([
  */
 function resolveUserDataDir() {
   const candidates = [];
-  // 1) %LOCALAPPDATA%\TypeFlow —— 本机已验证可写（openLearner 就装在这里）
+  // 1) %LOCALAPPDATA%\EnglishMate —— 本机已验证可写（openLearner 就装在这里）
   if (process.env.LOCALAPPDATA) {
-    candidates.push(path.join(process.env.LOCALAPPDATA, 'TypeFlow'));
+    candidates.push(path.join(process.env.LOCALAPPDATA, 'EnglishMate'));
   }
-  // 2) 标准位置 %APPDATA%\TypeFlow（部分机器上该目录会被第三方锁住）
+  // 2) 标准位置 %APPDATA%\EnglishMate（部分机器上该目录会被第三方锁住）
   try {
-    candidates.push(path.join(app.getPath('appData'), 'TypeFlow'));
+    candidates.push(path.join(app.getPath('appData'), 'EnglishMate'));
   } catch {
     /* ignore */
   }
@@ -86,7 +86,7 @@ function resolveUserDataDir() {
   //    注意安装目录可能无写权限，所以排在 LOCALAPPDATA 之后
   candidates.push(path.join(path.dirname(app.getPath('exe')), 'data'));
   // 4) 兜底：临时目录（至少能跑，虽然重启会丢缓存以外的数据）
-  candidates.push(path.join(require('node:os').tmpdir(), 'TypeFlow'));
+  candidates.push(path.join(require('node:os').tmpdir(), 'EnglishMate'));
 
   for (const dir of candidates) {
     try {
@@ -200,7 +200,7 @@ function createWindow() {
     minWidth: 900,
     minHeight: 620,
     backgroundColor: '#0d1117',
-    title: 'TypeFlow',
+    title: 'EnglishMate',
     autoHideMenuBar: true,
     show: false,
     webPreferences: {
@@ -274,7 +274,7 @@ if (!gotLock) {
   });
 }
 
-ipcMain.handle('typeflow:version', () => {
+ipcMain.handle('englishmate:version', () => {
   try {
     const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
     return { app: pkg.version, electron: process.versions.electron, origin: APP_ORIGIN };

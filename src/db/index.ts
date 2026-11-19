@@ -1,5 +1,5 @@
 /**
- * TypeFlow · 本地数据库（IndexedDB / Dexie）
+ * EnglishMate · 本地数据库（IndexedDB / Dexie）
  *
  * 设计原则：离线优先。所有学习数据都在本地，不需要账号。
  * 只有「可选云同步」时才会把数据推给后端，本项目 MVP 不实现云同步。
@@ -23,7 +23,7 @@ export interface MetaRow {
   value: unknown;
 }
 
-export class TypeFlowDB extends Dexie {
+export class EnglishMateDB extends Dexie {
   userWords!: Table<UserWord, string>;
   sessions!: Table<PracticeSession, number>;
   settings!: Table<Settings, number>;
@@ -32,7 +32,7 @@ export class TypeFlowDB extends Dexie {
   meta!: Table<MetaRow, string>;
 
   constructor() {
-    super('typeflow');
+    super('englishmate');
 
     this.version(1).stores({
       // 索引只放真正要查询的字段，其余走内存过滤（数据量在万级以内）
@@ -46,7 +46,7 @@ export class TypeFlowDB extends Dexie {
   }
 }
 
-export const db = new TypeFlowDB();
+export const db = new EnglishMateDB();
 
 /** 单用户设置：固定主键 1，读不到就落默认值 */
 export async function getSettings(): Promise<Settings> {
@@ -103,7 +103,7 @@ export async function exportAllData(): Promise<string> {
   ]);
   return JSON.stringify(
     {
-      app: 'typeflow',
+      app: 'englishmate',
       version: 1,
       exportedAt: new Date().toISOString(),
       userWords,
@@ -127,8 +127,8 @@ export async function importAllData(json: string): Promise<{ words: number; sess
     achievements?: UnlockedAchievement[];
     customBanks?: CustomBank[];
   };
-  if (data.app !== 'typeflow') {
-    throw new Error('这不是 TypeFlow 导出的数据文件');
+  if (data.app !== 'englishmate') {
+    throw new Error('这不是 EnglishMate 导出的数据文件');
   }
   await db.transaction(
     'rw',

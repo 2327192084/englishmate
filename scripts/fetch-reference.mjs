@@ -28,7 +28,7 @@ function b64decode(s) {
 for (const f of FILES) {
   try {
     const url = `https://api.github.com/repos/${REPO}/contents/${encodeURI(f)}?ref=${BRANCH}`;
-    const res = await fetch(url, { headers: { 'User-Agent': 'typeflow-analysis' } });
+    const res = await fetch(url, { headers: { 'User-Agent': 'englishmate-analysis' } });
     if (!res.ok) {
       console.log('SKIP', f, res.status);
       continue;

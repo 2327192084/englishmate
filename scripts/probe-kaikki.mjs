@@ -63,7 +63,7 @@ async function main() {
     const t0 = Date.now();
     try {
       const res = await fetch(url, {
-        headers: { 'User-Agent': 'TypeFlow-build/0.1 (dictionary enrichment)' },
+        headers: { 'User-Agent': 'EnglishMate-build/0.1 (dictionary enrichment)' },
       });
       const ms = Date.now() - t0;
       if (!res.ok) {

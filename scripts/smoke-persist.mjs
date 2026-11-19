@@ -20,7 +20,7 @@ page.on('pageerror', (e) => errors.push(String(e)));
 async function readDb() {
   return page.evaluate(async () => {
     return new Promise((resolve) => {
-      const req = indexedDB.open('typeflow');
+      const req = indexedDB.open('englishmate');
       req.onsuccess = () => {
         const db = req.result;
         const tx = db.transaction(['userWords', 'sessions'], 'readonly');

@@ -134,7 +134,7 @@ await page.waitForTimeout(1500);
 const db = await page.evaluate(
   () =>
     new Promise((res) => {
-      const q = indexedDB.open('typeflow');
+      const q = indexedDB.open('englishmate');
       q.onsuccess = () => {
         const d = q.result;
         const tx = d.transaction('userWords', 'readonly');

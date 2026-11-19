@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * TypeFlow · 扩展词库构建脚本
+ * EnglishMate · 扩展词库构建脚本
  * ------------------------------------------------------------------
  * 作用：在 scripts/build-dicts.mjs 产出的 8 个词库之外，再补 8 个
  *       「考试 / 专业 / 阶段」词库，把总数从 8 个扩到 16 个。
@@ -275,7 +275,7 @@ async function ghJson(url, { retries = 3 } = {}) {
       const res = await fetch(url, {
         headers: {
           Accept: 'application/vnd.github+json',
-          'User-Agent': 'typeflow-dict-builder',
+          'User-Agent': 'englishmate-dict-builder',
           'X-GitHub-Api-Version': '2022-11-28',
         },
       });
@@ -1077,14 +1077,14 @@ function reportVerify(problems, bankCount, totalWords, totalBytes) {
 
 async function main() {
   if (VERIFY) {
-    log('TypeFlow 词库契约校验');
+    log('EnglishMate 词库契约校验');
     log(`  目录：${path.relative(ROOT, OUT_DIR)}`);
     log('');
     await verifyAll();
     return;
   }
 
-  log('TypeFlow 扩展词库构建');
+  log('EnglishMate 扩展词库构建');
   log(`  仓库：${REPO}@master`);
   log(`  缓存：${path.relative(ROOT, CACHE_DIR)}`);
   log(`  输出：${path.relative(ROOT, OUT_DIR)}`);

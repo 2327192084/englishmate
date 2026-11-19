@@ -1,6 +1,6 @@
 {
-  "name": "TypeFlow · 打字即学习",
-  "short_name": "TypeFlow",
+  "name": "EnglishMate · 打字即学习",
+  "short_name": "EnglishMate",
   "description": "把背单词、练打字、磨语感合成一件事的开源英语学习应用",
   "start_url": "/",
   "display": "standalone",

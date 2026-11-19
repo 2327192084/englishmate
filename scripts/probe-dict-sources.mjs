@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * TypeFlow · 词典数据源探针
+ * EnglishMate · 词典数据源探针
  * ------------------------------------------------------------------
  * 目的：一次运行，打印各候选数据源的**连通性**与**字段可用性**，
  *       并可选地对内置词库做一次 N 词的**命中率抽样**。
@@ -100,7 +100,7 @@ function truncate(s, n = 160) {
 
 /* ------------------------------ 网络基础件 ------------------------------ */
 
-const UA = 'typeflow-dict-probe/1.0 (+https://github.com/)';
+const UA = 'englishmate-dict-probe/1.0 (+https://github.com/)';
 
 /**
  * 带超时的 fetch。返回 { ok, status, headers, body, bytes, ms, error }。
@@ -897,7 +897,7 @@ async function main() {
   const sample = COVERAGE ? seededSample(words, Math.min(COVERAGE, MAX_SAMPLE)) : [];
 
   if (!JSON_OUT) {
-    console.log(`${C.bold}TypeFlow · 词典数据源探针${C.reset}`);
+    console.log(`${C.bold}EnglishMate · 词典数据源探针${C.reset}`);
     console.log(`${C.dim}${new Date().toISOString()}  node ${process.version}${C.reset}`);
     if (error) console.log(`${C.yellow}⚠ ${error}（覆盖率抽样将跳过）${C.reset}`);
     else

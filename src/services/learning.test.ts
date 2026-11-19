@@ -321,7 +321,7 @@ describe('备份与恢复', () => {
     expect((await db.userWords.get('cet4:backup1'))?.word).toBe('backup1');
   });
 
-  it('拒绝非 TypeFlow 的备份文件', async () => {
+  it('拒绝非 EnglishMate 的备份文件', async () => {
     await expect(importAllData('{"app":"something-else"}')).rejects.toThrow();
     await expect(importAllData('not json')).rejects.toThrow();
   });

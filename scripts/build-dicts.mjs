@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * TypeFlow · 内置词库构建脚本
+ * EnglishMate · 内置词库构建脚本
  * ------------------------------------------------------------------
  * 作用：从开源项目 Qwerty Learner（MIT）的 public/dicts/ 拉取原始词表，
- *       清洗成 TypeFlow 的 WordEntry 格式，生成 public/dicts/<id>.json。
+ *       清洗成 EnglishMate 的 WordEntry 格式，生成 public/dicts/<id>.json。
  *
  * 为什么走 GitHub blob API：
  *   本机网络环境下 raw.githubusercontent.com 与 cdn.jsdelivr.net 均被阻断，
@@ -178,7 +178,7 @@ async function ghJson(url, { retries = 3 } = {}) {
       const res = await fetch(url, {
         headers: {
           Accept: 'application/vnd.github+json',
-          'User-Agent': 'typeflow-dict-builder',
+          'User-Agent': 'englishmate-dict-builder',
           'X-GitHub-Api-Version': '2022-11-28',
         },
       });
@@ -512,7 +512,7 @@ function buildBank(def, text) {
 /* ------------------------------ 主流程 ------------------------------ */
 
 async function main() {
-  log('TypeFlow 词库构建');
+  log('EnglishMate 词库构建');
   log(`  仓库：${REPO}@${REF}`);
   log(`  缓存：${path.relative(ROOT, CACHE_DIR)}`);
   log(`  输出：${path.relative(ROOT, OUT_DIR)}`);

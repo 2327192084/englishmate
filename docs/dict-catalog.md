@@ -1,6 +1,6 @@
 # 词库目录
 
-TypeFlow 内置 **16 个词库 / 51,702 条词条 / 去重后 18,716 个不重复单词**。
+EnglishMate 内置 **16 个词库 / 51,702 条词条 / 去重后 18,716 个不重复单词**。
 
 > 本文档由 `scripts/build-more-dicts.mjs` 与 `scripts/build-dicts.mjs` 的产物汇总而来。
 > 重新生成：`node scripts/build-more-dicts.mjs`（可重复运行，缓存优先，不重复消耗 API 配额）。

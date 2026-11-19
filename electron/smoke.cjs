@@ -6,7 +6,7 @@ const path = require('node:path');
 const fs = require('node:fs');
 
 const SCHEME = 'app';
-const APP_HOST = 'typeflow';
+const APP_HOST = 'englishmate';
 const APP_ORIGIN = `${SCHEME}://${APP_HOST}`;
 const DIST_DIR = path.join(__dirname, '..', 'dist');
 const SHOTS = path.join(__dirname, '..', '.tmp', 'desktop-shots');
@@ -18,9 +18,9 @@ const log = (...a) => process.stdout.write(a.join(' ') + '\n');
 function resolveUserDataDir() {
   const os = require('node:os');
   const cands = [];
-  if (process.env.LOCALAPPDATA) cands.push(path.join(process.env.LOCALAPPDATA, 'TypeFlow'));
-  try { cands.push(path.join(app.getPath('appData'), 'TypeFlow')); } catch {}
-  cands.push(path.join(os.tmpdir(), 'TypeFlow'));
+  if (process.env.LOCALAPPDATA) cands.push(path.join(process.env.LOCALAPPDATA, 'EnglishMate'));
+  try { cands.push(path.join(app.getPath('appData'), 'EnglishMate')); } catch {}
+  cands.push(path.join(os.tmpdir(), 'EnglishMate'));
   for (const d of cands) {
     try {
       fs.mkdirSync(d, { recursive: true });
@@ -92,7 +92,7 @@ async function main() {
     return 'ok';
   });
 
-  await check('origin 是 app://typeflow（标准安全源）', async () => {
+  await check('origin 是 app://englishmate（标准安全源）', async () => {
     const o = await win.webContents.executeJavaScript('window.location.origin');
     if (o !== APP_ORIGIN) throw new Error('origin=' + o);
     return o;
@@ -115,7 +115,7 @@ async function main() {
 
   await check('preload 生效 / Node 已隔离', async () => {
     const r = await win.webContents.executeJavaScript(
-      'JSON.stringify({ desktop: !!(window.typeflow && window.typeflow.isDesktop), node: typeof require !== "undefined" || typeof process !== "undefined" })'
+      'JSON.stringify({ desktop: !!(window.englishmate && window.englishmate.isDesktop), node: typeof require !== "undefined" || typeof process !== "undefined" })'
     );
     const o = JSON.parse(r);
     if (!o.desktop) throw new Error('preload 未注入');
@@ -196,7 +196,7 @@ async function main() {
 
     const n0 = await win.webContents.executeJavaScript(`
       new Promise((res) => {
-        const q = indexedDB.open('typeflow');
+        const q = indexedDB.open('englishmate');
         q.onsuccess = () => {
           const db = q.result;
           if (!db.objectStoreNames.contains('userWords')) return res(0);
@@ -214,7 +214,7 @@ async function main() {
   await check('（补充）直接查库再确认一次', async () => {
     const n = await win.webContents.executeJavaScript(`
       new Promise((res) => {
-        const q = indexedDB.open('typeflow');
+        const q = indexedDB.open('englishmate');
         q.onsuccess = () => {
           const db = q.result;
           if (!db.objectStoreNames.contains('userWords')) return res(0);

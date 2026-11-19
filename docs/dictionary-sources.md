@@ -16,7 +16,7 @@
 | ECDICT + kaikki | ✅ 95% | ✅ 100% | ⚠️ 仅 60% 有标签 | ⚠️ 仅 60% 有标签 | ✅ |
 | **ECDICT + kaikki + ipa-dict** | ✅ 95% | ✅ 100% | ✅ 85–99% | ✅ 89–99.6% | ✅ |
 
-> ⚠️ **TypeWords 的数据不可直接取用**：它的词条字段确实最丰富（`sentences`/`phrases`/`trans`/`phonetic0`/`phonetic1`/`synos`/`etymology` 全都有），但仓库是 **GPL-3.0**。TypeFlow 是 MIT，直接拷贝其数据文件会构成 GPL 传染。**这是本次调研最重要的否决结论。**
+> ⚠️ **TypeWords 的数据不可直接取用**：它的词条字段确实最丰富（`sentences`/`phrases`/`trans`/`phonetic0`/`phonetic1`/`synos`/`etymology` 全都有），但仓库是 **GPL-3.0**。EnglishMate 是 MIT，直接拷贝其数据文件会构成 GPL 传染。**这是本次调研最重要的否决结论。**
 
 ---
 
@@ -183,7 +183,7 @@ word,phonetic,definition,translation,pos,collins,oxford,tag,bnc,frq,exchange,det
 
 ### 2. kaikki.org —— 例句最靠谱，但中文翻译很稀疏
 
-**许可证：CC-BY-SA 3.0**（数据源自 Wiktionary，wiktextract 工具本身是 MIT）。这意味着**必须署名 + 衍生作品同样以 CC-BY-SA 发布**。对 TypeFlow 的影响见「风险与限制」一节。
+**许可证：CC-BY-SA 3.0**（数据源自 Wiktionary，wiktextract 工具本身是 MIT）。这意味着**必须署名 + 衍生作品同样以 CC-BY-SA 发布**。对 EnglishMate 的影响见「风险与限制」一节。
 
 **页面结构（实测，这是个非直观的坑）：**
 
@@ -477,7 +477,7 @@ with 2+ distinct IPA 10
 > * English (US) IPA data based on modified version of **cmudict-ipa** by @lingz (MIT)
 > * English (UK) IPA data derived from **ipacards** by @leoboiko (**GPL 3.0**)
 
-**⚠️ 这是本次调研第二个重要发现：`en_UK.txt` 的上游是 GPL-3.0。** 项目整体挂 MIT，但 UK 音标数据的来源许可更严格。**如果 TypeFlow 要保持纯 MIT，应当只用 `en_US`，英音另行获取**（或接受 GPL 风险并注明）。
+**⚠️ 这是本次调研第二个重要发现：`en_UK.txt` 的上游是 GPL-3.0。** 项目整体挂 MIT，但 UK 音标数据的来源许可更严格。**如果 EnglishMate 要保持纯 MIT，应当只用 `en_US`，英音另行获取**（或接受 GPL 风险并注明）。
 
 **数据规模与差异（实测）：**
 

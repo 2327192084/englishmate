@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * TypeFlow · 数据产物自检
+ * EnglishMate · 数据产物自检
  * ------------------------------------------------------------------
  * 校验 scripts/build-dicts.mjs 的产物与 src/data/articles.ts 是否满足契约：
  *

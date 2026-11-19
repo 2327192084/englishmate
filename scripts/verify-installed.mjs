@@ -23,7 +23,7 @@ const readDb = (page) =>
   page.evaluate(
     () =>
       new Promise((resolve) => {
-        const q = indexedDB.open('typeflow');
+        const q = indexedDB.open('englishmate');
         q.onsuccess = () => {
           const db = q.result;
           const names = [...db.objectStoreNames];
