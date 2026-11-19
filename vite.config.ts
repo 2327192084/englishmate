@@ -36,5 +36,12 @@ export default defineConfig({
      * 互相清库导致偶发失败（表现为点开始没反应）。
      */
     fileParallelism: false,
+    /**
+     * 单测超时上调到 15s。
+     * 渲染类测试要挂载整个 App、等 IndexedDB 初始化、模拟完整一轮练习，
+     * 全量跑时（前面已跑过 9 个文件）会超过默认 5s。
+     * 这是负载导致的超时，不是逻辑挂死——单独跑同样用例只要 0.7s。
+     */
+    testTimeout: 15000,
   },
 });

@@ -15,7 +15,7 @@
  *  B. 文章 src/data/articles.ts
  *     - 6 篇，id 为 gettysburg/turing/einstein/shakespeare/jobs/orwell
  *     - level 只能是 CET-4 / CET-6 / 考研 / 雅思
- *     - 每篇 6–10 句，每句 en ≤ 120 字符、zh 非空
+ *     - 每篇 4–16 句，每句 en ≤ 140 字符、zh 非空
  *     - 用 esbuild 真实转译执行，不是正则扫文本
  *
  * 用法：node scripts/verify-data.mjs
@@ -42,9 +42,17 @@ const CATEGORIES = new Set(['exam', 'programming', 'basic']);
 const MIN_WORDS = 100;
 const MAX_WORD_LEN = 64;
 
-const ARTICLE_IDS = ['gettysburg', 'turing', 'einstein', 'shakespeare', 'jobs', 'orwell'];
+/**
+ * 文章清单同样动态读取。原来硬编码 6 篇，扩到 75 篇后全部误报。
+ * 前 6 篇（公版经典）作为必检项保留，其余只校验契约本身。
+ */
+const MUST_HAVE_ARTICLE_IDS = ['gettysburg', 'turing', 'einstein', 'shakespeare', 'jobs', 'orwell'];
 const LEVELS = new Set(['CET-4', 'CET-6', '考研', '雅思']);
-const MAX_EN = 120;
+/**
+ * 单句英文长度上限，与 src/lib/text.test.ts 保持一致（140）。
+ * 曾出现 verify 用 120、测试用 140 的两套标准，导致同一批数据一边过一边挂。
+ */
+const MAX_EN = 140;
 
 const problems = [];
 const fail = (scope, message) => problems.push(`[${scope}] ${message}`);
@@ -208,23 +216,19 @@ async function checkDicts() {
 async function checkArticles() {
   console.log('\n■ 文章语料');
 
-  let transform;
-  try {
-    ({ transform } = await import('esbuild'));
-  } catch {
-    fail('articles', '缺少 esbuild，无法执行验证（它随 vite 安装，正常应在 node_modules 内）');
-    return 0;
-  }
-
-  const src = await readFile(path.join(ROOT, 'src', 'data', 'articles.ts'), 'utf8');
-  const { code } = await transform(src, { loader: 'ts', format: 'esm', target: 'es2022' });
-  const dataUrl = 'data:text/javascript;base64,' + Buffer.from(code, 'utf8').toString('base64');
-
+  /**
+   * 文章数据已经外置到 public/articles/index.json（src/data/articles.ts 只是
+   * import 它再断言类型）。所以这里**直接读 JSON**，不再走
+   * 「esbuild 打包 → data: URL 导入」那条路 —— 那条路在遇到
+   * `import ... from '../../public/articles/index.json'` 时会因为
+   * data: 协议没有层级结构而失败。
+   */
+  const jsonPath = path.join(ROOT, 'public', 'articles', 'index.json');
   let articles;
   try {
-    articles = (await import(dataUrl)).ARTICLES;
+    articles = JSON.parse(await readFile(jsonPath, 'utf8'));
   } catch (err) {
-    fail('articles', `执行模块失败（${err.message}）`);
+    fail('articles', `读取 ${jsonPath} 失败（${err.message}）`);
     return 0;
   }
   if (!Array.isArray(articles)) {
@@ -243,8 +247,15 @@ async function checkArticles() {
     if (!LEVELS.has(article?.level)) fail(id, `level 非法：${article?.level}`);
 
     const sentences = Array.isArray(article?.sentences) ? article.sentences : [];
-    if (sentences.length < 6 || sentences.length > 10) {
-      fail(id, `句数 ${sentences.length} 越界（要求 6–10）`);
+    /**
+     * 句数范围放宽到 4–16。
+     * 原先是 6–10，但 Aesop 寓言里有天然只有 4–5 句的超短篇
+     * （《The Viper and the File》《The Goat and the Vine》），
+     * 为了凑句数去拆句或加句是本末倒置 —— 原文本身就是完整的一篇。
+     * 上下限保留，只为拦住明显的空文件或整本书塞一篇的情况。
+     */
+    if (sentences.length < 4 || sentences.length > 16) {
+      fail(id, `句数 ${sentences.length} 越界（要求 4–16）`);
     }
     sentences.forEach((sentence, i) => {
       const en = typeof sentence?.en === 'string' ? sentence.en : '';
@@ -264,11 +275,11 @@ async function checkArticles() {
   }
 
   const ids = articles.map((a) => a?.id);
-  for (const expected of ARTICLE_IDS)
+  for (const expected of MUST_HAVE_ARTICLE_IDS)
     if (!ids.includes(expected)) fail('articles', `缺文章 ${expected}`);
   if (new Set(ids).size !== ids.length) fail('articles', 'id 有重复');
-  if (articles.length !== ARTICLE_IDS.length) {
-    fail('articles', `应为 ${ARTICLE_IDS.length} 篇，实际 ${articles.length}`);
+  if (articles.length < MUST_HAVE_ARTICLE_IDS.length) {
+    fail('articles', `至少应有 ${MUST_HAVE_ARTICLE_IDS.length} 篇，实际 ${articles.length}`);
   }
 
   console.log(`  合计 ${articles.length} 篇 / ${totalSentences} 句`);

@@ -34,17 +34,85 @@ export default function ArticlesPage() {
   );
 }
 
+const LEVELS = ['全部', 'CET-4', 'CET-6', '考研', '雅思'] as const;
+type LevelFilter = (typeof LEVELS)[number];
+
 function ArticleList({ onPick }: { onPick: (a: Article) => void }) {
   const settings = useSettings((s) => s.settings);
+  /**
+   * 文章已到 75 篇，平铺一长串让人无从下手。
+   * 按难度筛选 + 搜索标题，能快速定位。
+   */
+  const [level, setLevel] = useState<LevelFilter>('全部');
+  const [q, setQ] = useState('');
+  const [limit, setLimit] = useState(20);
+
+  const filtered = useMemo(() => {
+    const kw = q.trim().toLowerCase();
+    return ARTICLES.filter((a) => {
+      if (level !== '全部' && a.level !== level) return false;
+      if (!kw) return true;
+      return (
+        a.title.toLowerCase().includes(kw) ||
+        a.titleZh.includes(kw) ||
+        a.author.toLowerCase().includes(kw)
+      );
+    });
+  }, [level, q]);
+
+  const counts = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const a of ARTICLES) m.set(a.level, (m.get(a.level) ?? 0) + 1);
+    return m;
+  }, []);
+
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8">
       <header className="mb-5">
         <h1 className="text-xl font-semibold text-ink">文章练习</h1>
-        <p className="mt-1 text-sm text-muted">逐句跟打或听写，把词汇放进真实语境里记</p>
+        <p className="mt-1 text-sm text-muted">
+          共 {ARTICLES.length} 篇 · 逐句跟打或听写，把词汇放进真实语境里记
+        </p>
       </header>
 
+      {/* 难度筛选 */}
+      <div className="mb-3 flex flex-wrap items-center gap-1.5">
+        {LEVELS.map((lv) => {
+          const active = level === lv;
+          const n = lv === '全部' ? ARTICLES.length : (counts.get(lv) ?? 0);
+          if (lv !== '全部' && n === 0) return null;
+          return (
+            <button
+              key={lv}
+              type="button"
+              onClick={() => {
+                setLevel(lv);
+                setLimit(20);
+              }}
+              className={`rounded-full border px-2.5 py-1 text-[11px] transition-colors ${
+                active
+                  ? 'border-accent bg-accent/10 font-medium text-accent'
+                  : 'border-line text-muted hover:text-ink'
+              }`}
+            >
+              {lv} <span className="opacity-60">{n}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <input
+        value={q}
+        onChange={(e) => {
+          setQ(e.target.value);
+          setLimit(20);
+        }}
+        placeholder="搜索标题或作者…"
+        className="tf-input mb-3 max-w-xs text-sm"
+      />
+
       <div className="grid gap-2">
-        {ARTICLES.map((a) => (
+        {filtered.slice(0, limit).map((a) => (
           <button
             key={a.id}
             type="button"
@@ -72,6 +140,20 @@ function ArticleList({ onPick }: { onPick: (a: Article) => void }) {
           </button>
         ))}
       </div>
+
+      {filtered.length === 0 && (
+        <p className="py-10 text-center text-sm text-muted">没有匹配的文章，换个关键词试试。</p>
+      )}
+
+      {filtered.length > limit && (
+        <button
+          type="button"
+          onClick={() => setLimit((n) => n + 20)}
+          className="tf-btn mt-3 w-full text-xs"
+        >
+          加载更多（还剩 {filtered.length - limit} 篇）
+        </button>
+      )}
 
       <div className="mt-6 rounded-xl border border-line bg-surface px-4 py-3 text-[11px] leading-relaxed text-muted">
         <strong className="text-ink">为什么练文章</strong>：孤立的单词记得快忘得也快。把词放回句子，

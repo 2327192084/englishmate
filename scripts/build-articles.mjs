@@ -48,7 +48,7 @@ const MAX_EN = 140;
  * 「原文哪来、译文谁译、许可如何」，否则将来无法追溯。
  */
 const AESOP_SOURCE =
-  'Aesop, Aesop\'s Fables, trans. V. S. Vernon Jones (1912). ' +
+  "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). " +
   '英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），' +
   '无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。' +
   '原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。';
@@ -104,7 +104,10 @@ function validateArticle(a, seenIds) {
 
   for (const [i, s] of a.sentences.entries()) {
     const at = `${where} 第 ${i + 1} 句`;
-    if (!s?.en?.trim()) { problems.push(`${at} en 为空`); continue; }
+    if (!s?.en?.trim()) {
+      problems.push(`${at} en 为空`);
+      continue;
+    }
     if (!s?.zh?.trim()) problems.push(`${at} zh 为空`);
     if (s.en.length > MAX_EN) problems.push(`${at} en ${s.en.length} 字符（上限 ${MAX_EN}）`);
     // 归一化后必须全是键盘能打出的 ASCII —— src/lib/text.test.ts 会逐条检查
@@ -133,7 +136,9 @@ async function main() {
     articles.push(a);
     seenIds.add(a.id);
   }
-  console.log(`公版经典：${classics.length} 篇 / ${classics.reduce((n, a) => n + a.sentences.length, 0)} 句`);
+  console.log(
+    `公版经典：${classics.length} 篇 / ${classics.reduce((n, a) => n + a.sentences.length, 0)} 句`,
+  );
 
   /* ── 2. Aesop 寓言（人工译文分批） ──────────────────────────────── */
   const batchFiles = existsSync(WORK)
@@ -159,7 +164,9 @@ async function main() {
       articles.push(a);
     }
   }
-  console.log(`新增寓言：${batchFiles.length} 个批次 / ${articles.length - classics.length} 篇 / ${newSentences} 句`);
+  console.log(
+    `新增寓言：${batchFiles.length} 个批次 / ${articles.length - classics.length} 篇 / ${newSentences} 句`,
+  );
 
   /* ── 3. 校验 ─────────────────────────────────────────────────────── */
   for (const a of articles) problems.push(...validateArticle(a, new Set()));
@@ -195,9 +202,12 @@ async function main() {
 
   /* ── 5. 写出 ─────────────────────────────────────────────────────── */
   await mkdir(OUT_DIR, { recursive: true });
-  await writeFile(OUT_FILE, JSON.stringify(articles, null, 2) + '\n', 'utf8');
-  const size = Buffer.byteLength(JSON.stringify(articles));
-  console.log(`\n已写出 ${path.relative(ROOT, OUT_FILE)}（${(size / 1024).toFixed(1)} KB）`);
+  const json = JSON.stringify(articles, null, 2) + '\n';
+  await writeFile(OUT_FILE, json, 'utf8');
+  console.log(
+    `\n已写出 ${path.relative(ROOT, OUT_FILE)}（${articles.length} 篇 / ${totalSentences} 句，` +
+      `${(Buffer.byteLength(json) / 1024).toFixed(1)} KB）`,
+  );
 }
 
 main().catch((err) => {
