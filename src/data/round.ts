@@ -1,0 +1,156 @@
+/**
+ * 出题队列：决定「这一轮练哪些词」。
+ *
+ * 优先级：
+ *   1. 到期复习（FSRS due 已过）—— 最该先做
+ *   2. 错词（在错词本里但还没到期）—— 提前干预
+ *   3. 新词 —— 按每日目标限量
+ *   4. 兜底：随机抽取，保证任何情况下都有词可练
+ */
+import type { UserWord, WordEntry, PracticeMode } from '@/types';
+import { isDue } from '@/lib/fsrs';
+
+export interface RoundPlan {
+  entries: WordEntry[];
+  /** 每个词进入本轮的原因，用于 UI 标注 */
+  reasons: Map<string, 'review' | 'wrong' | 'new' | 'random'>;
+}
+
+export interface BuildRoundOptions {
+  bankId: string;
+  /** 全部词条 */
+  allWords: WordEntry[];
+  /** 已学过的词（key = word 小写） */
+  known: Map<string, UserWord>;
+  /** 本轮词数 */
+  size: number;
+  /** 今日还可学的新词数 */
+  newQuota: number;
+  mode: PracticeMode;
+  /** 随机种子，默认 Math.random；单测可注入 */
+  rng?: () => number;
+  now?: number;
+}
+
+/** 洗牌，Fisher–Yates */
+export function shuffle<T>(arr: T[], rng: () => number = Math.random): T[] {
+  const out = arr.slice();
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+/**
+ * 生成一轮练习计划。
+ *
+ * 关键不变量：返回的 entries 长度 <= size，且同一个词不会重复出现。
+ */
+export function buildRound(opts: BuildRoundOptions): RoundPlan {
+  const { allWords, known, size, newQuota, mode } = opts;
+  const rng = opts.rng ?? Math.random;
+  const now = opts.now ?? Date.now();
+
+  const reasons = new Map<string, 'review' | 'wrong' | 'new' | 'random'>();
+  const picked: WordEntry[] = [];
+
+  // 辨认模式消耗低，给多一点；其余按 size
+  const limit = mode === 'choice' ? Math.ceil(size * 1.5) : size;
+
+  const seen = new Set<string>();
+  const push = (entry: WordEntry, reason: 'review' | 'wrong' | 'new' | 'random') => {
+    const key = entry.w.toLowerCase();
+    if (seen.has(key) || picked.length >= limit) return;
+    seen.add(key);
+    picked.push(entry);
+    reasons.set(key, reason);
+  };
+
+  // 1) 到期复习
+  const due: WordEntry[] = [];
+  const wrong: WordEntry[] = [];
+  for (const entry of allWords) {
+    const uw = known.get(entry.w.toLowerCase());
+    if (!uw) continue;
+    if (uw.mastered) continue;
+    if (isDue(uw.card, now)) {
+      due.push(entry);
+    } else if (uw.mistakes > 0) {
+      wrong.push(entry);
+    }
+  }
+  // 到期越久越靠前
+  due.sort((a, b) => {
+    const ca = known.get(a.w.toLowerCase())!.card.due;
+    const cb = known.get(b.w.toLowerCase())!.card.due;
+    return ca - cb;
+  });
+  for (const e of due) {
+    if (picked.length >= Math.ceil(limit * 0.7)) break;
+    push(e, 'review');
+  }
+
+  // 2) 错词提前干预（错得越多越优先）
+  wrong.sort((a, b) => {
+    const wa = known.get(a.w.toLowerCase())!.mistakes;
+    const wb = known.get(b.w.toLowerCase())!.mistakes;
+    return wb - wa;
+  });
+  for (const e of wrong) {
+    if (picked.length >= limit) break;
+    push(e, 'wrong');
+  }
+
+  // 3) 新词
+  if (newQuota > 0) {
+    const fresh = allWords.filter((e) => !known.has(e.w.toLowerCase()));
+    const ordered = shuffle(fresh, rng);
+    let added = 0;
+    for (const e of ordered) {
+      if (picked.length >= limit) break;
+      if (added >= newQuota) break;
+      const before = picked.length;
+      push(e, 'new');
+      if (picked.length > before) added++;
+    }
+  }
+
+  // 4) 兜底补齐（比如复习都做完了、新词额度也用光了）
+  if (picked.length < Math.min(limit, allWords.length)) {
+    const rest = allWords.filter((e) => !seen.has(e.w.toLowerCase()));
+    for (const e of shuffle(rest, rng)) {
+      if (picked.length >= limit) break;
+      push(e, 'random');
+    }
+  }
+
+  return { entries: picked, reasons };
+}
+
+/** 给辨认模式生成干扰项（同词库内随机取 3 个不同释义） */
+export function buildChoices(
+  correct: WordEntry,
+  pool: WordEntry[],
+  rng: () => number = Math.random,
+): { label: string; correct: boolean }[] {
+  const used = new Set<string>([correct.t]);
+  const distractors: string[] = [];
+  const candidates = shuffle(pool, rng);
+  for (const c of candidates) {
+    if (distractors.length >= 3) break;
+    if (c.w === correct.w) continue;
+    if (used.has(c.t)) continue;
+    // 释义完全一样（同义词/重复）会造成两个正确答案，跳过
+    used.add(c.t);
+    distractors.push(c.t);
+  }
+  const all = shuffle(
+    [
+      { label: correct.t, correct: true },
+      ...distractors.map((d) => ({ label: d, correct: false })),
+    ],
+    rng,
+  );
+  return all;
+}

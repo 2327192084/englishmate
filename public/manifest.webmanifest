@@ -1,0 +1,17 @@
+{
+  "name": "TypeFlow · 打字即学习",
+  "short_name": "TypeFlow",
+  "description": "把背单词、练打字、磨语感合成一件事的开源英语学习应用",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
