@@ -229,21 +229,6 @@ describe('练习流程', () => {
     expect(usePractice.getState().typing.cursor).toBe(1);
   });
 
-  it('Tab 跳过会记为答错', async () => {
-    await startRound();
-    const first = usePractice.getState().current()!.w;
-    const area = screen.getByRole('application');
-
-    await act(async () => {
-      fireEvent.keyDown(area, { key: 'Tab' });
-    });
-
-    const after = usePractice.getState();
-    const log = after.attempts.find((a) => a.word === first);
-    expect(log).toBeDefined();
-    expect(log?.correct).toBe(false);
-  });
-
   it('WPM 与进度在练习中能算出值', async () => {
     await startRound();
     const word = usePractice.getState().current()!.w;

@@ -5,7 +5,6 @@
  *   字母键 → 校验一个字符，错了原地不退格
  *   Space  → 提交并进入下一个词
  *   Backspace → 退一格（错误计数不回退）
- *   Tab    → 跳过当前词（记为答错）
  *   Esc    → 退出练习
  *   自动聚焦，点击空白处自动抢回焦点（但点按钮不要抢）
  */
@@ -128,11 +127,6 @@ export function TypingArea() {
         if (settings.keySound) playKeySound(settings.keyVolume, 'up');
         return;
       }
-      if (k === 'Tab') {
-        e.preventDefault();
-        handleSkip();
-        return;
-      }
       if (k === 'Escape') {
         e.preventDefault();
         if (window.confirm('退出本轮练习？已完成的词会保留记录。')) {
@@ -176,13 +170,6 @@ export function TypingArea() {
       s.next();
       return;
     }
-    s.next();
-    focus();
-  };
-
-  const handleSkip = () => {
-    const s = usePractice.getState();
-    // 标记为错：直接进下一个，next() 会按 isComplete 判定为 incorrect
     s.next();
     focus();
   };
@@ -363,7 +350,6 @@ export function TypingArea() {
         <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-lg border border-line/70 bg-surface2/40 px-3 py-2 text-xs text-muted">
           <Hint keys={['字母']} label="输入" />
           <Hint keys={['Space']} label="下一个" />
-          <Hint keys={['Tab']} label="跳过" />
           <Hint keys={['⌫']} label="退格" />
           <Hint keys={['Esc']} label="退出" />
         </div>
