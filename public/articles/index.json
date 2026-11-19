@@ -1,0 +1,1852 @@
+[
+  {
+    "id": "gettysburg",
+    "title": "The Gettysburg Address",
+    "titleZh": "葛底斯堡演说",
+    "level": "考研",
+    "author": "Abraham Lincoln",
+    "sentences": [
+      {
+        "en": "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty…",
+        "zh": "八十七年前，我们的先辈在这块大陆上建立了一个新的国家，它孕育于自由之中……"
+      },
+      {
+        "en": "…and dedicated to the proposition that all men are created equal.",
+        "zh": "……并致力于这样一项信念：人人生而平等。"
+      },
+      {
+        "en": "Now we are engaged in a great civil war…",
+        "zh": "如今我们正投身于一场伟大的内战……"
+      },
+      {
+        "en": "…testing whether that nation, or any nation so conceived and so dedicated, can long endure.",
+        "zh": "……以检验这个国家，或任何如此孕育、如此奉行的国家，能否长久存续。"
+      },
+      {
+        "en": "We are met on a great battle-field of that war.",
+        "zh": "我们在这场战争的一个伟大战场上相聚。"
+      },
+      {
+        "en": "It is altogether fitting and proper that we should do this.",
+        "zh": "我们这样做，是完全合适而恰当的。"
+      },
+      {
+        "en": "The world will little note, nor long remember what we say here, but it can never forget what they did here.",
+        "zh": "世人不会太留意，也不会长久记住我们在这里说过的话，却永远不会忘记他们在这里做过的事。"
+      },
+      {
+        "en": "…and that government of the people, by the people, for the people, shall not perish from the earth.",
+        "zh": "……而这个民有、民治、民享的政府绝不会从地球上消亡。"
+      }
+    ],
+    "source": "Abraham Lincoln, The Gettysburg Address (1863). 公版作品（美国联邦政府文本，无版权）。节选：原句过长处按分句截断并以省略号标注。"
+  },
+  {
+    "id": "turing",
+    "title": "Computing Machinery and Intelligence",
+    "titleZh": "计算机器与智能",
+    "level": "雅思",
+    "author": "Alan Turing",
+    "sentences": [
+      {
+        "en": "I propose to consider the question, 'Can machines think?'",
+        "zh": "我提议讨论这样一个问题：“机器能思考吗？”"
+      },
+      {
+        "en": "This should begin with definitions of the meaning of the terms 'machine' and 'think'.",
+        "zh": "这应当从界定“机器”和“思考”这两个词的含义开始。"
+      },
+      {
+        "en": "The definitions might be framed so as to reflect so far as possible the normal use of the words…",
+        "zh": "这些定义可以尽量贴近这两个词的日常用法来构造……"
+      },
+      {
+        "en": "…but this attitude is dangerous.",
+        "zh": "……但这样的态度是危险的。"
+      },
+      {
+        "en": "The new form of the problem can be described in terms of a game which we call the 'imitation game'.",
+        "zh": "这个问题的新形式，可以用一种我们称之为“模仿游戏”的游戏来描述。"
+      },
+      {
+        "en": "It is played with three people, a man (A), a woman (B), and an interrogator (C) who may be of either sex.",
+        "zh": "游戏由三个人进行：一名男子（A）、一名女子（B），以及一位性别不限的提问者（C）。"
+      },
+      {
+        "en": "The interrogator stays in a room apart from the other two.",
+        "zh": "提问者待在与另外两人分开的房间里。"
+      },
+      {
+        "en": "The object of the game for the interrogator is to determine which of the other two is the man and which is the woman.",
+        "zh": "提问者的目标是判断另外两人中谁是男子、谁是女子。"
+      }
+    ],
+    "source": "Alan Turing, “Computing Machinery and Intelligence”, Mind, 1950. 公版作品（作者 1954 年去世，著作权保护期已届满）。节选：开篇与模仿游戏设定。"
+  },
+  {
+    "id": "einstein",
+    "title": "The World As I See It",
+    "titleZh": "我的世界观",
+    "level": "雅思",
+    "author": "Albert Einstein",
+    "sentences": [
+      {
+        "en": "What an extraordinary situation is that of us mortals!",
+        "zh": "我们这些凡人所处的境况，是多么奇特啊！"
+      },
+      {
+        "en": "Each of us is here for a brief sojourn; for what purpose he knows not, though he sometimes thinks he feels it.",
+        "zh": "我们每个人来此只是短暂停留；究竟为了什么，他并不知道，尽管他有时自以为感受到了。"
+      },
+      {
+        "en": "Without deeper reflection one knows from daily life that one exists for other people…",
+        "zh": "无需深思，从日常生活中就能明白：人是为别人而存在的……"
+      },
+      {
+        "en": "…first of all for those upon whose smiles and well-being our own happiness is wholly dependent…",
+        "zh": "……首先是为那些人的微笑与幸福而存在，我们自己的幸福完全系于此……"
+      },
+      {
+        "en": "…and then for the many, unknown to us, to whose destinies we are bound by the ties of sympathy.",
+        "zh": "……其次是为那许多素不相识的人，我们因同情的纽带而与他们的命运相连。"
+      },
+      {
+        "en": "A hundred times a day I remind myself that my inner and outer life are based on the labors of other men…",
+        "zh": "每天我都会上百次地提醒自己：我的内在生活与外在生活，都建立在他人——无论在世或已故——的劳动之上……"
+      },
+      {
+        "en": "…living and dead, and that I must exert myself in order to give in the same measure…",
+        "zh": "……以及我必须努力，以便按同样的分量去回报……"
+      },
+      {
+        "en": "…as I have received and am still receiving.",
+        "zh": "……回报我已得到、并仍在得到的那些。"
+      }
+    ],
+    "source": "Albert Einstein, “The World As I See It” (Mein Weltbild, 1934; 英译 Alan Harris). 公版作品。节选：开篇关于人与他人关系的段落，长句按分句截断并以省略号标注。"
+  },
+  {
+    "id": "shakespeare",
+    "title": "Sonnet 18",
+    "titleZh": "十四行诗·第十八首",
+    "level": "考研",
+    "author": "William Shakespeare",
+    "sentences": [
+      {
+        "en": "Shall I compare thee to a summer’s day?",
+        "zh": "我能否把你比作夏日？"
+      },
+      {
+        "en": "Thou art more lovely and more temperate:",
+        "zh": "你比夏日更可爱，也更温和："
+      },
+      {
+        "en": "Rough winds do shake the darling buds of May,",
+        "zh": "狂风会摇落五月娇嫩的花蕾，"
+      },
+      {
+        "en": "And summer’s lease hath all too short a date;",
+        "zh": "而夏天的租期又实在太短促；"
+      },
+      {
+        "en": "Sometime too hot the eye of heaven shines,",
+        "zh": "有时那天上的眼睛照得太热，"
+      },
+      {
+        "en": "And often is his gold complexion dimmed;",
+        "zh": "他金色的面容又常常黯淡；"
+      },
+      {
+        "en": "And every fair from fair sometime declines,",
+        "zh": "一切美好终有凋零之时，"
+      },
+      {
+        "en": "By chance or nature’s changing course untrimmed;",
+        "zh": "或因偶然，或因自然无常的流转；"
+      },
+      {
+        "en": "But thy eternal summer shall not fade,",
+        "zh": "但你那永恒的夏天永远不会褪色，"
+      },
+      {
+        "en": "Nor lose possession of that fair thou ow’st;",
+        "zh": "也不会失去你所拥有的那份美好；"
+      }
+    ],
+    "source": "William Shakespeare, Sonnet 18 (1609). 公版作品。节选第 1–10 行（共 14 行）。拼写按现代通行本（如 dimmed / untrimmed），标点一仍其旧。"
+  },
+  {
+    "id": "jobs",
+    "title": "Stay Hungry, Stay Foolish",
+    "titleZh": "求知若饥，虚心若愚",
+    "level": "CET-4",
+    "author": "Steve Jobs",
+    "sentences": [
+      {
+        "en": "In 2005 Jobs told the Stanford graduating class three stories from his own life.",
+        "zh": "2005 年，乔布斯在斯坦福大学毕业典礼上讲了三个关于他自己人生的故事。"
+      },
+      {
+        "en": "The first story was about trusting that the dots of your life will connect later on.",
+        "zh": "第一个故事讲的是：要相信人生中的那些点，日后自会连成一线。"
+      },
+      {
+        "en": "You cannot connect the dots looking forward; you can only connect them looking backwards.",
+        "zh": "你无法在向前看时把生命中的点连起来，只有在回望时才能把它们连起来。"
+      },
+      {
+        "en": "He then turned to death, saying that facing it had helped him make the big choices in life.",
+        "zh": "接着他谈到死亡，说正视死亡帮助他做出了人生中的重大选择。"
+      },
+      {
+        "en": "Remembering that you are going to die is the best way I know to avoid the trap of thinking you have something to lose.",
+        "zh": "记住自己终将死去，是我所知避免陷入“自己有什么可失去”这一陷阱的最好办法。"
+      },
+      {
+        "en": "Your time is limited, so don't waste it living someone else's life.",
+        "zh": "你的时间有限，所以不要浪费时间去过别人的生活。"
+      },
+      {
+        "en": "Stay hungry, stay foolish.",
+        "zh": "求知若饥，虚心若愚。"
+      }
+    ],
+    "source": "Steve Jobs, Stanford University Commencement Address, 12 June 2005. 公开演讲，非公版。按任务要求：**逐字引用不超过 4 句**（第 3、5、6、7 句），其余（第 1、2、4 句）为准确的自我转述，不复述长段原文。"
+  },
+  {
+    "id": "orwell",
+    "title": "Politics and the English Language",
+    "titleZh": "政治与英语",
+    "level": "考研",
+    "author": "George Orwell",
+    "sentences": [
+      {
+        "en": "Most people who bother with the matter at all would admit that the English language is in a bad way…",
+        "zh": "凡是稍微关心这件事的人，大多会承认英语的状况不妙……"
+      },
+      {
+        "en": "A man may take to drink because he feels himself to be a failure…",
+        "zh": "一个人可能因为觉得自己是个失败者而开始酗酒……"
+      },
+      {
+        "en": "…and then fail all the more completely because he drinks.",
+        "zh": "……然后又因为酗酒而败得更彻底。"
+      },
+      {
+        "en": "It is rather the same thing that is happening to the English language.",
+        "zh": "英语正在发生的情况，与此颇有相似之处。"
+      },
+      {
+        "en": "The point is that the process is reversible.",
+        "zh": "关键在于，这个过程是可以逆转的。"
+      },
+      {
+        "en": "If thought corrupts language, language can also corrupt thought.",
+        "zh": "如果思想败坏语言，语言同样也能败坏思想。"
+      },
+      {
+        "en": "A bad usage can spread by tradition and imitation…",
+        "zh": "错误的用法会经由传统与模仿传播开来……"
+      },
+      {
+        "en": "The great enemy of clear language is insincerity.",
+        "zh": "清晰语言的大敌，是言不由衷。"
+      }
+    ],
+    "source": "George Orwell, “Politics and the English Language” (1946). 公版作品（作者 1950 年去世，著作权保护期已届满）。节选：开篇诊断与结尾论断，长句按分句截断并以省略号标注。"
+  },
+  {
+    "id": "aesop-bat-and-weasels",
+    "title": "The Bat and the Weasels",
+    "titleZh": "蝙蝠与黄鼠狼",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Bat fell to the ground and was caught by a Weasel, and was just going to be killed and eaten when it begged to be let go.",
+        "zh": "一只蝙蝠掉到地上，被黄鼠狼捉住了。眼看就要被弄死吃掉，它哀求放它一条生路。"
+      },
+      {
+        "en": "The Weasel said he couldn't do that because he was an enemy of all birds on principle.",
+        "zh": "黄鼠狼说这不行，因为他天生就是一切鸟类的敌人。"
+      },
+      {
+        "en": "\"Oh, but,\" said the Bat, \"I'm not a bird at all: I'm a mouse.\"",
+        "zh": "“哦，可我不是鸟啊，”蝙蝠说，“我是老鼠。”"
+      },
+      {
+        "en": "\"So you are,\" said the Weasel, \"now I come to look at you\"; and he let it go.",
+        "zh": "“可不是嘛，”黄鼠狼说，“这么一瞧，还真是。”于是把它放了。"
+      },
+      {
+        "en": "Some time after this the Bat was caught in just the same way by another Weasel, and, as before, begged for its life.",
+        "zh": "过了些日子，蝙蝠又以同样的方式被另一只黄鼠狼捉住，它照旧求饶保命。"
+      },
+      {
+        "en": "\"No,\" said the Weasel, \"I never let a mouse go by any chance.\"",
+        "zh": "“不行，”黄鼠狼说，“我从不放过任何一只老鼠。”"
+      },
+      {
+        "en": "\"But I'm not a mouse,\" said the Bat; \"I'm a bird.\"",
+        "zh": "“可我不是老鼠，”蝙蝠说，“我是鸟。”"
+      },
+      {
+        "en": "\"Why, so you are,\" said the Weasel; and he too let the Bat go.",
+        "zh": "“咦，还真是。”黄鼠狼说着，也把蝙蝠放了。"
+      },
+      {
+        "en": "Look and see which way the wind blows before you commit yourself.",
+        "zh": "先看清风向，再决定自己站哪一边。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-dog-cock-and-fox",
+    "title": "The Dog, the Cock, and the Fox",
+    "titleZh": "狗、公鸡与狐狸",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Dog and a Cock became great friends, and agreed to travel together.",
+        "zh": "一条狗和一只公鸡成了好朋友，说好一起出门远行。"
+      },
+      {
+        "en": "At nightfall the Cock flew up into the branches of a tree to roost, while the Dog curled himself up inside the trunk, which was hollow.",
+        "zh": "天黑时，公鸡飞上树枝栖息，狗就蜷在空心的树干里。"
+      },
+      {
+        "en": "At break of day the Cock woke up and crew, as usual.",
+        "zh": "天一亮，公鸡醒来，照例打起鸣来。"
+      },
+      {
+        "en": "A Fox heard, and, wishing to make a breakfast of him, came and stood under the tree and begged him to come down.",
+        "zh": "一只狐狸听见了，想拿它当早饭，便走到树下，请公鸡下来。"
+      },
+      {
+        "en": "\"I should so like,\" said he, \"to make the acquaintance of one who has such a beautiful voice.\"",
+        "zh": "狐狸说：“嗓子这么好的人，我真想结识一下。”"
+      },
+      {
+        "en": "The Cock replied, \"Would you just wake my porter who sleeps at the foot of the tree?",
+        "zh": "公鸡答道：“那你能不能先叫醒睡在树根那儿的门房？"
+      },
+      {
+        "en": "He'll open the door and let you in.\"",
+        "zh": "他会开门让你进来的。”"
+      },
+      {
+        "en": "The Fox accordingly rapped on the trunk, when out rushed the Dog and tore him in pieces.",
+        "zh": "狐狸便去敲树干，狗猛地冲出来，把它撕成了碎片。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-crab-and-mother",
+    "title": "The Crab and His Mother",
+    "titleZh": "螃蟹母子",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "An Old Crab said to her son, \"Why do you walk sideways like that, my son?",
+        "zh": "老螃蟹对儿子说：“孩子，你怎么老是横着走？"
+      },
+      {
+        "en": "You ought to walk straight.\"",
+        "zh": "你该直着走才对。”"
+      },
+      {
+        "en": "The Young Crab replied, \"Show me how, dear mother, and I'll follow your example.\"",
+        "zh": "小螃蟹答道：“妈妈，您走给我看看，我照着学。”"
+      },
+      {
+        "en": "The Old Crab tried, but tried in vain, and then saw how foolish she had been to find fault with her child.",
+        "zh": "老螃蟹试了又试，怎么也走不直，这才明白自己挑孩子的毛病是多么可笑。"
+      },
+      {
+        "en": "Example is better than precept.",
+        "zh": "身教胜于言传。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-two-pots",
+    "title": "The Two Pots",
+    "titleZh": "两只罐子",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "Two Pots, one of earthenware and the other of brass, were carried away down a river in flood.",
+        "zh": "一只陶罐和一只铜罐，被洪水冲下了河。"
+      },
+      {
+        "en": "The Brazen Pot urged his companion to keep close by his side, and he would protect him.",
+        "zh": "铜罐劝同伴紧挨着自己走，说这样能护着它。"
+      },
+      {
+        "en": "The other thanked him, but begged him not to come near him on any account: \"For that,\" he said, \"is just what I am most afraid of.",
+        "zh": "陶罐谢过它，却求它千万别靠近：“因为，”它说，“我最怕的正是这个。"
+      },
+      {
+        "en": "One touch from you and I should be broken in pieces.\"",
+        "zh": "你只要碰我一下，我就碎了。”"
+      },
+      {
+        "en": "Equals make the best friends.",
+        "zh": "势均力敌，才做得成好伙伴。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-grasshopper-and-ants",
+    "title": "The Grasshopper and the Ants",
+    "titleZh": "蚱蜢与蚂蚁",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "One fine day in winter some Ants were busy drying their store of corn, which had got rather damp during a long spell of rain.",
+        "zh": "冬天的一个晴日，几只蚂蚁正忙着晾晒存粮——那场下了很久的雨把谷子浸得有些潮了。"
+      },
+      {
+        "en": "Presently up came a Grasshopper and begged them to spare her a few grains, \"For,\" she said, \"I'm simply starving.\"",
+        "zh": "不一会儿，一只蚱蜢过来，求它们分几粒谷子给它：“我实在是饿坏了。”"
+      },
+      {
+        "en": "The Ants stopped work for a moment, though this was against their principles.",
+        "zh": "蚂蚁们停下手里的活——虽然这有违它们一贯的做法。"
+      },
+      {
+        "en": "\"May we ask,\" said they, \"what you were doing with yourself all last summer?",
+        "zh": "它们问：“能问问吗，去年整个夏天你都在做什么？"
+      },
+      {
+        "en": "Why didn't you collect a store of food for the winter?\"",
+        "zh": "怎么不攒点过冬的粮食呢？”"
+      },
+      {
+        "en": "\"The fact is,\" replied the Grasshopper, \"I was so busy singing that I hadn't the time.\"",
+        "zh": "蚱蜢答道：“实话说，我忙着唱歌，没工夫。”"
+      },
+      {
+        "en": "\"If you spent the summer singing,\" replied the Ants, \"you can't do better than spend the winter dancing.\"",
+        "zh": "蚂蚁们说：“夏天既然用来唱歌，那冬天跳舞就再合适不过了。”"
+      },
+      {
+        "en": "And they chuckled and went on with their work.",
+        "zh": "说完，它们笑了笑，接着干活。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-hound-and-fox",
+    "title": "The Hound and the Fox",
+    "titleZh": "猎犬与狐狸",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Hound, roaming in the forest, spied a lion, and being well used to lesser game, gave chase, thinking he would make a fine quarry.",
+        "zh": "一条猎犬在林子里游荡，望见一头狮子。它追惯了小家伙，便撵了上去，只当是碰上了好猎物。"
+      },
+      {
+        "en": "Presently the lion perceived that he was being pursued; so, stopping short, he rounded on his pursuer and gave a loud roar.",
+        "zh": "狮子很快察觉有东西在追它，猛地停住，转身对着追兵大吼一声。"
+      },
+      {
+        "en": "The Hound immediately turned tail and fled.",
+        "zh": "猎犬立刻掉头就跑。"
+      },
+      {
+        "en": "A Fox, seeing him running away, jeered at him and said, \"Ho! ho!",
+        "zh": "一只狐狸见它逃得狼狈，嘲笑说：“哟哟！"
+      },
+      {
+        "en": "There goes the coward who chased a lion and ran away the moment he roared!\"",
+        "zh": "这就是那位追狮子的好汉啊——狮子一吼，掉头就跑！”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-wolf-and-horse",
+    "title": "The Wolf and the Horse",
+    "titleZh": "狼与马",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Wolf on his rambles came to a field of oats, but, not being able to eat them, he was passing on his way when a Horse came along.",
+        "zh": "一只狼闲逛到一片燕麦地。它吃不了燕麦，正要走开，一匹马过来了。"
+      },
+      {
+        "en": "\"Look,\" said the Wolf, \"here's a fine field of oats.",
+        "zh": "“瞧，”狼说，“多好的一片燕麦。"
+      },
+      {
+        "en": "For your sake I have left it untouched, and I shall greatly enjoy the sound of your teeth munching the ripe grain.\"",
+        "zh": "我是看你的面子才没动它。我倒是很想听听你嚼这熟谷子的声响。”"
+      },
+      {
+        "en": "But the Horse replied, \"If wolves could eat oats, my fine friend, you would hardly have indulged your ears at the cost of your belly.\"",
+        "zh": "马答道：“好朋友，狼要是能吃燕麦，你就不会为了饱耳福而饿肚子了。”"
+      },
+      {
+        "en": "There is no virtue in giving to others what is useless to oneself.",
+        "zh": "把自己用不上的东西送给别人，算不上什么美德。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-frogs-against-sun",
+    "title": "The Frogs' Complaint Against the Sun",
+    "titleZh": "青蛙对太阳的抱怨",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "Once upon a time the Sun was about to take to himself a wife.",
+        "zh": "从前，太阳打算娶妻。"
+      },
+      {
+        "en": "The Frogs in terror all raised their voices to the skies, and Jupiter, disturbed by the noise, asked them what they were croaking about.",
+        "zh": "青蛙们吓坏了，齐声向天叫喊。朱庇特被吵得不得安宁，问它们究竟在呱呱叫什么。"
+      },
+      {
+        "en": "They replied, \"The Sun is bad enough even while he is single, drying up our marshes with his heat as he does.",
+        "zh": "它们答道：“太阳一个人就已经够受了，他这么一晒，把我们的沼泽都晒干了。"
+      },
+      {
+        "en": "But what will become of us if he marries and begets other Suns?\"",
+        "zh": "要是他娶了妻、又生出许多太阳来，我们可怎么活？”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-hare-and-hound",
+    "title": "The Hare and the Hound",
+    "titleZh": "野兔与猎犬",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Hound started a Hare from her form, and pursued her for some distance; but as she gradually gained upon him, he gave up the chase.",
+        "zh": "一条猎犬把一只野兔从窝里轰了出来，追了一程；可野兔渐渐拉开了距离，它便放弃了。"
+      },
+      {
+        "en": "A rustic who had seen the race met the Hound as he was returning, and taunted him with his defeat.",
+        "zh": "一个瞧见这场追逐的乡下人，在猎犬往回走时遇上了它，便拿它的败绩打趣。"
+      },
+      {
+        "en": "\"The little one was too much for you,\" said he.",
+        "zh": "他说：“这么个小东西，你都奈何不了。”"
+      },
+      {
+        "en": "\"Ah, well,\" said the Hound, \"don't forget it's one thing to be running for your dinner, but quite another to be running for your life.\"",
+        "zh": "“唉，”猎犬说，“别忘了，为了一顿饭而跑是一回事，为了活命而跑是另一回事。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-stag-and-lion",
+    "title": "The Stag and the Lion",
+    "titleZh": "雄鹿与狮子",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Stag was chased by the hounds, and took refuge in a cave, where he hoped to be safe from his pursuers.",
+        "zh": "一头雄鹿被猎犬追赶，躲进一个山洞，指望在那里能避开追兵。"
+      },
+      {
+        "en": "Unfortunately the cave contained a Lion, to whom he fell an easy prey.",
+        "zh": "不巧洞里有一头狮子，它轻易就成了狮子的口中食。"
+      },
+      {
+        "en": "\"Unhappy that I am,\" he cried, \"I am saved from the power of the dogs only to fall into the clutches of a Lion.\"",
+        "zh": "它叫道：“我好苦命！刚逃出狗的爪牙，又落进了狮子的掌心。”"
+      },
+      {
+        "en": "Out of the frying-pan into the fire.",
+        "zh": "才出煎锅，又入火坑。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-goose-golden-eggs",
+    "title": "The Goose That Laid the Golden Eggs",
+    "titleZh": "下金蛋的鹅",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Man and his Wife had the good fortune to possess a Goose which laid a Golden Egg every day.",
+        "zh": "有对夫妇运气好，养了一只每天下一个金蛋的鹅。"
+      },
+      {
+        "en": "Lucky though they were, they soon began to think they were not getting rich fast enough, and, imagining the bird must be made of gold …",
+        "zh": "他们虽算走运，却很快嫌发财太慢，又猜想这鹅肚子里准是一整块金子……"
+      },
+      {
+        "en": "… inside, they decided to kill it in order to secure the whole store of precious metal at once.",
+        "zh": "……于是一刀把鹅杀了，想一次把那些贵金属全拿到手。"
+      },
+      {
+        "en": "But when they cut it open they found it was just like any other goose.",
+        "zh": "可剖开一看，这鹅跟别的鹅没什么两样。"
+      },
+      {
+        "en": "Thus, they neither got rich all at once, as they had hoped, nor enjoyed any longer the daily addition to their wealth.",
+        "zh": "结果，他们既没能像盼望的那样一下子暴富，也再没有每天进项了。"
+      },
+      {
+        "en": "Much wants more and loses all.",
+        "zh": "贪多反失。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-mischievous-dog",
+    "title": "The Mischievous Dog",
+    "titleZh": "爱捣乱的狗",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "There was once a Dog who used to snap at people and bite them without any provocation …",
+        "zh": "从前有条狗，没人招惹它，它也动不动就扑上去咬人……"
+      },
+      {
+        "en": "… and who was a great nuisance to every one who came to his master's house.",
+        "zh": "……凡是到主人家里来的人，都被它搅得不得安宁。"
+      },
+      {
+        "en": "So his master fastened a bell round his neck to warn people of his presence.",
+        "zh": "于是主人在它脖子上系了个铃铛，好让人事先知道它来了。"
+      },
+      {
+        "en": "The Dog was very proud of the bell, and strutted about tinkling it with immense satisfaction.",
+        "zh": "这狗却把铃铛当成了体面，走起路来趾高气扬，一路叮当作响，得意得很。"
+      },
+      {
+        "en": "But an old dog came up to him and said, \"The fewer airs you give yourself the better, my friend.",
+        "zh": "有条老狗走过来对它说：“朋友，你少摆点架子为好。"
+      },
+      {
+        "en": "You don't think, do you, that your bell was given you as a reward of merit?",
+        "zh": "你总不会以为，这铃铛是赏你的功劳吧？"
+      },
+      {
+        "en": "On the contrary, it is a badge of disgrace.\"",
+        "zh": "恰恰相反，那是块耻辱的标记。”"
+      },
+      {
+        "en": "Notoriety is often mistaken for fame.",
+        "zh": "臭名常被误当美名。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-fox-and-crow",
+    "title": "The Fox and the Crow",
+    "titleZh": "狐狸与乌鸦",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Crow was sitting on a branch of a tree with a piece of cheese in her beak when a Fox observed her and set his wits to work to discover …",
+        "zh": "一只乌鸦衔着一块奶酪停在树枝上，被一只狐狸看见了。狐狸便动起脑筋，想找出……"
+      },
+      {
+        "en": "… some way of getting the cheese.",
+        "zh": "……弄到那块奶酪的法子。"
+      },
+      {
+        "en": "Coming and standing under the tree he looked up and said, \"What a noble bird I see above me!",
+        "zh": "它走到树下站定，抬头道：“我头顶上这只鸟，可真高贵！"
+      },
+      {
+        "en": "Her beauty is without equal, the hue of her plumage exquisite.",
+        "zh": "论美貌无人能比，这一身羽色更是精美。"
+      },
+      {
+        "en": "If only her voice is as sweet as her looks are fair, she ought without doubt to be Queen of the Birds.\"",
+        "zh": "只要她的嗓音也像模样一样动人，那无疑就该做鸟中之王了。”"
+      },
+      {
+        "en": "The Crow was hugely flattered by this, and just to show the Fox that she could sing she gave a loud caw.",
+        "zh": "乌鸦被夸得飘飘然，为了向狐狸证明自己能唱，就大声“嘎”了一声。"
+      },
+      {
+        "en": "Down came the cheese, of course, and the Fox, snatching it up, said, \"You have a voice, madam, I see: what you want is wits.\"",
+        "zh": "奶酪自然就掉了下来。狐狸一口叼起，说：“夫人，我看出来了，您有嗓子，缺的是脑子。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-cat-and-birds",
+    "title": "The Cat and the Birds",
+    "titleZh": "猫与鸟",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Cat heard that the Birds in an aviary were ailing.",
+        "zh": "一只猫听说鸟舍里的鸟都病了。"
+      },
+      {
+        "en": "So he got himself up as a doctor, and, taking with him a set of the instruments proper to his profession, presented himself at the door …",
+        "zh": "它便打扮成医生的样子，带上这套行当该有的一套器具，来到鸟舍门口……"
+      },
+      {
+        "en": "… and inquired after the health of the Birds.",
+        "zh": "……问候起鸟儿们的病情。"
+      },
+      {
+        "en": "\"We shall do very well,\" they replied, without letting him in, \"when we've seen the last of you.\"",
+        "zh": "“我们好得很，”鸟儿们没让它进门，答道，“等你走远了就好。”"
+      },
+      {
+        "en": "A villain may disguise himself, but he will not deceive the wise.",
+        "zh": "恶人可以乔装，却骗不过明白人。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-wolf-in-sheeps-clothing",
+    "title": "The Wolf in Sheep's Clothing",
+    "titleZh": "披着羊皮的狼",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Wolf resolved to disguise himself in order that he might prey upon a flock of sheep without fear of detection.",
+        "zh": "一只狼打定主意要乔装一番，好去祸害羊群而不被察觉。"
+      },
+      {
+        "en": "So he clothed himself in a sheepskin, and slipped among the sheep when they were out at pasture.",
+        "zh": "它披上一张羊皮，趁羊群在外放牧时混了进去。"
+      },
+      {
+        "en": "He completely deceived the shepherd, and when the flock was penned for the night he was shut in with the rest.",
+        "zh": "它把牧人骗得死死的，晚上羊群入圈时，它也跟着一起被关了进去。"
+      },
+      {
+        "en": "But that very night as it happened, the shepherd, requiring a supply of mutton for the table, laid hands on the Wolf in mistake for a …",
+        "zh": "可就在那天夜里，牧人要做菜，需要一只羊，错手抓起了这只狼……"
+      },
+      {
+        "en": "… Sheep, and killed him with his knife on the spot.",
+        "zh": "……当成羊，当场一刀把它宰了。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-fir-tree-and-bramble",
+    "title": "The Fir-Tree and the Bramble",
+    "titleZh": "枞树与荆棘",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Fir-tree was boasting to a Bramble, and said, somewhat contemptuously, \"You poor creature, you are of no use whatever.",
+        "zh": "一棵枞树向荆棘夸口，语气里颇有些不屑：“你这可怜东西，一点用处都没有。"
+      },
+      {
+        "en": "Now, look at me: I am useful for all sorts of things, particularly when men build houses; they can't do without me then.\"",
+        "zh": "你看看我：我样样都用得上，尤其是人盖房的时候，离了我就没法动工。”"
+      },
+      {
+        "en": "But the Bramble replied, \"Ah, that's all very well …",
+        "zh": "荆棘却答道：“啊，这话说得倒好听……"
+      },
+      {
+        "en": "… but you wait till they come with axes and saws to cut you down, and then you'll wish you were a Bramble and not a Fir.\"",
+        "zh": "……可你等着吧，等他们拎着斧子锯子来砍你的时候，你就宁愿自己是荆棘，不是枞树了。”"
+      },
+      {
+        "en": "Better poverty without a care than wealth with its many obligations.",
+        "zh": "无牵无挂的穷，胜过拖累缠身的富。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-gnat-and-bull",
+    "title": "The Gnat and the Bull",
+    "titleZh": "蚋与公牛",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Gnat alighted on one of the horns of a Bull, and remained sitting there for a considerable time.",
+        "zh": "一只蚋落在公牛的角上，在那儿待了好一阵子。"
+      },
+      {
+        "en": "When it had rested sufficiently and was about to fly away, it said to the Bull, \"Do you mind if I go now?\"",
+        "zh": "等歇够了要走的时候，它问公牛：“我现在走，你不介意吧？”"
+      },
+      {
+        "en": "The Bull merely raised his eyes and remarked, without interest, \"It's all one to me …",
+        "zh": "公牛只是抬了抬眼皮，淡淡地说：“对我来说都一样……"
+      },
+      {
+        "en": "… I didn't notice when you came, and I shan't know when you go away.\"",
+        "zh": "……你来的时候我没留意，你走的时候我也不会知道。”"
+      },
+      {
+        "en": "We may often be of more consequence in our own eyes than in the eyes of our neighbours.",
+        "zh": "我们常常把自己看得比在别人眼中重要得多。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-lamp",
+    "title": "The Lamp",
+    "titleZh": "油灯",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Lamp, well filled with oil, burned with a clear and steady light …",
+        "zh": "一盏油灯灌得满满的，烧出一团清亮而稳定的光……"
+      },
+      {
+        "en": "… and began to swell with pride and boast that it shone more brightly than the sun himself.",
+        "zh": "……它便渐渐得意起来，夸口说自己比太阳还亮。"
+      },
+      {
+        "en": "Just then a puff of wind came and blew it out.",
+        "zh": "就在这时，一阵风吹来，把它吹灭了。"
+      },
+      {
+        "en": "Some one struck a match and lit it again, and said, \"You just keep alight, and never mind the sun.",
+        "zh": "有人划了根火柴重新点亮它，说：“你只管亮着就好，别去管太阳。"
+      },
+      {
+        "en": "Why, even the stars never need to be relit as you had to be just now.\"",
+        "zh": "人家星星可从来不用像你刚才那样，还得再点一次。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-ass-in-lions-skin",
+    "title": "The Ass in the Lion's Skin",
+    "titleZh": "披狮皮的驴",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "An Ass found a Lion's Skin, and dressed himself up in it.",
+        "zh": "一头驴捡到一张狮皮，就披在了身上。"
+      },
+      {
+        "en": "Then he went about frightening every one he met, for they all took him to be a lion, men and beasts alike …",
+        "zh": "然后它四处走动，见谁吓谁——人和兽都把它当成了狮子……"
+      },
+      {
+        "en": "… and took to their heels when they saw him coming.",
+        "zh": "……一看见它过来就撒腿跑。"
+      },
+      {
+        "en": "Elated by the success of his trick, he loudly brayed in triumph.",
+        "zh": "这招得逞，驴得意忘形，扯着嗓子大叫起来。"
+      },
+      {
+        "en": "The Fox heard him, and recognised him at once for the Ass he was, and said to him, \"Oho, my friend, it's you, is it?",
+        "zh": "狐狸听见了，立刻认出它是头驴，便说：“哦哟，朋友，原来是你呀？"
+      },
+      {
+        "en": "I, too, should have been afraid if I hadn't heard your voice.\"",
+        "zh": "要不是听见你这嗓子，我本来也会怕的。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-boy-bathing",
+    "title": "The Boy Bathing",
+    "titleZh": "洗澡的男孩",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Boy was bathing in a river and got out of his depth, and was in great danger of being drowned.",
+        "zh": "一个男孩在河里洗澡，不知不觉到了深处，眼看就要淹死。"
+      },
+      {
+        "en": "A man who was passing along a road heard his cries for help …",
+        "zh": "有人从路上经过，听见他呼救……"
+      },
+      {
+        "en": "… and went to the riverside and began to scold him for being so careless as to get into deep water, but made no attempt to help him.",
+        "zh": "……便走到岸边，责备他太不小心，居然走到深水里去，却一点也没有要救他的意思。"
+      },
+      {
+        "en": "\"Oh, sir,\" cried the Boy, \"please help me first and scold me afterwards.\"",
+        "zh": "“哎，先生，”男孩喊道，“求您先救我，再骂我吧。”"
+      },
+      {
+        "en": "Give assistance, not advice, in a crisis.",
+        "zh": "危急关头要的是搭把手，不是讲道理。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-quack-frog",
+    "title": "The Quack Frog",
+    "titleZh": "招摇撞骗的青蛙",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "Once upon a time a Frog came forth from his home in the marshes and proclaimed to all the world that he was a learned physician, skilled …",
+        "zh": "从前，一只青蛙从沼泽里的家出来，向世人宣称自己是个博学的医生，精通……"
+      },
+      {
+        "en": "… in drugs and able to cure all diseases.",
+        "zh": "……药理，什么病都能治好。"
+      },
+      {
+        "en": "Among the crowd was a Fox, who called out, \"You a doctor!",
+        "zh": "人群里有只狐狸，高声说：“你，当医生！"
+      },
+      {
+        "en": "Why, how can you set up to heal others when you cannot even cure your own lame legs and blotched and wrinkled skin?\"",
+        "zh": "你自己那两条瘸腿、那一身斑斑驳驳的皱皮都治不好，怎么还张罗着给别人治病？”"
+      },
+      {
+        "en": "Physician, heal thyself.",
+        "zh": "医生，先治治你自己吧。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-oxen-and-axletrees",
+    "title": "The Oxen and the Axletrees",
+    "titleZh": "牛与车轴",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A pair of Oxen were drawing a heavily loaded waggon along the highway, and, as they tugged and strained at the yoke, the Axletrees …",
+        "zh": "两头牛拉着满载的大车走在路上。它们使劲拽着轭，车轴却……"
+      },
+      {
+        "en": "… creaked and groaned terribly.",
+        "zh": "……吱吱呀呀叫得厉害。"
+      },
+      {
+        "en": "This was too much for the Oxen, who turned round indignantly and said, \"Hullo, you there!",
+        "zh": "牛实在忍不住了，气愤地回过头说：“喂，你们这些家伙！"
+      },
+      {
+        "en": "Why do you make such a noise when we do all the work?\"",
+        "zh": "活都是我们干的，你们叫唤什么？”"
+      },
+      {
+        "en": "They complain most who suffer least.",
+        "zh": "叫得最响的，往往是吃苦最少的。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-man-and-lion",
+    "title": "The Man and the Lion",
+    "titleZh": "人与狮子",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Man and a Lion were companions on a journey, and in the course of conversation they began to boast about their prowess …",
+        "zh": "一个人和一头狮子结伴同行，聊着聊着，就各自夸起自己的本事来……"
+      },
+      {
+        "en": "… and each claimed to be superior to the other in strength and courage.",
+        "zh": "……都说自己在力气和胆量上胜过对方。"
+      },
+      {
+        "en": "They were still arguing with some heat when they came to a cross-road where there was a statue of a Man strangling a Lion.",
+        "zh": "两人正争得面红耳赤，走到一个路口，那里立着一座人掐死狮子的雕像。"
+      },
+      {
+        "en": "\"There!\" said the Man triumphantly, \"look at that!",
+        "zh": "“瞧！”人得意地说，“看见没有！"
+      },
+      {
+        "en": "Doesn't that prove to you that we are stronger than you?\"",
+        "zh": "这还不说明我们比你们强吗？”"
+      },
+      {
+        "en": "\"Not so fast, my friend,\" said the Lion: \"that is only your view of the case.",
+        "zh": "“别急，朋友，”狮子说，“那不过是你们那边的说法。"
+      },
+      {
+        "en": "If we Lions could make statues, you may be sure that in most of them you would see the Man underneath.\"",
+        "zh": "要是我们狮子会雕像，你准会看到，多半的像底下躺着的都是人。”"
+      },
+      {
+        "en": "There are two sides to every question.",
+        "zh": "凡事都有两面。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-wild-boar-and-fox",
+    "title": "The Wild Boar and the Fox",
+    "titleZh": "野猪与狐狸",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Wild Boar was engaged in whetting his tusks upon the trunk of a tree in the forest when a Fox came by and, seeing what he was at, said …",
+        "zh": "一头野猪正在林子里对着树干磨牙。一只狐狸走过来，看见它这样，便说……"
+      },
+      {
+        "en": "… to him, \"Why are you doing that, pray?",
+        "zh": "……“请问，你这是做什么？"
+      },
+      {
+        "en": "The huntsmen are not out to-day, and there are no other dangers at hand that I can see.\"",
+        "zh": "猎人今天没出来，我也看不出眼下有什么危险。”"
+      },
+      {
+        "en": "\"True, my friend,\" replied the Boar, \"but the instant my life is in danger I shall need to use my tusks.",
+        "zh": "“不错，朋友，”野猪答道，“可一旦性命有危险，我就得用上这牙了。"
+      },
+      {
+        "en": "There'll be no time to sharpen them then.\"",
+        "zh": "到那时候，可就没工夫磨了。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-man-and-image",
+    "title": "The Man and the Image",
+    "titleZh": "人与神像",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A poor Man had a wooden Image of a god, to which he used to pray daily for riches.",
+        "zh": "有个穷人供着一尊木雕神像，天天求它赐财。"
+      },
+      {
+        "en": "He did this for a long time, but remained as poor as ever, till one day he caught up the Image in disgust and hurled it with all his …",
+        "zh": "求了很久，他依旧穷得和从前一样。有一天他实在厌烦了，抓起神像，用尽全力……"
+      },
+      {
+        "en": "… strength against the wall.",
+        "zh": "……朝墙上砸去。"
+      },
+      {
+        "en": "The force of the blow split open the head and a quantity of gold coins fell out upon the floor.",
+        "zh": "这一下砸得神像的脑袋裂开，一大堆金币掉到了地上。"
+      },
+      {
+        "en": "The Man gathered them up greedily, and said, \"O you old fraud, you!",
+        "zh": "那人贪婪地把金币捡起来，说：“哼，你这老骗子！"
+      },
+      {
+        "en": "When I honoured you, you did me no good whatever: but no sooner do I treat you to insults and violence than you make a rich man of me!\"",
+        "zh": "我敬着你的时候，你一点好处也不给我；我这才对你又打又骂，你倒让我发了财！”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-image-seller",
+    "title": "The Image-Seller",
+    "titleZh": "卖神像的人",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A certain man made a wooden Image of Mercury, and exposed it for sale in the market.",
+        "zh": "有个人做了一尊墨丘利的木像，摆到市场上出卖。"
+      },
+      {
+        "en": "As no one offered to buy it, however, he thought he would try to attract a purchaser by proclaiming the virtues of the Image.",
+        "zh": "可是没人肯买。他便想出一招：把这神像的好处大肆宣扬，好招徕买主。"
+      },
+      {
+        "en": "So he cried up and down the market, \"A god for sale! a god for sale!",
+        "zh": "于是他在市场里来回吆喝：“卖神啦！卖神啦！"
+      },
+      {
+        "en": "One who'll bring you luck and keep you lucky!\"",
+        "zh": "这神能给你带来好运，还能保你一直走运！”"
+      },
+      {
+        "en": "Presently one of the bystanders stopped him and said, \"If your god is all you make him out to be, how is it you don't keep him and make …",
+        "zh": "有个旁观者叫住他，说：“你这神要真像你说的那么好，你怎么不自己留着……"
+      },
+      {
+        "en": "… the most of him yourself?\"",
+        "zh": "……好好受用呢？”"
+      },
+      {
+        "en": "\"I'll tell you why,\" replied he; \"he brings gain, it is true, but he takes his time about it; whereas I want money at once.\"",
+        "zh": "他答道：“告诉你为什么吧：它确实能带来好处，可它慢得很；我要的是现钱。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-eagle-and-arrow",
+    "title": "The Eagle and the Arrow",
+    "titleZh": "鹰与箭",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "An Eagle sat perched on a lofty rock, keeping a sharp look-out for prey.",
+        "zh": "一只鹰停在髙岩上，锐利地搜寻着猎物。"
+      },
+      {
+        "en": "A huntsman, concealed in a cleft of the mountain and on the watch for game, spied him there and shot an Arrow at him.",
+        "zh": "一个猎人藏在山缝里等着猎物，瞧见了它，便朝它射了一箭。"
+      },
+      {
+        "en": "The shaft struck him full in the breast and pierced him through and through.",
+        "zh": "这一箭正中心口，把它射了个对穿。"
+      },
+      {
+        "en": "As he lay in the agonies of death, he turned his eyes upon the Arrow.",
+        "zh": "它痛苦地躺在那儿等死，眼睛却望向那支箭。"
+      },
+      {
+        "en": "\"Ah! cruel fate!\" he cried, \"that I should perish thus …",
+        "zh": "“啊！好狠的命！”它叫道，“我竟这样死去……"
+      },
+      {
+        "en": "… but oh! fate more cruel still, that the Arrow which kills me should be winged with an Eagle's feathers!\"",
+        "zh": "……可哎！命更狠的是，要了我命的这支箭，箭尾上插的竟是鹰的羽毛！”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-lioness-and-vixen",
+    "title": "The Lioness and the Vixen",
+    "titleZh": "母狮与母狐",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Lioness and a Vixen were talking together about their young, as mothers will, and saying how healthy and well-grown they were …",
+        "zh": "母狮和母狐凑在一起，像做母亲的那样聊起各自的孩子，说它们多健壮、长得多好……"
+      },
+      {
+        "en": "… and what beautiful coats they had, and how they were the image of their parents.",
+        "zh": "……毛色多漂亮，活脱脱就是父母的翻版。"
+      },
+      {
+        "en": "\"My litter of cubs is a joy to see,\" said the Fox; and then she added, rather maliciously, \"But I notice you never have more than one.\"",
+        "zh": "“我一窝小崽，看着就叫人高兴，”狐狸说；接着又带几分恶意地补了一句，“不过我留意到，你从来只生一个。”"
+      },
+      {
+        "en": "\"No,\" said the Lioness grimly, \"but that one's a lion.\"",
+        "zh": "“是啊，”母狮冷冷地说，“可那一个是狮子。”"
+      },
+      {
+        "en": "Quality, not quantity.",
+        "zh": "贵在质，不在量。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-viper-and-file",
+    "title": "The Viper and the File",
+    "titleZh": "蝰蛇与锉刀",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Viper entered a carpenter's shop, and went from one to another of the tools, begging for something to eat.",
+        "zh": "一条蝰蛇爬进木匠铺，挨个向里面的工具讨吃的。"
+      },
+      {
+        "en": "Among the rest, he addressed himself to the File, and asked for the favour of a meal.",
+        "zh": "轮到锉刀时，它开口请求赏它一顿饭。"
+      },
+      {
+        "en": "The File replied in a tone of pitying contempt, \"What a simpleton you must be if you imagine you will get anything from me …",
+        "zh": "锉刀带着几分怜悯的轻蔑答道：“你要是以为能从我这儿得到什么，那可真是傻透了……"
+      },
+      {
+        "en": "… who invariably take from every one and never give anything in return.\"",
+        "zh": "……我向来只从别人身上取，从不回报什么。”"
+      },
+      {
+        "en": "The covetous are poor givers.",
+        "zh": "贪得的人，给不出什么。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-horse-and-rider",
+    "title": "The Horse and His Rider",
+    "titleZh": "马与骑手",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Young Man, who fancied himself something of a horseman, mounted a Horse which had not been properly broken in …",
+        "zh": "有个年轻人自以为算个骑手，骑上了一匹还没调教好的马……"
+      },
+      {
+        "en": "… and was exceedingly difficult to control.",
+        "zh": "……那马极难驾驭。"
+      },
+      {
+        "en": "No sooner did the Horse feel his weight in the saddle than he bolted, and nothing would stop him.",
+        "zh": "马一感到鞍上有了重量，撒开蹄子就跑，什么都拦不住。"
+      },
+      {
+        "en": "A friend of the Rider's met him in the road in his headlong career, and called out, \"Where are you off to in such a hurry?\"",
+        "zh": "骑手的一个朋友在路上撞见他这般狂奔，喊道：“你这么急急忙忙，是要去哪儿？”"
+      },
+      {
+        "en": "To which he, pointing to the Horse, replied, \"I've no idea: ask him.\"",
+        "zh": "他指着那匹马答道：“我哪知道，你问它。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-goat-and-vine",
+    "title": "The Goat and the Vine",
+    "titleZh": "山羊与葡萄藤",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Goat was straying in a vineyard, and began to browse on the tender shoots of a Vine which bore several fine bunches of grapes.",
+        "zh": "一只山羊在葡萄园里游荡，啃起一株葡萄藤的嫩芽——那藤上还挂着好几串好葡萄。"
+      },
+      {
+        "en": "\"What have I done to you,\" said the Vine, \"that you should harm me thus?",
+        "zh": "“我哪里得罪你了，”葡萄藤说，“你要这样糟蹋我？"
+      },
+      {
+        "en": "Isn't there grass enough for you to feed on?",
+        "zh": "难道就没有足够的草给你吃吗？"
+      },
+      {
+        "en": "All the same, even if you eat up every leaf I have …",
+        "zh": "话虽如此，就算你把我叶子吃个精光……"
+      },
+      {
+        "en": "… and leave me quite bare, I shall produce wine enough to pour over you when you are led to the altar to be sacrificed.\"",
+        "zh": "……把我啃得光秃秃的，我也照样能酿出酒来，足够在你被牵上祭坛宰掉时浇在你身上。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-hound-and-hare",
+    "title": "The Hound and the Hare",
+    "titleZh": "猎犬与野兔",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A young Hound started a Hare, and, when he caught her up, would at one moment snap at her with his teeth as though he were about to kill …",
+        "zh": "一条小猎犬把一只野兔赶了出来，追上时就张嘴咬它，像是要弄死它……"
+      },
+      {
+        "en": "… her, while at another he would let go his hold and frisk about her, as if he were playing with another dog.",
+        "zh": "……可一会儿又松开嘴，围着它撒欢，像是跟另一条狗在玩耍。"
+      },
+      {
+        "en": "At last the Hare said, \"I wish you would show yourself in your true colours!",
+        "zh": "野兔终于说：“你能不能露出真面目来！"
+      },
+      {
+        "en": "If you are my friend, why do you bite me?",
+        "zh": "你要是我的朋友，为什么咬我？"
+      },
+      {
+        "en": "If you are my enemy, why do you play with me?\"",
+        "zh": "你要是我的敌人，为什么又跟我玩？”"
+      },
+      {
+        "en": "He is no friend who plays double.",
+        "zh": "两面三刀的，不是朋友。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-wolf-and-crane",
+    "title": "The Wolf and the Crane",
+    "titleZh": "狼与鹤",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Wolf once got a bone stuck in his throat.",
+        "zh": "有一次，一根骨头卡在了狼的喉咙里。"
+      },
+      {
+        "en": "So he went to a Crane and begged her to put her long bill down his throat and pull it out.",
+        "zh": "它便去找一只鹤，求她把长嘴伸进自己喉咙里把骨头叼出来。"
+      },
+      {
+        "en": "\"I'll make it worth your while,\" he added.",
+        "zh": "它还补了一句：“我不会让你白干的。”"
+      },
+      {
+        "en": "The Crane did as she was asked, and got the bone out quite easily.",
+        "zh": "鹤照办了，很轻松就把骨头取了出来。"
+      },
+      {
+        "en": "The Wolf thanked her warmly, and was just turning away, when she cried, \"What about that fee of mine?\"",
+        "zh": "狼热络地道了谢，正要转身走开，鹤叫道：“我那份酬劳呢？”"
+      },
+      {
+        "en": "\"Well, what about it?\" snapped the Wolf, baring his teeth as he spoke …",
+        "zh": "“什么酬劳？”狼龇着牙恶声说……"
+      },
+      {
+        "en": "… \"you can go about boasting that you once put your head into a Wolf's mouth and didn't get it bitten off.",
+        "zh": "……“你大可以到处去炫耀：你曾把脑袋伸进狼嘴里，还完好无损地拿了出来。"
+      },
+      {
+        "en": "What more do you want?\"",
+        "zh": "你还想要什么？”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-three-tradesmen",
+    "title": "The Three Tradesmen",
+    "titleZh": "三个匠人",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "The citizens of a certain city were debating about the best material to use in the fortifications which were about to be erected for the …",
+        "zh": "某城的市民正在争论：即将修筑的防御工事，用什么材料最好……"
+      },
+      {
+        "en": "… greater security of the town.",
+        "zh": "……好让城防更牢固。"
+      },
+      {
+        "en": "A Carpenter got up and advised the use of wood, which he said was readily procurable and easily worked.",
+        "zh": "一个木匠站起来，主张用木头，说木料好弄，加工也方便。"
+      },
+      {
+        "en": "A Stone-mason objected to wood on the ground that it was so inflammable, and recommended stones instead.",
+        "zh": "一个石匠反对用木头，理由是木头太容易着火，建议改用石头。"
+      },
+      {
+        "en": "Then a Tanner got on his legs and said, \"In my opinion there's nothing like leather.\"",
+        "zh": "接着一个皮匠站起身来，说：“依我看，什么也比不上皮革。”"
+      },
+      {
+        "en": "Every man for himself.",
+        "zh": "人人只为自己打算。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-eagle-and-cocks",
+    "title": "The Eagle and the Cocks",
+    "titleZh": "鹰与两只公鸡",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "There were two Cocks in the same farmyard, and they fought to decide who should be master.",
+        "zh": "同一个农家院子里有两只公鸡，它们打了一架，要决出谁来做主。"
+      },
+      {
+        "en": "When the fight was over, the beaten one went and hid himself in a dark corner …",
+        "zh": "斗完，输了的那只躲进一个暗角里……"
+      },
+      {
+        "en": "… while the victor flew up on to the roof of the stables and crowed lustily.",
+        "zh": "……赢了的那只则飞上马棚顶，起劲地打起鸣来。"
+      },
+      {
+        "en": "But an Eagle espied him from high up in the sky, and swooped down and carried him off.",
+        "zh": "可一只鹰从高空望见了它，俯冲下来把它抓走了。"
+      },
+      {
+        "en": "Forthwith the other Cock came out of his corner and ruled the roost without a rival.",
+        "zh": "另一只公鸡立刻从角落里出来，从此独霸这个院子，再没对手。"
+      },
+      {
+        "en": "Pride comes before a fall.",
+        "zh": "骄兵必败。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-fly-and-mule",
+    "title": "The Fly and the Draught-Mule",
+    "titleZh": "苍蝇与拉车的骡子",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Fly sat on one of the shafts of a cart and said to the Mule who was pulling it, \"How slow you are!",
+        "zh": "一只苍蝇停在车辕上，对拉车的骡子说：“你走得真慢！"
+      },
+      {
+        "en": "Do mend your pace, or I shall have to use my sting as a goad.\"",
+        "zh": "快些走，不然我只好把这根刺当鞭子用了。”"
+      },
+      {
+        "en": "The Mule was not in the least disturbed.",
+        "zh": "骡子一点儿也没被它唬住。"
+      },
+      {
+        "en": "\"Behind me, in the cart,\" said he, \"sits my master.",
+        "zh": "“我身后这车上，”它说，“坐着我的主人。"
+      },
+      {
+        "en": "He holds the reins, and flicks me with his whip, and him I obey …",
+        "zh": "他握着缰绳，用鞭子抽我，我听他的……"
+      },
+      {
+        "en": "… but I don't want any of your impertinence. I know when I may dawdle and when I may not.\"",
+        "zh": "……可轮不到你来放肆。什么时候能磨蹭、什么时候不能，我自己清楚。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-charger-and-miller",
+    "title": "The Charger and the Miller",
+    "titleZh": "战马与磨坊主",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Horse, who had been used to carry his rider into battle, felt himself growing old and chose to work in a mill instead.",
+        "zh": "一匹马惯于驮着主人上阵，后来自觉老了，便改去磨坊干活。"
+      },
+      {
+        "en": "He now no longer found himself stepping out proudly to the beating of the drums …",
+        "zh": "如今它再不能踏着鼓点昂首阔步……"
+      },
+      {
+        "en": "… but was compelled to slave away all day grinding the corn.",
+        "zh": "……而是被迫整日像牛马一样拉着磨碾谷子。"
+      },
+      {
+        "en": "Bewailing his hard lot, he said one day to the Miller, \"Ah me!",
+        "zh": "有一天它向磨坊主叹起自己的苦命：“哎！"
+      },
+      {
+        "en": "I was once a splendid war-horse, gaily caparisoned, and attended by a groom whose sole duty was to see to my wants.",
+        "zh": "我当年是多神气的战马，披着华丽的鞍辔，有专人侍候，那人唯一的差事就是照料我。"
+      },
+      {
+        "en": "How different is my present condition!",
+        "zh": "如今这光景，真是天差地别！"
+      },
+      {
+        "en": "I wish I had never given up the battlefield for the mill.\"",
+        "zh": "我真希望自己从没拿战场换过这座磨坊。”"
+      },
+      {
+        "en": "The Miller replied with asperity, \"It's no use your regretting the past.",
+        "zh": "磨坊主没好气地答道：“后悔过去有什么用。"
+      },
+      {
+        "en": "Fortune has many ups and downs: you must just take them as they come.\"",
+        "zh": "运气本来就有起有落，来了什么，你就得受着什么。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-sick-man-and-doctor",
+    "title": "The Sick Man and the Doctor",
+    "titleZh": "病人与医生",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Sick Man received a visit from his Doctor, who asked him how he was.",
+        "zh": "一个病人有医生来看他，医生问他感觉如何。"
+      },
+      {
+        "en": "\"Fairly well, Doctor,\" said he, \"but I find I sweat a great deal.\"",
+        "zh": "“还好，大夫，”他说，“就是我发现自己出汗出得厉害。”"
+      },
+      {
+        "en": "\"Ah,\" said the Doctor, \"that's a good sign.\"",
+        "zh": "“啊，”医生说，“那是好兆头。”"
+      },
+      {
+        "en": "On his next visit he asked the same question, and his patient replied, \"I'm much as usual …",
+        "zh": "下一次来，医生又问了一遍，病人答道：“跟平常差不多……"
+      },
+      {
+        "en": "… but I've taken to having shivering fits, which leave me cold all over.\"",
+        "zh": "……只是近来常打寒战，一阵下来浑身冰凉。”"
+      },
+      {
+        "en": "\"Ah,\" said the Doctor, \"that's a good sign too.\"",
+        "zh": "“啊，”医生说，“这也是好兆头。”"
+      },
+      {
+        "en": "When he came the third time and inquired as before about his patient's health, the Sick Man said that he felt very feverish.",
+        "zh": "第三次来，他照旧询问病情，病人说自己烧得厉害。"
+      },
+      {
+        "en": "\"A very good sign,\" said the Doctor; \"you are doing very nicely indeed.\"",
+        "zh": "“很好的兆头，”医生说，“你恢复得确实不错。”"
+      },
+      {
+        "en": "Afterwards a friend came to see the invalid, and on asking him how he did, received this reply: \"My dear friend, I'm dying of good signs.\"",
+        "zh": "后来有位朋友来探望，问他怎么样，得到的回答是：“好朋友，我是被一堆好兆头给拖死的。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-lion-and-hare",
+    "title": "The Lion and the Hare",
+    "titleZh": "狮子与野兔",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Lion found a Hare sleeping in her form, and was just going to devour her when he caught sight of a passing stag.",
+        "zh": "一头狮子发现一只野兔在窝里睡觉，正要吃掉它，瞥见一头雄鹿走过。"
+      },
+      {
+        "en": "Dropping the Hare, he at once made for the bigger game …",
+        "zh": "它丢下野兔，立刻去追那更大的猎物……"
+      },
+      {
+        "en": "… but finding, after a long chase, that he could not overtake the stag, he abandoned the attempt and came back for the Hare.",
+        "zh": "……可追了许久，发现赶不上雄鹿，只好放弃，回头再去找那只野兔。"
+      },
+      {
+        "en": "When he reached the spot, however, he found she was nowhere to be seen, and he had to go without his dinner.",
+        "zh": "然而到了那地方，野兔早已不见踪影，它只好空着肚子。"
+      },
+      {
+        "en": "\"It serves me right,\" he said; \"I should have been content with what I had got, instead of hankering after a better prize.\"",
+        "zh": "“这是我自找的，”它说，“我本该守着已经到手的东西，何必还惦记着更好的。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-wolves-and-dogs",
+    "title": "The Wolves and the Dogs",
+    "titleZh": "狼与狗",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "Once upon a time the Wolves said to the Dogs, \"Why should we continue to be enemies any longer?",
+        "zh": "从前，狼对狗说：“我们何必还继续做仇敌？"
+      },
+      {
+        "en": "You are very like us in most ways: the main difference between us is one of training only.",
+        "zh": "你们在多数方面都跟我们很像，彼此最大的差别只在于所受的调教。"
+      },
+      {
+        "en": "We live a life of freedom; but you are enslaved to mankind, who beat you, and put heavy collars round your necks …",
+        "zh": "我们活得自由，你们却给人做奴隶：人打你们，把沉重的项圈套在你们脖子上……"
+      },
+      {
+        "en": "… and compel you to keep watch over their flocks and herds for them, and, to crown all, they give you nothing but bones to eat.",
+        "zh": "……还逼你们替他们看守牛羊；最可气的是，他们只丢骨头给你们啃。"
+      },
+      {
+        "en": "Don't put up with it any longer, but hand over the flocks to us, and we will all live on the fat of the land and feast together.\"",
+        "zh": "别再忍了，把羊群交给我们，咱们一起过好日子、一同享用。”"
+      },
+      {
+        "en": "The Dogs allowed themselves to be persuaded by these words, and accompanied the Wolves into their den.",
+        "zh": "狗被这番话劝动了，跟着狼进了它们的窝。"
+      },
+      {
+        "en": "But no sooner were they well inside than the Wolves set upon them and tore them to pieces.",
+        "zh": "可它们刚一进去，狼就扑上来，把它们撕成了碎片。"
+      },
+      {
+        "en": "Traitors richly deserve their fate.",
+        "zh": "背叛者的下场，一点不冤。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-trees-and-axe",
+    "title": "The Trees and the Axe",
+    "titleZh": "树与斧头",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Woodman went into the forest and begged of the Trees the favour of a handle for his Axe.",
+        "zh": "一个樵夫走进林子，求树们给他一截做斧柄的木料。"
+      },
+      {
+        "en": "The principal Trees at once agreed to so modest a request …",
+        "zh": "那些大树见要求不过分，立刻就答应了……"
+      },
+      {
+        "en": "… and unhesitatingly gave him a young ash sapling, out of which he fashioned the handle he desired.",
+        "zh": "……毫不犹豫地给了他一株小梣树苗，他就用它做出了想要的斧柄。"
+      },
+      {
+        "en": "No sooner had he done so than he set to work to fell the noblest Trees in the wood.",
+        "zh": "斧柄一装好，他立刻动手砍林子里最雄伟的那些树。"
+      },
+      {
+        "en": "When they saw the use to which he was putting their gift, they cried, \"Alas! alas!",
+        "zh": "树们见自己送出的东西被这样用，叫道：“唉！唉！"
+      },
+      {
+        "en": "We are undone, but we are ourselves to blame.",
+        "zh": "我们完了，可这只能怪自己。"
+      },
+      {
+        "en": "The little we gave has cost us all: had we not sacrificed the rights of the ash, we might ourselves have stood for ages.\"",
+        "zh": "我们让出那么一点，却赔上了全部：当初要不是牺牲了梣树的权利，我们本可以再立上几百年。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-ass-and-dog",
+    "title": "The Ass and the Dog",
+    "titleZh": "驴与狗",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "An Ass and a Dog were on their travels together, and, as they went along, they found a sealed packet lying on the ground.",
+        "zh": "一头驴和一条狗结伴出门，走着走着，在地上捡到一个封了口的纸包。"
+      },
+      {
+        "en": "The Ass picked it up, broke the seal, and found it contained some writing, which he proceeded to read out aloud to the Dog.",
+        "zh": "驴把它捡起来，拆开封口，见里面是些文字，便大声念给狗听。"
+      },
+      {
+        "en": "As he read on it turned out to be all about grass and barley and hay--in short, all the kinds of fodder that Asses are fond of.",
+        "zh": "念下去才知道，通篇讲的都是草、大麦和干草——总之，全是驴爱吃的饲料。"
+      },
+      {
+        "en": "The Dog was a good deal bored with listening to all this, till at last his impatience got the better of him …",
+        "zh": "狗听得十分腻烦，最后实在忍不住了……"
+      },
+      {
+        "en": "… and he cried, \"Just skip a few pages, friend, and see if there isn't something about meat and bones.\"",
+        "zh": "……叫道：“朋友，跳几页，看看有没有讲肉和骨头的。”"
+      },
+      {
+        "en": "The Ass glanced all through the packet, but found nothing of the sort, and said so.",
+        "zh": "驴把整包翻了一遍，没找到这类内容，就照实说了。"
+      },
+      {
+        "en": "Then the Dog said in disgust, \"Oh, throw it away, do: what's the good of a thing like that?\"",
+        "zh": "狗便厌恶地说：“嗨，扔了吧，这种东西有什么用？”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-goatherd-and-goat",
+    "title": "The Goatherd and the Goat",
+    "titleZh": "牧羊人与山羊",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Goatherd was one day gathering his flock to return to the fold, when one of his goats strayed and refused to join the rest.",
+        "zh": "一天，牧羊人正把羊群拢起来赶回圈里，有一只山羊却走散了，怎么也不肯归队。"
+      },
+      {
+        "en": "He tried for a long time to get her to return by calling and whistling to her, but the Goat took no notice of him at all …",
+        "zh": "他又是喊又是吹口哨，试了很久想把它叫回来，那山羊却理都不理……"
+      },
+      {
+        "en": "… so at last he threw a stone at her and broke one of her horns.",
+        "zh": "……他最后扔了块石头过去，打断了它一只角。"
+      },
+      {
+        "en": "In dismay, he begged her not to tell his master: but she replied, \"You silly fellow, my horn would cry aloud even if I held my tongue.\"",
+        "zh": "他慌了，求它别告诉主人；山羊却答道：“你这傻瓜，就算我不作声，我那只角也会喊出来的。”"
+      },
+      {
+        "en": "It's no use trying to hide what can't be hidden.",
+        "zh": "藏不住的事，想遮也遮不住。"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-ploughman-ass-and-ox",
+    "title": "The Ploughman, the Ass, and the Ox",
+    "titleZh": "农夫、驴与牛",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Ploughman yoked his Ox and his Ass together, and set to work to plough his field.",
+        "zh": "一个农夫把牛和驴套在一副轭上，下地耕起田来。"
+      },
+      {
+        "en": "It was a poor makeshift of a team, but it was the best he could do, as he had but a single Ox.",
+        "zh": "这一对搭得实在勉强，可他只有一头牛，也只能这样凑合。"
+      },
+      {
+        "en": "At the end of the day, when the beasts were loosed from the yoke, the Ass said to the Ox, \"Well, we've had a hard day …",
+        "zh": "一天下来，卸了轭，驴对牛说：“咱们今天可累坏了……"
+      },
+      {
+        "en": "… which of us is to carry the master home?\"",
+        "zh": "……回去的时候，咱们俩谁驮主人？”"
+      },
+      {
+        "en": "The Ox looked surprised at the question.",
+        "zh": "牛听了这话，一脸诧异。"
+      },
+      {
+        "en": "\"Why,\" said he, \"you, to be sure, as usual.\"",
+        "zh": "“这还用问，”它说，“当然是你，一直都是你。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-wolf-and-his-shadow",
+    "title": "The Wolf and His Shadow",
+    "titleZh": "狼与自己的影子",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Wolf, who was roaming about on the plain when the sun was getting low in the sky, was much impressed by the size of his shadow …",
+        "zh": "太阳西沉时，一只狼在平原上闲荡，被自己影子的个头给镇住了……"
+      },
+      {
+        "en": "… and said to himself, \"I had no idea I was so big.",
+        "zh": "……它自言自语：“原来我这么大，我从前竟不知道。"
+      },
+      {
+        "en": "Fancy my being afraid of a lion!",
+        "zh": "想想看，我居然还怕狮子！"
+      },
+      {
+        "en": "Why, I, not he, ought to be King of the beasts\"; and, heedless of danger, he strutted about as if there could be no doubt at all about it.",
+        "zh": "该做百兽之王的是我，不是它。”它全不把危险放在心上，大摇大摆地走着，仿佛这事已毫无疑问。"
+      },
+      {
+        "en": "Just then a lion sprang upon him and began to devour him.",
+        "zh": "就在这时，一头狮子扑上来，开始撕咬它。"
+      },
+      {
+        "en": "\"Alas,\" he cried, \"had I not lost sight of the facts, I shouldn't have been ruined by my fancies.\"",
+        "zh": "“唉，”它叫道，“我要不是忘了实情，也不会被自己的幻想毁了。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-old-man-and-death",
+    "title": "The Old Man and Death",
+    "titleZh": "老人与死神",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "An Old Man cut himself a bundle of faggots in a wood and started to carry them home.",
+        "zh": "一个老人在林子里砍了一捆柴，背着往家走。"
+      },
+      {
+        "en": "He had a long way to go, and was tired out before he had got much more than half-way.",
+        "zh": "路还远，他走了不到一半就累垮了。"
+      },
+      {
+        "en": "Casting his burden on the ground, he called upon Death to come and release him from his life of toil.",
+        "zh": "他把柴往地上一撂，呼唤死神快来，把他从这劳碌的生涯里解脱出去。"
+      },
+      {
+        "en": "The words were scarcely out of his mouth when, much to his dismay, Death stood before him and professed his readiness to serve him.",
+        "zh": "话刚出口，死神就站到了他面前，说自己随时可以听候差遣。老人吓得不轻。"
+      },
+      {
+        "en": "He was almost frightened out of his wits, but he had enough presence of mind to stammer out, \"Good sir, if you'd be so kind, pray help me …",
+        "zh": "他几乎吓掉了魂，好在还稳得住，结结巴巴地说：“好先生，要是您肯帮忙，就请……"
+      },
+      {
+        "en": "… up with my burden again.\"",
+        "zh": "……帮我把这担柴再架上肩吧。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  },
+  {
+    "id": "aesop-fox-and-bramble",
+    "title": "The Fox and the Bramble",
+    "titleZh": "狐狸与荆棘",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "In making his way through a hedge a Fox missed his footing and caught at a Bramble to save himself from falling.",
+        "zh": "一只狐狸穿过树篱时脚下一滑，急忙抓住一丛荆棘，免得摔下去。"
+      },
+      {
+        "en": "Naturally, he got badly scratched, and in disgust he cried to the Bramble, \"It was your help I wanted, and see how you have treated me!",
+        "zh": "它自然被划得皮破血流，气恼地向荆棘叫道：“我是想让你帮一把，你看看你是怎么待我的！"
+      },
+      {
+        "en": "I'd sooner have fallen outright.\"",
+        "zh": "我还不如干脆摔下去。”"
+      },
+      {
+        "en": "The Bramble, interrupting him, replied, \"You must have lost your wits, my friend, to catch at me …",
+        "zh": "荆棘打断它说：“朋友，你准是昏了头，才来抓我……"
+      },
+      {
+        "en": "… who am myself always catching at others.\"",
+        "zh": "……我自己向来就是抓着别人不放的。”"
+      }
+    ],
+    "source": "Aesop, Aesop's Fables, trans. V. S. Vernon Jones (1912). 英文原文为公版作品（Project Gutenberg eBook #11339，https://www.gutenberg.org/ebooks/11339），无版权限制；中文译文由本项目人工翻译，采用与仓库一致的 MIT 许可。原文过长处按分句截断并以省略号（…）标注，前后两半拼接即原句，不增删任何词。"
+  }
+]

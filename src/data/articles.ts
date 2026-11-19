@@ -1,292 +1,31 @@
 /**
  * 文章语料 —— 中英对照，逐句跟打 / 听写用。
  *
+ * 数据放在 `public/articles/index.json`，由 `scripts/build-articles.mjs` 生成。
+ * 这里只做类型断言与导出，页面代码从 `@/data/articles` 取 `ARTICLES`，无需改动。
+ *
+ * 为什么用 JSON 而不是继续硬编码在这里：
+ *   - 文章已经到 50+ 篇、几千行 TS 字面量，维护和 diff 都很痛；
+ *   - 语料与代码分离后，加文章只需重跑构建脚本，不碰源码；
+ *   - 构建期脚本负责校验（长度、字符、字段、id 唯一），错误在提交前就暴露。
+ *
  * 选文原则：
- *  1. 只用**公版**（public domain）作品，或已作自我转述的公开演讲；
+ *  1. 只用**公版**（public domain）作品，译文由本项目人工翻译；
  *  2. 英文尽量保留原文措辞与标点，便于读者逐句核对；
  *  3. 遇到过长的原句，在自然分句处截断，并用省略号 `…` 明确标出：
  *     - 句末 `…` 表示后文被略去；
  *     - 句首 `…` 表示承接上一句的被略部分。
  *     两半拼起来即为原句全文，不增删任何词。
- *  4. 每句 `en` 控制在 120 字符以内 —— 长句逐字符跟打体验太差。
+ *  4. 每句 `en` 控制在 140 字符以内 —— 长句逐字符跟打体验太差。
  *
  * 难度标签（level）取 "CET-4" / "CET-6" / "考研" / "雅思" 之一。
+ *
+ * 语料来源与许可：见 docs/article-sources.md。
  */
 
 import type { Article } from '@/types';
+// public/ 下的静态资源同时可被 Vite 当模块解析；构建产物会把它内联进 bundle，
+// 因此运行时不依赖 http 请求，桌面版（file://）下也能正常工作。
+import data from '../../public/articles/index.json';
 
-export const ARTICLES: Article[] = [
-  /* ------------------------------------------------------------------ */
-  {
-    id: 'gettysburg',
-    title: 'The Gettysburg Address',
-    titleZh: '葛底斯堡演说',
-    level: '考研',
-    author: 'Abraham Lincoln',
-    sentences: [
-      {
-        en: 'Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty…',
-        zh: '八十七年前，我们的先辈在这块大陆上建立了一个新的国家，它孕育于自由之中……',
-      },
-      {
-        en: '…and dedicated to the proposition that all men are created equal.',
-        zh: '……并致力于这样一项信念：人人生而平等。',
-      },
-      {
-        en: 'Now we are engaged in a great civil war…',
-        zh: '如今我们正投身于一场伟大的内战……',
-      },
-      {
-        en: '…testing whether that nation, or any nation so conceived and so dedicated, can long endure.',
-        zh: '……以检验这个国家，或任何如此孕育、如此奉行的国家，能否长久存续。',
-      },
-      {
-        en: 'We are met on a great battle-field of that war.',
-        zh: '我们在这场战争的一个伟大战场上相聚。',
-      },
-      {
-        en: 'It is altogether fitting and proper that we should do this.',
-        zh: '我们这样做，是完全合适而恰当的。',
-      },
-      {
-        en: 'The world will little note, nor long remember what we say here, but it can never forget what they did here.',
-        zh: '世人不会太留意，也不会长久记住我们在这里说过的话，却永远不会忘记他们在这里做过的事。',
-      },
-      {
-        en: '…and that government of the people, by the people, for the people, shall not perish from the earth.',
-        zh: '……而这个民有、民治、民享的政府绝不会从地球上消亡。',
-      },
-    ],
-    source:
-      'Abraham Lincoln, The Gettysburg Address (1863). 公版作品（美国联邦政府文本，无版权）。节选：原句过长处按分句截断并以省略号标注。',
-  },
-
-  /* ------------------------------------------------------------------ */
-  {
-    id: 'turing',
-    title: 'Computing Machinery and Intelligence',
-    titleZh: '计算机器与智能',
-    level: '雅思',
-    author: 'Alan Turing',
-    sentences: [
-      {
-        en: "I propose to consider the question, 'Can machines think?'",
-        zh: '我提议讨论这样一个问题：“机器能思考吗？”',
-      },
-      {
-        en: "This should begin with definitions of the meaning of the terms 'machine' and 'think'.",
-        zh: '这应当从界定“机器”和“思考”这两个词的含义开始。',
-      },
-      {
-        en: 'The definitions might be framed so as to reflect so far as possible the normal use of the words…',
-        zh: '这些定义可以尽量贴近这两个词的日常用法来构造……',
-      },
-      {
-        en: '…but this attitude is dangerous.',
-        zh: '……但这样的态度是危险的。',
-      },
-      {
-        en: "The new form of the problem can be described in terms of a game which we call the 'imitation game'.",
-        zh: '这个问题的新形式，可以用一种我们称之为“模仿游戏”的游戏来描述。',
-      },
-      {
-        en: 'It is played with three people, a man (A), a woman (B), and an interrogator (C) who may be of either sex.',
-        zh: '游戏由三个人进行：一名男子（A）、一名女子（B），以及一位性别不限的提问者（C）。',
-      },
-      {
-        en: 'The interrogator stays in a room apart from the other two.',
-        zh: '提问者待在与另外两人分开的房间里。',
-      },
-      {
-        en: 'The object of the game for the interrogator is to determine which of the other two is the man and which is the woman.',
-        zh: '提问者的目标是判断另外两人中谁是男子、谁是女子。',
-      },
-    ],
-    source:
-      'Alan Turing, “Computing Machinery and Intelligence”, Mind, 1950. 公版作品（作者 1954 年去世，著作权保护期已届满）。节选：开篇与模仿游戏设定。',
-  },
-
-  /* ------------------------------------------------------------------ */
-  {
-    id: 'einstein',
-    title: 'The World As I See It',
-    titleZh: '我的世界观',
-    level: '雅思',
-    author: 'Albert Einstein',
-    sentences: [
-      {
-        en: 'What an extraordinary situation is that of us mortals!',
-        zh: '我们这些凡人所处的境况，是多么奇特啊！',
-      },
-      {
-        en: 'Each of us is here for a brief sojourn; for what purpose he knows not, though he sometimes thinks he feels it.',
-        zh: '我们每个人来此只是短暂停留；究竟为了什么，他并不知道，尽管他有时自以为感受到了。',
-      },
-      {
-        en: 'Without deeper reflection one knows from daily life that one exists for other people…',
-        zh: '无需深思，从日常生活中就能明白：人是为别人而存在的……',
-      },
-      {
-        en: '…first of all for those upon whose smiles and well-being our own happiness is wholly dependent…',
-        zh: '……首先是为那些人的微笑与幸福而存在，我们自己的幸福完全系于此……',
-      },
-      {
-        en: '…and then for the many, unknown to us, to whose destinies we are bound by the ties of sympathy.',
-        zh: '……其次是为那许多素不相识的人，我们因同情的纽带而与他们的命运相连。',
-      },
-      {
-        en: 'A hundred times a day I remind myself that my inner and outer life are based on the labors of other men…',
-        zh: '每天我都会上百次地提醒自己：我的内在生活与外在生活，都建立在他人——无论在世或已故——的劳动之上……',
-      },
-      {
-        en: '…living and dead, and that I must exert myself in order to give in the same measure…',
-        zh: '……以及我必须努力，以便按同样的分量去回报……',
-      },
-      {
-        en: '…as I have received and am still receiving.',
-        zh: '……回报我已得到、并仍在得到的那些。',
-      },
-    ],
-    source:
-      'Albert Einstein, “The World As I See It” (Mein Weltbild, 1934; 英译 Alan Harris). 公版作品。节选：开篇关于人与他人关系的段落，长句按分句截断并以省略号标注。',
-  },
-
-  /* ------------------------------------------------------------------ */
-  {
-    id: 'shakespeare',
-    title: 'Sonnet 18',
-    titleZh: '十四行诗·第十八首',
-    level: '考研',
-    author: 'William Shakespeare',
-    sentences: [
-      {
-        en: 'Shall I compare thee to a summer’s day?',
-        zh: '我能否把你比作夏日？',
-      },
-      {
-        en: 'Thou art more lovely and more temperate:',
-        zh: '你比夏日更可爱，也更温和：',
-      },
-      {
-        en: 'Rough winds do shake the darling buds of May,',
-        zh: '狂风会摇落五月娇嫩的花蕾，',
-      },
-      {
-        en: 'And summer’s lease hath all too short a date;',
-        zh: '而夏天的租期又实在太短促；',
-      },
-      {
-        en: 'Sometime too hot the eye of heaven shines,',
-        zh: '有时那天上的眼睛照得太热，',
-      },
-      {
-        en: 'And often is his gold complexion dimmed;',
-        zh: '他金色的面容又常常黯淡；',
-      },
-      {
-        en: 'And every fair from fair sometime declines,',
-        zh: '一切美好终有凋零之时，',
-      },
-      {
-        en: 'By chance or nature’s changing course untrimmed;',
-        zh: '或因偶然，或因自然无常的流转；',
-      },
-      {
-        en: 'But thy eternal summer shall not fade,',
-        zh: '但你那永恒的夏天永远不会褪色，',
-      },
-      {
-        en: 'Nor lose possession of that fair thou ow’st;',
-        zh: '也不会失去你所拥有的那份美好；',
-      },
-    ],
-    source:
-      'William Shakespeare, Sonnet 18 (1609). 公版作品。节选第 1–10 行（共 14 行）。拼写按现代通行本（如 dimmed / untrimmed），标点一仍其旧。',
-  },
-
-  /* ------------------------------------------------------------------ */
-  {
-    id: 'jobs',
-    title: 'Stay Hungry, Stay Foolish',
-    titleZh: '求知若饥，虚心若愚',
-    level: 'CET-4',
-    author: 'Steve Jobs',
-    sentences: [
-      {
-        en: 'In 2005 Jobs told the Stanford graduating class three stories from his own life.',
-        zh: '2005 年，乔布斯在斯坦福大学毕业典礼上讲了三个关于他自己人生的故事。',
-      },
-      {
-        en: 'The first story was about trusting that the dots of your life will connect later on.',
-        zh: '第一个故事讲的是：要相信人生中的那些点，日后自会连成一线。',
-      },
-      {
-        en: 'You cannot connect the dots looking forward; you can only connect them looking backwards.',
-        zh: '你无法在向前看时把生命中的点连起来，只有在回望时才能把它们连起来。',
-      },
-      {
-        en: 'He then turned to death, saying that facing it had helped him make the big choices in life.',
-        zh: '接着他谈到死亡，说正视死亡帮助他做出了人生中的重大选择。',
-      },
-      {
-        en: 'Remembering that you are going to die is the best way I know to avoid the trap of thinking you have something to lose.',
-        zh: '记住自己终将死去，是我所知避免陷入“自己有什么可失去”这一陷阱的最好办法。',
-      },
-      {
-        en: "Your time is limited, so don't waste it living someone else's life.",
-        zh: '你的时间有限，所以不要浪费时间去过别人的生活。',
-      },
-      {
-        en: 'Stay hungry, stay foolish.',
-        zh: '求知若饥，虚心若愚。',
-      },
-    ],
-    source:
-      'Steve Jobs, Stanford University Commencement Address, 12 June 2005. 公开演讲，非公版。按任务要求：**逐字引用不超过 4 句**（第 3、5、6、7 句），其余（第 1、2、4 句）为准确的自我转述，不复述长段原文。',
-  },
-
-  /* ------------------------------------------------------------------ */
-  {
-    id: 'orwell',
-    title: 'Politics and the English Language',
-    titleZh: '政治与英语',
-    level: '考研',
-    author: 'George Orwell',
-    sentences: [
-      {
-        en: 'Most people who bother with the matter at all would admit that the English language is in a bad way…',
-        zh: '凡是稍微关心这件事的人，大多会承认英语的状况不妙……',
-      },
-      {
-        en: 'A man may take to drink because he feels himself to be a failure…',
-        zh: '一个人可能因为觉得自己是个失败者而开始酗酒……',
-      },
-      {
-        en: '…and then fail all the more completely because he drinks.',
-        zh: '……然后又因为酗酒而败得更彻底。',
-      },
-      {
-        en: 'It is rather the same thing that is happening to the English language.',
-        zh: '英语正在发生的情况，与此颇有相似之处。',
-      },
-      {
-        en: 'The point is that the process is reversible.',
-        zh: '关键在于，这个过程是可以逆转的。',
-      },
-      {
-        en: 'If thought corrupts language, language can also corrupt thought.',
-        zh: '如果思想败坏语言，语言同样也能败坏思想。',
-      },
-      {
-        en: 'A bad usage can spread by tradition and imitation…',
-        zh: '错误的用法会经由传统与模仿传播开来……',
-      },
-      {
-        en: 'The great enemy of clear language is insincerity.',
-        zh: '清晰语言的大敌，是言不由衷。',
-      },
-    ],
-    source:
-      'George Orwell, “Politics and the English Language” (1946). 公版作品（作者 1950 年去世，著作权保护期已届满）。节选：开篇诊断与结尾论断，长句按分句截断并以省略号标注。',
-  },
-];
+export const ARTICLES: Article[] = data as Article[];

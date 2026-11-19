@@ -356,13 +356,36 @@ async function main() {
     }
 
     data.words = out;
+    /**
+     * 幂等：先把历史追加的署名剥掉，再重新拼一次。
+     * 原来的写法是 source + ' + ECDICT ...'，每跑一次就多一截，
+     * 跑五遍之后 source 变成 287 字符的重复串。
+     */
+    const BASE_SUFFIX = ' + ECDICT (MIT) 词性释义 + Tatoeba (CC-BY 2.0 FR) 例句';
+    const baseSource = data.meta.source.split(' + ECDICT (MIT)')[0];
     data.meta = {
       ...data.meta,
       count: out.length,
-      source: data.meta.source + ' + ECDICT (MIT) 词性释义 + Tatoeba (CC-BY 2.0 FR) 例句',
+      source: baseSource + BASE_SUFFIX,
     };
     await writeFile(path.join(DICT_DIR, `${b.id}.json`), JSON.stringify(data));
     log(`  ${b.id}: ${out.length} 词`);
+  }
+
+  // 同步 index.json 的 meta，避免它与单文件 meta 不一致（verify-data 会校验）
+  try {
+    const idxRaw = await readFile(path.join(DICT_DIR, 'index.json'), 'utf8');
+    const idx = JSON.parse(idxRaw);
+    for (const b of idx.banks) {
+      const data = bankData.get(b.id);
+      if (!data) continue;
+      b.count = data.words.length;
+      b.source = data.meta.source;
+    }
+    await writeFile(path.join(DICT_DIR, 'index.json'), JSON.stringify(idx));
+    log('  已同步 index.json');
+  } catch (e) {
+    log('  ! 同步 index.json 失败: ' + e.message);
   }
 
   log('');
