@@ -267,9 +267,56 @@ export default function SettingsPage() {
             打字即学习。开源、免费、无广告、无内购。
           </p>
           <p>
-            复习算法采用 FSRS（Free Spaced Repetition Scheduler），词库来自 Qwerty Learner（MIT
-            许可）， 实现上参考了 Type Words 的产品形态。
+            复习算法采用 FSRS（Free Spaced Repetition Scheduler），实现上参考了 Type Words
+            的产品形态。
           </p>
+          {/*
+            数据来源必须逐项标明许可——开源项目里这是硬性要求，
+            Tatoeba 的 CC-BY 尤其要求署名，不能省。
+          */}
+          <div className="mt-1 rounded-lg bg-surface2/60 px-2.5 py-2">
+            <div className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-muted/80">
+              数据来源
+            </div>
+            <ul className="space-y-0.5">
+              <li>
+                词表 ·{' '}
+                <a
+                  href="https://github.com/RealKai42/qwerty-learner"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  Qwerty Learner
+                </a>{' '}
+                <span className="text-muted/70">MIT</span>
+              </li>
+              <li>
+                词性释义 ·{' '}
+                <a
+                  href="https://github.com/skywind3000/ECDICT"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  ECDICT
+                </a>{' '}
+                <span className="text-muted/70">MIT</span>
+              </li>
+              <li>
+                英中例句 ·{' '}
+                <a
+                  href="https://tatoeba.org"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  Tatoeba
+                </a>{' '}
+                <span className="text-muted/70">CC-BY 2.0 FR</span>
+              </li>
+            </ul>
+          </div>
           <p className="text-muted/70">版本 0.1.0 · MIT License</p>
         </div>
       </Section>

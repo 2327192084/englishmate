@@ -13,12 +13,20 @@ import {
   typeBackspace,
   isComplete,
   noUnfixedErrors,
-  elapsedMs,
   type TypingState,
   normalizeChar,
   isNonLatinChar,
 } from '@/lib/typing';
 import { computeWpm } from '@/lib/stats';
+import type { PlannedItem } from '@/lib/flow';
+import {
+  createTimer,
+  startTimer,
+  markActivity,
+  tickTimer,
+  elapsed as timerElapsed,
+  type TimerState,
+} from '@/lib/timer';
 
 export interface AttemptLog extends WordAttempt {
   entry: WordEntry;
@@ -39,6 +47,11 @@ interface PracticeState {
   wordStartedAt: number;
   /** 本轮起点时间 */
   roundStartedAt: number;
+  /**
+   * 练习计时器（活跃时长）。
+   * 用累计活跃毫秒而不是 Date.now() 差值，避免休眠/挂机把 WPM 稀释掉。
+   */
+  timer: TimerState;
   attempts: AttemptLog[];
   /** 每个词的作答中是否"已判错"（默写/听写模式下按 Tab/回车提交） */
   submittedWrong: boolean;
@@ -52,12 +65,22 @@ interface PracticeState {
    * 用计数器而不是布尔值，是因为布尔值在连续触发时不会变化，动画不会重放。
    */
   imeWarningSeq: number;
+  /**
+   * 流程链（跟打→默写→听写）。为空表示单模式，行为与传统练习一致。
+   * 展开后每个元素 = "这个词，用这个模式练一次"。
+   */
+  plan: PlannedItem[];
+  /** 当前处于流程的第几组 / 第几步，用于 UI 显示"默写 3/7" */
+  planGroupIndex: number;
+  planStepLabel: string;
 
   start: (params: {
     mode: PracticeMode;
     bankId: string;
     queue: WordEntry[];
     reasons: Map<string, 'review' | 'wrong' | 'new' | 'random'>;
+    /** 可选：流程链展开结果；不传即单模式 */
+    plan?: PlannedItem[];
   }) => void;
   input: (ch: string, strict?: boolean) => void;
   backspace: () => void;
@@ -75,6 +98,8 @@ interface PracticeState {
   /** 实时 WPM */
   liveWpm: (now?: number) => number;
   elapsed: (now?: number) => number;
+  /** 每秒调用，推进活跃计时 */
+  tick: (now?: number) => void;
 }
 
 const emptyTyping = initTyping('');
@@ -90,18 +115,25 @@ export const usePractice = create<PracticeState>((set, get) => ({
   wordMistakes: 0,
   wordStartedAt: 0,
   roundStartedAt: 0,
+  timer: createTimer(),
   attempts: [],
   submittedWrong: false,
   choices: [],
   choicePicked: null,
   imeWarningSeq: 0,
+  plan: [],
+  planGroupIndex: 0,
+  planStepLabel: '',
 
-  start: ({ mode, bankId, queue, reasons }) => {
+  start: ({ mode, bankId, queue, reasons, plan }) => {
     const first = queue[0];
     const now = Date.now();
     set({
       phase: queue.length ? 'running' : 'finished',
       mode,
+      plan: plan ?? [],
+      planGroupIndex: plan?.[0]?.groupIndex ?? 0,
+      planStepLabel: plan?.[0]?.stepLabel ?? '',
       bankId,
       queue,
       reasons,
@@ -110,6 +142,7 @@ export const usePractice = create<PracticeState>((set, get) => ({
       wordMistakes: 0,
       wordStartedAt: now,
       roundStartedAt: now,
+      timer: startTimer(createTimer(now), now),
       attempts: [],
       submittedWrong: false,
       choices: [],
@@ -134,11 +167,16 @@ export const usePractice = create<PracticeState>((set, get) => ({
       return;
     }
 
+    const nowTs = Date.now();
+    // 每次按键都算"活动"，用于空闲检测与计时恢复
+    const revived = markActivity(get().timer, nowTs);
+
     const clean = normalizeChar(ch);
-    const next = typeChar(typing, clean, Date.now(), strict);
+    const next = typeChar(typing, clean, nowTs, strict);
     if (next === typing) return;
     set({
       typing: next,
+      timer: revived,
       wordMistakes: next.errors > typing.errors ? wordMistakes + 1 : wordMistakes,
     });
   },
@@ -205,9 +243,14 @@ export const usePractice = create<PracticeState>((set, get) => ({
       return true;
     }
 
+    const nextPlanItem = state.plan[nextIndex];
     set({
       attempts,
       index: nextIndex,
+      // 流程链会切换模式（跟打→默写→听写），索引推进时必须同步
+      mode: nextPlanItem ? nextPlanItem.mode : state.mode,
+      planGroupIndex: nextPlanItem ? nextPlanItem.groupIndex : state.planGroupIndex,
+      planStepLabel: nextPlanItem ? nextPlanItem.stepLabel : state.planStepLabel,
       typing: initTyping(state.queue[nextIndex].w),
       wordMistakes: 0,
       wordStartedAt: now,
@@ -255,20 +298,23 @@ export const usePractice = create<PracticeState>((set, get) => ({
 
   current: () => get().queue[get().index],
 
-  liveWpm: (now = Date.now()) => {
+  liveWpm: () => {
     const s = get();
     if (s.attempts.length === 0 && s.typing.cursor === 0) return 0;
-    const ms = elapsedMs(s.typing, now);
+    // 只统计真正在练习的时长
+    const ms = timerElapsed(s.timer);
     if (ms < 500) return 0;
-    // 本轮已完成词语的字符数 + 当前词已打对的字符数
     const doneChars = s.attempts.reduce((acc, a) => acc + a.word.length, 0);
     const chars = doneChars + s.typing.cursor;
-    return computeWpm(chars, now - s.roundStartedAt);
+    return computeWpm(chars, ms);
   },
 
-  elapsed: (now = Date.now()) => {
+  elapsed: () => timerElapsed(get().timer),
+
+  tick: (now = Date.now()) => {
     const s = get();
-    if (!s.roundStartedAt) return 0;
-    return now - s.roundStartedAt;
+    if (s.phase !== 'running') return;
+    const next = tickTimer(s.timer, now);
+    if (next !== s.timer) set({ timer: next });
   },
 }));

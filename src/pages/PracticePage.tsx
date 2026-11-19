@@ -13,6 +13,7 @@ import type { PracticeMode, UserWord } from '@/types';
 import { db, getMeta, setMeta } from '@/db';
 import { loadBankIndex, loadWords, listCustomBanks, CATEGORY_LABEL } from '@/data/wordbanks';
 import { buildRound, buildChoices } from '@/data/round';
+import { buildPlan, flattenPlan, FLOW_PRESETS, type FlowPreset } from '@/lib/flow';
 import { usePractice } from '@/store/practice';
 import { useSettings } from '@/store/settings';
 import { recordAttempt, saveSession, todayCounts } from '@/services/learning';
@@ -117,7 +118,7 @@ export default function PracticePage() {
     try {
       const words = await loadWords(bankId);
       const remainingNew = Math.max(0, settings.dailyNewTarget - counts.todayNew);
-      const plan = buildRound({
+      const round = buildRound({
         bankId,
         allWords: words,
         known,
@@ -125,13 +126,32 @@ export default function PracticePage() {
         newQuota: remainingNew,
         mode,
       });
-      if (plan.entries.length === 0) {
+      if (round.entries.length === 0) {
         setError('这个词库暂时没有可练的词，换一个词库试试。');
         return;
       }
+
+      /**
+       * 生成练习流程。
+       *
+       * 辨认模式是"快速过词"，不适合再串跟打/默写，所以强制走单模式；
+       * 其余模式按用户选的流程模板展开成线性队列——
+       * 这样"同一批词先跟打、立刻默写、再进下一组"的语义得以保留，
+       * 而练习界面仍然只需要处理一个 queue + index。
+       */
+      const presetId: FlowPreset = mode === 'choice' ? 'followOnly' : settings.flowPreset;
+      const flow = buildPlan(round.entries, presetId, settings.groupSize);
+      const items = flattenPlan(flow);
+
       await setMeta(LAST_BANK_KEY, bankId);
       await setMeta(LAST_MODE_KEY, mode);
-      p.start({ mode, bankId, queue: plan.entries, reasons: plan.reasons });
+      p.start({
+        mode,
+        bankId,
+        queue: items.map((i) => i.entry),
+        reasons: round.reasons,
+        plan: items,
+      });
       setParams((prev) => {
         const next = new URLSearchParams(prev);
         next.set('bank', bankId);
@@ -143,7 +163,18 @@ export default function PracticePage() {
     } finally {
       setLoading(false);
     }
-  }, [bankId, counts.todayNew, known, mode, p, roundSize, setParams, settings.dailyNewTarget]);
+  }, [
+    bankId,
+    counts.todayNew,
+    known,
+    mode,
+    p,
+    roundSize,
+    setParams,
+    settings.dailyNewTarget,
+    settings.flowPreset,
+    settings.groupSize,
+  ]);
 
   /**
    * 增量落库：每答完一个词就写进数据库。
@@ -188,6 +219,8 @@ export default function PracticePage() {
           startedAt: p.roundStartedAt,
           endedAt: Date.now(),
           attempts: p.attempts,
+          // 用活跃时长算 WPM：挂机 / 系统休眠的时间不算练习
+          activeMs: p.elapsed(),
         });
         setCounts(await todayCounts());
         if (settings.keySound) playFinishSound(settings.keyVolume);
@@ -310,6 +343,72 @@ export default function PracticePage() {
           })}
         </div>
       </section>
+
+      {/*
+        流程选择：决定"一批词练几轮"。
+        辨认模式是快速过词，不参与流程编排，所以这里对辨认模式隐藏。
+      */}
+      {mode !== 'choice' && (
+        <section className="mb-6">
+          <h2 className="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-muted">
+            <span>练习流程</span>
+            <span className="normal-case text-muted/70">
+              {FLOW_PRESETS[settings.flowPreset].steps.length > 1
+                ? `每组 ${settings.groupSize} 词循环`
+                : '整批过一遍'}
+            </span>
+          </h2>
+          <div className="grid gap-2 sm:grid-cols-3">
+            {(Object.keys(FLOW_PRESETS) as FlowPreset[]).map((key) => {
+              const tpl = FLOW_PRESETS[key];
+              const active = settings.flowPreset === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => void update({ flowPreset: key })}
+                  className={`tf-card flex flex-col items-start gap-1 px-3 py-2.5 text-left transition-colors ${
+                    active ? 'border-accent bg-accent/10' : 'hover:border-accent/50'
+                  }`}
+                >
+                  <span className={`text-sm font-semibold ${active ? 'text-accent' : 'text-ink'}`}>
+                    {tpl.name}
+                  </span>
+                  <span className="text-[11px] leading-tight text-muted">{tpl.hint}</span>
+                  <span className="mt-0.5 flex flex-wrap gap-1">
+                    {tpl.steps.map((st) => (
+                      <span
+                        key={st.id}
+                        className={`rounded px-1.5 py-0.5 text-[10px] ${
+                          active ? 'bg-accent/15 text-accent' : 'bg-surface2 text-muted'
+                        }`}
+                      >
+                        {st.label}
+                      </span>
+                    ))}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {settings.flowPreset !== 'followOnly' && (
+            <div className="mt-2 flex items-center gap-2 text-[11px] text-muted">
+              <span>每组词数</span>
+              <input
+                type="range"
+                min={3}
+                max={15}
+                step={1}
+                value={settings.groupSize}
+                onChange={(e) => void update({ groupSize: Number(e.target.value) })}
+                className="w-28 accent-[rgb(var(--tf-accent))]"
+              />
+              <span className="tf-mono tabular-nums text-ink">{settings.groupSize}</span>
+              <span className="text-muted/70">一组练完立刻换模式再练，比逐词过一遍记得牢</span>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* 词库 */}
       <section className="mb-6">
@@ -518,7 +617,9 @@ function Summary({
   const correct = p.attempts.filter((a) => a.correct).length;
   const perfect = p.attempts.filter((a) => a.correct && a.mistakes === 0).length;
   const mistakes = p.attempts.reduce((s, a) => s + a.mistakes, 0);
-  const durationSec = Math.max(1, Math.round((Date.now() - p.roundStartedAt) / 1000));
+  // 用活跃时长（排除挂机/休眠），与落库时的口径保持一致
+  const activeMs = p.elapsed();
+  const durationSec = Math.max(1, Math.round((activeMs || Date.now() - p.roundStartedAt) / 1000));
   const chars = p.attempts.reduce((s, a) => s + a.word.length, 0);
   const wpm = Math.max(0, Math.floor(chars / 5 / (durationSec / 60)));
   const accuracy = total === 0 ? 1 : (total - (total - correct)) / total;

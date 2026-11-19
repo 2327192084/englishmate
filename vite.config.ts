@@ -29,5 +29,12 @@ export default defineConfig({
     // 渲染测试需要 DOM，用文件级注释切换，默认 node 保持纯逻辑测试最快
     setupFiles: ['./src/test-setup.ts'],
     environmentMatchGlobs: [['src/**/*.test.tsx', 'jsdom']],
+    /**
+     * 渲染测试串行跑。
+     * App.test.tsx 与 PracticeFlow.test.tsx 都要挂载整个 App，
+     * 并行时会共用同一个 fake-indexeddb 与全局 store，
+     * 互相清库导致偶发失败（表现为点开始没反应）。
+     */
+    fileParallelism: false,
   },
 });

@@ -93,13 +93,24 @@ export async function recordAttempt(params: {
   return next;
 }
 
-/** 会话结束后落库，并返回带 id 的会话 */
+/**
+ * 会话结束后落库，并返回带 id 的会话。
+ *
+ * `activeMs` 是练习计时器累计的**活跃时长**（真实动过键盘的时间）。
+ * 传了就用它算 WPM 与 durationSec；不传则退回墙钟时长，
+ * 这样旧调用方（以及测试）仍然按原语义工作。
+ *
+ * 为什么两者必须分开：墙钟时长包含挂机与系统休眠，
+ * 用它算 WPM 会把成绩稀释到接近 0。
+ */
 export async function saveSession(params: {
   mode: PracticeMode;
   bankId: string;
   startedAt: number;
   endedAt: number;
   attempts: WordAttempt[];
+  /** 累计活跃毫秒；省略时用 endedAt - startedAt */
+  activeMs?: number;
 }): Promise<PracticeSession> {
   const { mode, bankId, startedAt, endedAt, attempts } = params;
 
@@ -115,7 +126,16 @@ export async function saveSession(params: {
     if (a.correct && a.mistakes === 0) perfect++;
   }
 
-  const durationMs = Math.max(1, endedAt - startedAt);
+  /**
+   * 时长口径：
+   *  - 有活跃时长就用它（排除挂机/休眠）
+   *  - 否则退回墙钟，但至少 1ms，避免除零
+   */
+  const activeMs =
+    typeof params.activeMs === 'number' && Number.isFinite(params.activeMs) && params.activeMs > 0
+      ? params.activeMs
+      : null;
+  const durationMs = activeMs ?? Math.max(1, endedAt - startedAt);
   const session: PracticeSession = {
     startedAt,
     endedAt,

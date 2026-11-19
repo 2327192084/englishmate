@@ -17,6 +17,7 @@ import { speak } from '@/lib/speech';
 import { playKeySound, buzz } from '@/lib/sound';
 import { isComplete } from '@/lib/typing';
 import { IconVolume } from './Icons';
+import { WordDetail } from './WordDetail';
 
 const REASON_LABEL: Record<string, { text: string; cls: string }> = {
   review: { text: '复习', cls: 'text-accent' },
@@ -40,6 +41,8 @@ export function TypingArea() {
   const inputRef = useRef<HTMLDivElement>(null);
   /** 输入法是否正在组字；组字期间必须忽略所有按键 */
   const composingRef = useRef(false);
+  /** 词条详情面板开关 */
+  const [detailOpen, setDetailOpen] = useState(false);
   const [now, setNow] = useState(Date.now());
   const cur = p.current();
 
@@ -54,12 +57,25 @@ export function TypingArea() {
 
   useEffect(() => {
     focus();
+    // 换词时收起详情，避免面板停留在上一个词上
+    setDetailOpen(false);
   }, [focus, p.index]);
 
   /** 每 200ms 刷新一次计时/WPM 显示（不重渲染整棵树的关键是用局部 state） */
   useEffect(() => {
     if (p.phase !== 'running') return;
     const t = window.setInterval(() => setNow(Date.now()), 200);
+    return () => window.clearInterval(t);
+  }, [p.phase]);
+
+  /**
+   * 每秒推进活跃计时。
+   * 与上面 200ms 的显示刷新分开：计时器有自己的 tick 逻辑
+   * （空闲暂停、休眠防护），不该被 UI 刷新频率影响。
+   */
+  useEffect(() => {
+    if (p.phase !== 'running') return;
+    const t = window.setInterval(() => usePractice.getState().tick(), 1000);
     return () => window.clearInterval(t);
   }, [p.phase]);
 
@@ -232,6 +248,22 @@ export function TypingArea() {
           </div>
         )}
 
+        {/*
+          流程步骤提示：让用户知道"现在在练第几层"。
+          单模式时 planStepLabel 为空，整块不渲染。
+        */}
+        {p.planStepLabel && p.plan.length > 0 && (
+          <div className="flex items-center gap-2 text-[11px]">
+            <span className="rounded bg-accent/15 px-1.5 py-0.5 font-medium text-accent">
+              {p.planStepLabel}
+            </span>
+            <span className="text-muted">
+              第 {p.planGroupIndex + 1} 组 · 本组 {(p.index % Math.max(1, countGroupSize(p))) + 1}/
+              {countGroupSize(p)}
+            </span>
+          </div>
+        )}
+
         {/* 释义（永远显示） */}
         <div className="max-w-2xl text-center text-sm leading-relaxed text-muted">
           {cur.t || '（无释义）'}
@@ -274,6 +306,19 @@ export function TypingArea() {
           >
             <IconVolume width={14} height={14} />
           </button>
+          {/* 详情入口：默写/听写模式下隐藏——那时看详情等于看答案 */}
+          {!hidden && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setDetailOpen(true);
+              }}
+              className="rounded-md px-1.5 py-0.5 text-[11px] text-muted hover:bg-surface2 hover:text-accent"
+            >
+              详情
+            </button>
+          )}
         </div>
 
         {/* 默写模式的输入回显 */}
@@ -346,6 +391,8 @@ export function TypingArea() {
           )}
         </span>
       </div>
+
+      <WordDetail entry={cur} open={detailOpen} onClose={() => setDetailOpen(false)} />
     </div>
   );
 }
@@ -480,6 +527,17 @@ function HiddenWord({
       </div>
     </div>
   );
+}
+
+/** 当前所在组的词数（按 plan 里同组同步骤的项数算） */
+function countGroupSize(p: {
+  plan: { groupIndex: number; stepIndex: number }[];
+  index: number;
+}): number {
+  const cur = p.plan[p.index];
+  if (!cur) return 0;
+  return p.plan.filter((x) => x.groupIndex === cur.groupIndex && x.stepIndex === cur.stepIndex)
+    .length;
 }
 
 function Kbd({ children }: { children: React.ReactNode }) {

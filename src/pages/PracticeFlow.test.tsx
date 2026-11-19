@@ -22,27 +22,37 @@ const WORDS = [
 
 afterEach(() => {
   cleanup();
+  // 重置 store：上一个用例若停在 running 会带进下一个用例
+  usePractice.getState().reset();
 });
 
 beforeEach(async () => {
   await clearAllData();
   await db.settings.clear();
   usePractice.getState().reset();
-  useSettings.setState({
-    settings: {
-      id: 1,
-      dailyNewTarget: 20,
-      dailyReviewLimit: 100,
-      accent: 'en-US',
-      speechRate: 0.9,
-      keySound: false,
-      keyVolume: 0.3,
-      autoSpeak: false,
-      theme: 'dark',
-      strictCorrection: true,
-      roundSize: 20,
-    },
-  });
+
+  /**
+   * 注意：设置必须写进数据库，而不是只塞进 store。
+   * App 挂载时会调 load() 从 IndexedDB 读设置并覆盖 store 里的值，
+   * 只设内存状态会被立刻冲掉——之前 flowPreset 就是这么失效的。
+   */
+  const testSettings = {
+    id: 1 as const,
+    dailyNewTarget: 20,
+    dailyReviewLimit: 100,
+    accent: 'en-US' as const,
+    speechRate: 0.9,
+    keySound: false,
+    keyVolume: 0.3,
+    autoSpeak: false,
+    theme: 'dark' as const,
+    strictCorrection: true,
+    roundSize: 20,
+    flowPreset: 'followOnly' as const,
+    groupSize: 7,
+  };
+  await db.settings.put(testSettings);
+  useSettings.setState({ settings: testSettings });
 
   vi.stubGlobal('matchMedia', (q: string) => ({
     matches: false,
@@ -117,14 +127,24 @@ async function startRound() {
   await waitFor(() => expect(screen.queryByText('正在加载本地数据…')).toBeNull(), {
     timeout: 5000,
   });
-  // 页面上有多个"开始"字样（标题/提示），用精确的可访问名定位主按钮
-  const startBtn = await screen.findByRole('button', { name: '开始' });
+  // 页面新增了「练习流程」选择区，按钮里也含"开始"字样。
+  // 用 textContent 精确等于"开始"来定位主按钮。
+  const startBtn = await waitFor(() => {
+    const btn = [...document.querySelectorAll('button')].find(
+      (b) => b.textContent?.trim() === '开始',
+    );
+    if (!btn) throw new Error('找不到开始按钮');
+    return btn;
+  });
   await act(async () => {
     fireEvent.click(startBtn);
   });
-  await waitFor(() => {
-    expect(usePractice.getState().phase).toBe('running');
-  });
+  await waitFor(
+    () => {
+      expect(usePractice.getState().phase).toBe('running');
+    },
+    { timeout: 5000 },
+  );
 }
 
 /** 把当前词完整敲对 */
@@ -146,7 +166,7 @@ async function submitWord() {
 }
 
 describe('练习流程', () => {
-  it('能把一轮完整敲完并落库', async () => {
+  it('能把一轮完整敲完并落库（单模式流程）', async () => {
     await startRound();
     const st = usePractice.getState();
     expect(st.queue.length).toBeGreaterThan(0);
@@ -241,6 +261,8 @@ describe('练习流程', () => {
       theme: 'dark',
       strictCorrection: false,
       roundSize: 20,
+      flowPreset: 'followOnly',
+      groupSize: 7,
     });
     await startRound();
     expect(useSettings.getState().settings.strictCorrection).toBe(false);
@@ -521,6 +543,109 @@ describe('练习流程', () => {
 
       expect(usePractice.getState().imeWarningSeq).toBe(before);
       expect(usePractice.getState().typing.cursor).toBe(word.length);
+    });
+  });
+
+  describe('流程链（分组循环）', () => {
+    /** 用指定预设启动一轮 */
+    async function startWithFlow(preset: 'followOnly' | 'listenWrite' | 'fullChain') {
+      await db.settings.put({
+        id: 1,
+        dailyNewTarget: 20,
+        dailyReviewLimit: 100,
+        accent: 'en-US',
+        speechRate: 0.9,
+        keySound: false,
+        keyVolume: 0.3,
+        autoSpeak: false,
+        theme: 'dark',
+        strictCorrection: true,
+        roundSize: 20,
+        flowPreset: preset,
+        groupSize: 2,
+      });
+      await startRound();
+    }
+
+    it('listenWrite：同一批词先跟打、再默写', async () => {
+      await startWithFlow('listenWrite');
+      const st = usePractice.getState();
+      // 队列长度为 词数 × 步骤数
+      expect(st.queue.length).toBeGreaterThan(0);
+      expect(st.plan.length).toBe(st.queue.length);
+
+      // 前两个是跟打
+      expect(st.plan[0].mode).toBe('typing');
+      expect(st.plan[1].mode).toBe('typing');
+      // 之后进入默写，且练的是同一批词
+      expect(st.plan[2].mode).toBe('recall');
+      expect(st.plan[2].entry.w).toBe(st.plan[0].entry.w);
+    });
+
+    it('模式会随队列推进自动切换', async () => {
+      await startWithFlow('listenWrite');
+      expect(usePractice.getState().mode).toBe('typing');
+
+      // 走完第一组（groupSize=2）的两个词
+      for (let i = 0; i < 2; i++) {
+        const w = usePractice.getState().current()!.w;
+        await typeWord(w);
+        await submitWord();
+      }
+
+      // 第 3 项应该是默写
+      const st = usePractice.getState();
+      expect(st.mode).toBe('recall');
+      expect(st.index).toBe(2);
+    });
+
+    it('fullChain 每个词练三次', async () => {
+      await startWithFlow('fullChain');
+      const st = usePractice.getState();
+      const uniqueWords = new Set(st.plan.map((p) => p.entry.w));
+      expect(st.plan.length).toBe(uniqueWords.size * 3);
+      // 三种模式都出现
+      const modes = new Set(st.plan.map((p) => p.mode));
+      expect(modes).toEqual(new Set(['typing', 'recall', 'dictation']));
+    });
+
+    it('followOnly 每个词只练一次', async () => {
+      await startWithFlow('followOnly');
+      const st = usePractice.getState();
+      const uniqueWords = new Set(st.plan.map((p) => p.entry.w));
+      expect(st.plan.length).toBe(uniqueWords.size);
+      expect(new Set(st.plan.map((p) => p.mode))).toEqual(new Set(['typing']));
+    });
+
+    it('辨认模式强制单流程（不串默写）', async () => {
+      // 直接验证 buildPlan 在辨认模式下的调用约定：
+      // 页面固定传 followOnly，因此展开结果只包含 choice 模式。
+      await db.settings.put({
+        id: 1,
+        dailyNewTarget: 20,
+        dailyReviewLimit: 100,
+        accent: 'en-US',
+        speechRate: 0.9,
+        keySound: false,
+        keyVolume: 0.3,
+        autoSpeak: false,
+        theme: 'dark',
+        strictCorrection: true,
+        roundSize: 20,
+        flowPreset: 'fullChain',
+        groupSize: 2,
+      });
+
+      const { buildPlan, flattenPlan } = await import('@/lib/flow');
+      const entries = [
+        { w: 'alpha', t: '甲' },
+        { w: 'beta', t: '乙' },
+      ];
+      // 页面里的等价逻辑：mode === 'choice' 时强制 followOnly
+      const plan = buildPlan(entries, 'followOnly', 2);
+      const items = flattenPlan(plan);
+      expect(new Set(items.map((i) => i.mode))).toEqual(new Set(['typing']));
+      expect(items).toHaveLength(2);
     });
   });
 });

@@ -14,6 +14,58 @@ export interface WordEntry {
   t: string;
   /** 音标（美音优先），可能是空字符串 */
   p?: string;
+
+  /* ── 以下为可选富字段 ─────────────────────────────────────────────
+   * 全部可选：旧词库只有 w/t/p 也能正常用，界面按存在性决定显示什么。
+   * 这样"内容增强"是渐进式的，不会因为某个词库数据不全就崩掉。
+   */
+
+  /** 英式音标（与 p 并列时 p 视为美音） */
+  pUk?: string;
+  /** 词性 + 释义的细分，比 t 更精确 */
+  defs?: WordDef[];
+  /** 例句（含译文） */
+  sentences?: WordPair[];
+  /** 短语搭配 */
+  phrases?: WordPair[];
+  /** 近义词 */
+  synos?: WordSyno[];
+  /** 同根词 */
+  relWords?: string[];
+}
+
+/** 一条带词性的释义 */
+export interface WordDef {
+  /** 词性，如 n. / v. / adj. */
+  pos: string;
+  /** 中文释义 */
+  cn: string;
+}
+
+/** 英文 + 中文的成对内容（例句、短语） */
+export interface WordPair {
+  /** 英文原文 */
+  en: string;
+  /** 中文译文 */
+  zh: string;
+}
+
+/** 近义词组 */
+export interface WordSyno {
+  pos: string;
+  cn: string;
+  words: string[];
+}
+
+/** 词条是否具备富内容（用于界面判断要不要显示"详情"入口） */
+export function hasRichContent(entry: WordEntry): boolean {
+  return !!(
+    entry.defs?.length ||
+    entry.sentences?.length ||
+    entry.phrases?.length ||
+    entry.synos?.length ||
+    entry.relWords?.length
+  );
 }
 
 export type WordbankCategory = 'exam' | 'programming' | 'basic';
@@ -42,6 +94,17 @@ export interface WordbankMeta {
  * - choice     辨认：四选一快速过词（不计 WPM，计正确率）
  */
 export type PracticeMode = 'typing' | 'dictation' | 'recall' | 'choice';
+
+/**
+ * 流程模板标识：
+ * - followOnly  只跟打一遍（最快）
+ * - listenWrite 跟打 → 默写（同一批词循环，记忆效果优先）
+ * - fullChain   跟打 → 默写 → 听写（三层线索递进）
+ *
+ * 与 PracticeMode 的区别：PracticeMode 是「一个词用什么方式练」，
+ * FlowPreset 是「一批词按什么顺序走几轮」。
+ */
+export type FlowPresetId = 'followOnly' | 'listenWrite' | 'fullChain';
 
 export interface ModeMeta {
   id: PracticeMode;
@@ -175,6 +238,13 @@ export interface Settings {
   strictCorrection: boolean;
   /** 每轮词数 */
   roundSize: number;
+  /**
+   * 练习流程模板。
+   * 默认 listenWrite：一组词先跟打、立刻默写，比"每个词只过一遍"记得牢。
+   */
+  flowPreset: FlowPresetId;
+  /** 分组大小（流程为分组循环时生效），默认 7 */
+  groupSize: number;
 }
 
 export const DEFAULT_SETTINGS: Omit<Settings, 'id'> = {
@@ -188,6 +258,8 @@ export const DEFAULT_SETTINGS: Omit<Settings, 'id'> = {
   theme: 'dark',
   strictCorrection: true,
   roundSize: 20,
+  flowPreset: 'listenWrite',
+  groupSize: 7,
 };
 
 /** ---------- 文章 ---------- */

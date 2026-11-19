@@ -150,10 +150,11 @@ describe('页面挂载', () => {
       timeout: 5000,
     });
     expect(await screen.findByText('开始练习')).toBeInTheDocument();
-    expect(screen.getByText('跟打')).toBeInTheDocument();
-    expect(screen.getByText('听写')).toBeInTheDocument();
-    expect(screen.getByText('默写')).toBeInTheDocument();
-    expect(screen.getByText('辨认')).toBeInTheDocument();
+    // 模式与流程里都会出现"跟打/默写"等词，用 getAllByText 判定存在即可
+    expect(screen.getAllByText('跟打').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('听写').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('默写').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('辨认').length).toBeGreaterThan(0);
     // 词库来自打桩的 index.json
     expect(await screen.findByText('CET-4 · 四级核心')).toBeInTheDocument();
   });
