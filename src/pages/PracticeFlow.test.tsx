@@ -129,11 +129,22 @@ async function startRound() {
   });
   // 页面新增了「练习流程」选择区，按钮里也含"开始"字样。
   // 用 textContent 精确等于"开始"来定位主按钮。
+  /**
+   * 定位"开始"按钮。
+   * 按钮内含 SVG 图标，textContent 会带上图标节点的文本残留，
+   * 所以用 startsWith 而不是全等；同时排除"开始练习"标题（那是 h1 不是 button）。
+   */
   const startBtn = await waitFor(() => {
-    const btn = [...document.querySelectorAll('button')].find(
-      (b) => b.textContent?.trim() === '开始',
-    );
-    if (!btn) throw new Error('找不到开始按钮');
+    const btn = [...document.querySelectorAll('button')].find((b) => {
+      const t = (b.textContent || '').trim();
+      return t.startsWith('开始') && !t.includes('练习');
+    });
+    if (!btn) {
+      const all = [...document.querySelectorAll('button')]
+        .map((b) => (b.textContent || '').trim())
+        .filter(Boolean);
+      throw new Error('找不到开始按钮，现有按钮: ' + JSON.stringify(all));
+    }
     return btn;
   });
   await act(async () => {

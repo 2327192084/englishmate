@@ -312,9 +312,10 @@ export default function PracticePage() {
         </h2>
 
         {[
-          { key: 'main' as const, label: '组合练法 · 同批词层层加深' },
-          { key: 'single' as const, label: '单一练法 · 整批过一遍' },
-        ].map(({ key: grp, label }) => {
+          // 单一练法在上（4 个，一行排开），组合练法在下（2 个，与上面等宽对齐）
+          { key: 'single' as const, label: '单一练法 · 整批过一遍', cols: 'sm:grid-cols-4' },
+          { key: 'main' as const, label: '组合练法 · 同批词层层加深', cols: 'sm:grid-cols-2' },
+        ].map(({ key: grp, label, cols }) => {
           const keys = (Object.keys(FLOW_PRESETS) as FlowPreset[]).filter(
             (k) => FLOW_PRESETS[k].group === grp,
           );
@@ -325,7 +326,7 @@ export default function PracticePage() {
                 <span className="text-[11px] font-medium text-muted">{label}</span>
                 <div className="h-px flex-1 bg-line" />
               </div>
-              <div className="grid gap-2 sm:grid-cols-3">
+              <div className={`grid gap-2 ${cols}`}>
                 {keys.map((key) => {
                   const tpl = FLOW_PRESETS[key];
                   const active = settings.flowPreset === key;

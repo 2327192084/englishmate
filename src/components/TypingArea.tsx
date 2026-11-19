@@ -106,9 +106,15 @@ export function TypingArea() {
 
       const k = e.key;
 
-      if (k === ' ' || k === 'Enter') {
+      /**
+       * 提交键只保留 Space 一个。
+       *
+       * 原来 Space 和 Enter 走同一分支，两个键做同一件事——
+       * 用户不知道该按哪个，提示里也只能写一个，另一个等于隐藏功能。
+       * 统一到 Space：它在打字流里离手指最近，且不会与输入法候选上屏冲突。
+       */
+      if (k === ' ') {
         e.preventDefault();
-        // 空格键在单词中间不常见，直接当"下一个"
         if (isComplete(p.typing) || p.mode === 'typing') {
           handleNext();
         } else {
@@ -346,13 +352,20 @@ export function TypingArea() {
           </div>
         )}
 
-        {/* 操作提示 */}
-        <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-muted">
-          <Kbd>字母</Kbd> 输入
-          <Kbd>Space</Kbd> 下一个
-          <Kbd>Tab</Kbd> 跳过
-          <Kbd>⌫</Kbd> 退格
-          <Kbd>Esc</Kbd> 退出
+        {/*
+          操作提示。
+          原来用 text-[11px] + text-muted，在深色背景上对比度太低，
+          几乎看不见（用户反馈"不太明显"）。改为：
+          - 提示组用 border 圆角包起来，与上方内容有明确分隔
+          - 键帽加亮（bg-surface2 + border）与文字对比（text-ink）
+          - 说明文字提亮到 text-muted，字号 12px
+        */}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-lg border border-line/70 bg-surface2/40 px-3 py-2 text-xs text-muted">
+          <Hint keys={['字母']} label="输入" />
+          <Hint keys={['Space']} label="下一个" />
+          <Hint keys={['Tab']} label="跳过" />
+          <Hint keys={['⌫']} label="退格" />
+          <Hint keys={['Esc']} label="退出" />
         </div>
       </div>
 
@@ -545,6 +558,26 @@ function Kbd({ children }: { children: React.ReactNode }) {
     <kbd className="rounded border border-line bg-surface2 px-1.5 py-0.5 font-mono text-[10px] text-muted">
       {children}
     </kbd>
+  );
+}
+
+/**
+ * 一组"键帽 + 说明"的提示。
+ * 键帽比说明文字更亮，视线能先扫到按键再读功能。
+ */
+function Hint({ keys, label }: { keys: string[]; label: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      {keys.map((k) => (
+        <kbd
+          key={k}
+          className="rounded border border-line bg-surface px-1.5 py-0.5 font-mono text-[11px] font-medium text-ink shadow-sm"
+        >
+          {k}
+        </kbd>
+      ))}
+      <span className="text-[11px] text-muted">{label}</span>
+    </span>
   );
 }
 
