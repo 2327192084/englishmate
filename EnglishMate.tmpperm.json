@@ -1,0 +1,8 @@
+{
+  "Roaming": "EPERM",
+  "RoamingTypeFlow": "EPERM",
+  "Local": "EPERM",
+  "Programs": "EPERM",
+  "ExeDir": "OK",
+  "ProjectTmp": "OK"
+}

@@ -12,6 +12,22 @@ export interface WordbankIndex {
   banks: WordbankMeta[];
 }
 
+/**
+ * 拼出静态资源的可访问 URL。
+ *
+ * Web 部署时是 `/dicts/x.json`；Electron 用 file:// 打开页面时，
+ * 绝对路径 `/dicts/...` 会被解析到磁盘根目录而 404。
+ * 用 import.meta.env.BASE_URL 判断：桌面构建 base 是 './'，Web 是 '/'。
+ */
+function assetUrl(relPath: string): string {
+  const base = import.meta.env.BASE_URL || '/';
+  if (base === './' || base === '') {
+    // file:// 场景：相对当前文档（dist/index.html）解析
+    return new URL(relPath.replace(/^\//, ''), window.location.href).toString();
+  }
+  return `${base.replace(/\/$/, '')}/${relPath.replace(/^\//, '')}`;
+}
+
 /** 内存缓存，避免同一词库反复 fetch */
 const cache = new Map<string, WordEntry[]>();
 const inflight = new Map<string, Promise<WordEntry[]>>();
@@ -106,7 +122,7 @@ export const CATEGORY_LABEL: Record<WordbankCategory, string> = {
 /** 读内置词库索引；失败时退回静态元信息（count 未知） */
 export async function loadBankIndex(): Promise<WordbankIndex> {
   try {
-    const res = await fetch('/dicts/index.json', { cache: 'no-cache' });
+    const res = await fetch(assetUrl('/dicts/index.json'), { cache: 'no-cache' });
     if (!res.ok) throw new Error(String(res.status));
     const data = (await res.json()) as WordbankIndex;
     if (!Array.isArray(data.banks) || data.banks.length === 0) throw new Error('empty');
@@ -132,7 +148,7 @@ export async function loadWords(bankId: string): Promise<WordEntry[]> {
       return words;
     }
 
-    const res = await fetch(`/dicts/${bankId}.json`);
+    const res = await fetch(assetUrl(`/dicts/${bankId}.json`));
     if (!res.ok) throw new Error(`词库 ${bankId} 加载失败（${res.status}）`);
     const data = (await res.json()) as { meta: WordbankMeta; words: WordEntry[] };
     const words = Array.isArray(data.words) ? data.words : [];

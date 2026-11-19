@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "license": "MIT",
-  "description": "TypeFlow · 打字即学习的开源英语学习 Web 应用",
+  "description": "TypeFlow · 打字即学习的开源英语学习应用（桌面版）",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
@@ -14,7 +14,12 @@
     "typecheck": "tsc --noEmit",
     "smoke": "node scripts/smoke.mjs",
     "dicts": "node scripts/build-dicts.mjs",
-    "verify": "node scripts/verify-data.mjs"
+    "verify": "node scripts/verify-data.mjs",
+    "electron:dev": "vite",
+    "electron:run": "electron electron/main.cjs",
+    "smoke:desktop": "electron electron/smoke.cjs --user-data-dir=.tmp/udd",
+    "dist:win": "npm run build:desktop && electron-builder --win --config electron-builder.config.cjs",
+    "build:desktop": "node scripts/build-desktop.mjs"
   },
   "dependencies": {
     "dexie": "^4.0.10",
@@ -32,6 +37,8 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
+    "electron": "^43.3.0",
+    "electron-builder": "^26.18.0",
     "fake-indexeddb": "^6.2.8",
     "jsdom": "^31.0.1",
     "playwright-core": "^1.65.1",
@@ -41,5 +48,6 @@
     "typescript": "^5.7.2",
     "vite": "^6.0.5",
     "vitest": "^2.1.8"
-  }
+  },
+  "main": "electron/main.cjs"
 }
