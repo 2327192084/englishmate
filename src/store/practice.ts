@@ -16,6 +16,7 @@ import {
   elapsedMs,
   type TypingState,
   normalizeChar,
+  isNonLatinChar,
 } from '@/lib/typing';
 import { computeWpm } from '@/lib/stats';
 
@@ -45,6 +46,12 @@ interface PracticeState {
   choices: { label: string; correct: boolean }[];
   /** 辨认模式是否已选 */
   choicePicked: number | null;
+  /**
+   * 输入法警告的递增序号。
+   * 每检测到一次非英文输入就 +1，组件据此重放提示动画——
+   * 用计数器而不是布尔值，是因为布尔值在连续触发时不会变化，动画不会重放。
+   */
+  imeWarningSeq: number;
 
   start: (params: {
     mode: PracticeMode;
@@ -87,6 +94,7 @@ export const usePractice = create<PracticeState>((set, get) => ({
   submittedWrong: false,
   choices: [],
   choicePicked: null,
+  imeWarningSeq: 0,
 
   start: ({ mode, bankId, queue, reasons }) => {
     const first = queue[0];
@@ -112,6 +120,20 @@ export const usePractice = create<PracticeState>((set, get) => ({
   input: (ch, strict = true) => {
     const { phase, typing, wordMistakes } = get();
     if (phase !== 'running') return;
+
+    /**
+     * 非英文输入法检测。
+     *
+     * 组字期间的按键已经被组件层过滤掉了，这里收到的是"上屏的最终字符"。
+     * 如果它还是中/日/韩文字符，说明用户没切成英文输入法——
+     * 这时不该记一个错字（那是输入法问题，不是他拼错了），
+     * 而是要提示他切换输入法。
+     */
+    if (isNonLatinChar(ch)) {
+      set({ imeWarningSeq: get().imeWarningSeq + 1 });
+      return;
+    }
+
     const clean = normalizeChar(ch);
     const next = typeChar(typing, clean, Date.now(), strict);
     if (next === typing) return;
@@ -228,6 +250,7 @@ export const usePractice = create<PracticeState>((set, get) => ({
       submittedWrong: false,
       choices: [],
       choicePicked: null,
+      imeWarningSeq: 0,
     }),
 
   current: () => get().queue[get().index],

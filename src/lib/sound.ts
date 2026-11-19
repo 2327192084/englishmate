@@ -109,3 +109,21 @@ export function playFinishSound(volume = 0.3): void {
     osc.stop(t + 0.18);
   });
 }
+
+/**
+ * 打错时的触觉/震动反馈。
+ *
+ * 手机上 navigator.vibrate 有效；桌面与 Electron 里通常不存在，
+ * 因此静默跳过，不影响任何逻辑。
+ * 有系统「减少动态效果」偏好时不震动（该偏好也覆盖物理反馈的预期）。
+ */
+export function buzz(pattern: number | number[] = 35): void {
+  if (typeof window === 'undefined') return;
+  try {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    const nav = navigator as Navigator & { vibrate?: (p: number | number[]) => boolean };
+    nav.vibrate?.(pattern);
+  } catch {
+    /* 不支持就忽略 */
+  }
+}

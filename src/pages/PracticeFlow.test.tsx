@@ -449,4 +449,78 @@ describe('练习流程', () => {
       expect(st.typing.cursor).toBe(1);
     });
   });
+
+  describe('错误反馈与输入法提醒', () => {
+    it('打错时记录实际按的字符，供界面显示', async () => {
+      await startRound();
+      const word = usePractice.getState().current()!.w;
+      const area = screen.getByRole('application');
+      const wrongKey = word[0] === 'z' ? 'x' : 'z';
+
+      await act(async () => {
+        fireEvent.keyDown(area, { key: wrongKey });
+      });
+      const st = usePractice.getState();
+      expect(st.typing.lastWrongChar).toBe(wrongKey);
+      expect(st.typing.errorSeq).toBe(1);
+    });
+
+    it('打对后错误提示被清掉', async () => {
+      await startRound();
+      const word = usePractice.getState().current()!.w;
+      const area = screen.getByRole('application');
+      const wrongKey = word[0] === 'z' ? 'x' : 'z';
+
+      await act(async () => {
+        fireEvent.keyDown(area, { key: wrongKey });
+      });
+      await act(async () => {
+        fireEvent.keyDown(area, { key: word[0] });
+      });
+      expect(usePractice.getState().typing.lastWrongChar).toBeNull();
+    });
+
+    it('中文上屏会触发输入法提醒，且不记错', async () => {
+      await startRound();
+      const area = screen.getByRole('application');
+      const before = usePractice.getState();
+
+      await act(async () => {
+        fireEvent.compositionStart(area);
+      });
+      await act(async () => {
+        fireEvent.compositionEnd(area, { data: '中文' });
+      });
+      await act(async () => {
+        await new Promise((r) => setTimeout(r, 20));
+      });
+
+      const after = usePractice.getState();
+      // 提醒序号递增
+      expect(after.imeWarningSeq).toBeGreaterThan(before.imeWarningSeq);
+      // 但不该记错、不该推进光标
+      expect(after.wordMistakes).toBe(0);
+      expect(after.typing.cursor).toBe(0);
+    });
+
+    it('英文正常上屏不触发输入法提醒', async () => {
+      await startRound();
+      const area = screen.getByRole('application');
+      const word = usePractice.getState().current()!.w;
+      const before = usePractice.getState().imeWarningSeq;
+
+      await act(async () => {
+        fireEvent.compositionStart(area);
+      });
+      await act(async () => {
+        fireEvent.compositionEnd(area, { data: word });
+      });
+      await act(async () => {
+        await new Promise((r) => setTimeout(r, 20));
+      });
+
+      expect(usePractice.getState().imeWarningSeq).toBe(before);
+      expect(usePractice.getState().typing.cursor).toBe(word.length);
+    });
+  });
 });

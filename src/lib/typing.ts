@@ -25,6 +25,15 @@ export interface TypingState {
   lastError: boolean;
   /** 非严格模式下，曾打错过的字符位置（退格改对后会被移除） */
   wrongAt: number[];
+  /**
+   * 刚刚打错的字符（用户实际按的键）。
+   * 光标位置没变，所以必须把它单独存下来才能显示给用户看——
+   * 否则用户只看到"没反应"，不知道自己按错了什么。
+   * null 表示当前没有待展示的错误。
+   */
+  lastWrongChar: string | null;
+  /** 错误提示的递增序号，用来触发重放动画（同一个错字连按也要再震一次） */
+  errorSeq: number;
 }
 
 export function initTyping(target: string): TypingState {
@@ -37,6 +46,8 @@ export function initTyping(target: string): TypingState {
     finishedAt: null,
     lastError: false,
     wrongAt: [],
+    lastWrongChar: null,
+    errorSeq: 0,
   };
 }
 
@@ -81,6 +92,8 @@ export function typeChar(s: TypingState, ch: string, now: number, strict = true)
       keystrokes,
       startedAt,
       lastError: false,
+      // 打对了就把错误提示收掉，避免旧错字挂在屏幕上误导
+      lastWrongChar: null,
       finishedAt: cursor >= s.target.length ? now : null,
     };
   }
@@ -95,6 +108,8 @@ export function typeChar(s: TypingState, ch: string, now: number, strict = true)
       errors: s.errors + 1,
       startedAt,
       lastError: true,
+      lastWrongChar: ch,
+      errorSeq: s.errorSeq + 1,
       wrongAt: [...s.wrongAt, s.cursor],
       finishedAt: cursor >= s.target.length ? now : null,
     };
@@ -106,6 +121,8 @@ export function typeChar(s: TypingState, ch: string, now: number, strict = true)
     errors: s.errors + 1,
     startedAt,
     lastError: true,
+    lastWrongChar: ch,
+    errorSeq: s.errorSeq + 1,
   };
 }
 
@@ -125,12 +142,33 @@ export function typeBackspace(s: TypingState): TypedResult {
     ...s,
     cursor: s.cursor - 1,
     lastError: false,
+    // 用户开始改正了，错误提示收掉
+    lastWrongChar: null,
     wrongAt,
     finishedAt: canReopen ? null : s.finishedAt,
   };
 }
 
 type TypedResult = TypingState;
+
+/**
+ * 判断这个字符是不是"英文键盘应该能直接打出来的"。
+ *
+ * 用途：识别用户是不是开着中文/日文等非英文输入法。
+ * 判据是「非 ASCII 且不是常见标点」——中文、日文、韩文、俄文等都会命中。
+ */
+export function isNonLatinChar(ch: string): boolean {
+  if (!ch) return false;
+  const code = ch.codePointAt(0) ?? 0;
+  // ASCII 直接放行
+  if (code < 0x80) return false;
+  // 全角 ASCII 已由 normalizeChar 处理，不算"非英文输入法"
+  if (code >= 0xff01 && code <= 0xff5e) return false;
+  // 常见全角标点/符号放行（用户可能打逗号句号）
+  if (/^[\u3000-\u303f\u2010-\u205e\uff00-\uffef]$/.test(ch)) return false;
+  // 其余非 ASCII 视为非拉丁输入（中日韩等）
+  return true;
+}
 
 /**
  * 归一化输入字符：弯引号/破折号 → 键盘可打的形式，全角 → 半角。

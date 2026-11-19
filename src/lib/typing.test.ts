@@ -10,6 +10,7 @@ import {
   isWrongAt,
   noUnfixedErrors,
   sameChar,
+  isNonLatinChar,
 } from './typing';
 import { computeAccuracy, computeWpm } from './stats';
 
@@ -226,5 +227,88 @@ describe('WPM 与正确率', () => {
   it('正确率是正确击键 / 总击键', () => {
     expect(computeAccuracy(90, 100)).toBe(0.9);
     expect(computeAccuracy(100, 100)).toBe(1);
+  });
+
+  describe('打错时的可见反馈', () => {
+    it('记录用户实际按错的字符', () => {
+      let s = initTyping('cat');
+      s = typeChar(s, 'x', 1000);
+      expect(s.lastWrongChar).toBe('x');
+      expect(s.lastError).toBe(true);
+    });
+
+    it('每次打错都递增 errorSeq，便于重放动画', () => {
+      let s = initTyping('cat');
+      s = typeChar(s, 'x', 1000);
+      expect(s.errorSeq).toBe(1);
+      s = typeChar(s, 'y', 1100); // 再错一次，同一个位置
+      expect(s.errorSeq).toBe(2);
+      expect(s.lastWrongChar).toBe('y'); // 显示最新的错字
+    });
+
+    it('打对后清掉错误提示', () => {
+      let s = initTyping('cat');
+      s = typeChar(s, 'x', 1000);
+      s = typeChar(s, 'c', 1100);
+      expect(s.lastWrongChar).toBeNull();
+      expect(s.lastError).toBe(false);
+    });
+
+    it('退格也清掉错误提示（用户开始改正了）', () => {
+      let s = initTyping('cat');
+      s = typeChar(s, 'c', 1000);
+      s = typeChar(s, 'x', 1100);
+      s = typeBackspace(s);
+      expect(s.lastWrongChar).toBeNull();
+    });
+
+    it('非严格模式同样记录错字与序号', () => {
+      let s = initTyping('ab');
+      s = typeChar(s, 'x', 1000, false);
+      expect(s.lastWrongChar).toBe('x');
+      expect(s.errorSeq).toBe(1);
+      expect(s.wrongAt).toEqual([0]);
+    });
+
+    it('错误次数累积但提示只显示当前错字', () => {
+      let s = initTyping('abc');
+      s = typeChar(s, 'x', 1000);
+      s = typeChar(s, 'y', 1100);
+      expect(s.errors).toBe(2);
+      expect(s.lastWrongChar).toBe('y');
+    });
+  });
+
+  describe('非英文输入法识别', () => {
+    it('中文字符算非拉丁', () => {
+      expect(isNonLatinChar('中')).toBe(true);
+      expect(isNonLatinChar('你')).toBe(true);
+    });
+
+    it('日文与韩文算非拉丁', () => {
+      expect(isNonLatinChar('あ')).toBe(true);
+      expect(isNonLatinChar('한')).toBe(true);
+    });
+
+    it('英文与数字不算', () => {
+      expect(isNonLatinChar('a')).toBe(false);
+      expect(isNonLatinChar('Z')).toBe(false);
+      expect(isNonLatinChar('1')).toBe(false);
+      expect(isNonLatinChar(' ')).toBe(false);
+    });
+
+    it('全角 ASCII 不算（那是全角模式，可归一处理）', () => {
+      expect(isNonLatinChar('ａ')).toBe(false);
+      expect(isNonLatinChar('Ｚ')).toBe(false);
+    });
+
+    it('常见全角标点不算', () => {
+      expect(isNonLatinChar('，')).toBe(false);
+      expect(isNonLatinChar('。')).toBe(false);
+    });
+
+    it('空字符不算', () => {
+      expect(isNonLatinChar('')).toBe(false);
+    });
   });
 });
