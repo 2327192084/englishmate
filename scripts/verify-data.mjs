@@ -123,27 +123,15 @@ async function checkDicts() {
     if (typeof meta.description !== 'string' || !meta.description.trim())
       fail(id, 'description 为空');
     /**
-     * source 必须能看出「从哪来」和「什么许可」。
+     * source 必须标注来源与许可。
      *
-     * 原来只认 `qwerty learner` 一种出处 —— 那是内置词库的来源，
-     * 但用户贡献的词库并不来自 Qwerty Learner，硬套这条会逼贡献者
-     * 写一句不真实的来源说明（或干脆放弃贡献）。
-     * 改为二选一：要么标注 Qwerty Learner，要么明确声明为用户贡献。
+     * 内置词库全部继承自 Qwerty Learner，因此这里要求出现其名称。
+     * （曾为配合「用户贡献」入口放宽过，该入口已移除，恢复严格校验。）
      */
-    if (typeof meta.source !== 'string' || !meta.source.trim()) {
-      fail(id, 'source 为空');
-    } else {
-      const src = meta.source;
-      const fromQwerty = /qwerty\s*learner/i.test(src);
-      const fromUser = /用户贡献|user\s*contribut/i.test(src);
-      if (!fromQwerty && !fromUser) {
-        fail(id, `source 未标注来源（需含 Qwerty Learner 或「用户贡献」）：${src}`);
-      }
+    if (typeof meta.source !== 'string' || !/qwerty\s*learner/i.test(meta.source)) {
+      fail(id, `source 未标注来源：${meta.source}`);
     }
-    // 许可标记接受半角与全角括号，避免贡献者因中英文括号被卡
-    if (!/[（(]MIT[)）]/.test(String(meta.source))) {
-      fail(id, 'source 未标注 MIT 许可');
-    }
+    if (!/\(MIT\)/.test(String(meta.source))) fail(id, 'source 未标注 MIT 许可');
 
     // 计数一致性
     if (words.length !== meta.count)

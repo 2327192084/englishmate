@@ -8,15 +8,7 @@ import { db, type CustomBank } from '@/db';
 import { listCustomBanks, loadBankIndex, CATEGORY_LABEL, invalidateCache } from '@/data/wordbanks';
 import type { UserWord, WordbankMeta, WordEntry } from '@/types';
 import { Chip, EmptyState, Segmented, Skeleton } from '@/components/ui';
-import {
-  IconArrowRight,
-  IconBook,
-  IconDownload,
-  IconStar,
-  IconTrash,
-  IconUpload,
-  IconVolume,
-} from '@/components/Icons';
+import { IconBook, IconStar, IconTrash, IconUpload, IconVolume } from '@/components/Icons';
 import { speak } from '@/lib/speech';
 import { useSettings } from '@/store/settings';
 
@@ -55,8 +47,6 @@ function BanksTab() {
   const userWords = useLiveQuery(() => db.userWords.toArray(), [], []);
   const fileRef = useRef<HTMLInputElement>(null);
   const [importMsg, setImportMsg] = useState<string | null>(null);
-  /** 众包入口的操作提示，与导入提示分开，避免互相覆盖 */
-  const [contribMsg, setContribMsg] = useState<string | null>(null);
 
   const load = async () => {
     const [idx, custom] = await Promise.all([loadBankIndex(), listCustomBanks()]);
@@ -141,57 +131,6 @@ function BanksTab() {
     await load();
   };
 
-  /**
-   * 把自定义词库转成官方词库的贡献格式（public/dicts/<id>.json 的结构）。
-   *
-   * 只做纯数据转换，不碰 DOM —— 这样「导出」和「提交」两条路共用同一份产物，
-   * 也方便单测直接对比结果。真正触发下载由 downloadJson 负责。
-   */
-  const buildContribution = async (meta: WordbankMeta): Promise<WordContributionExport> => {
-    const rawId = meta.id.slice('custom:'.length);
-    const row = await db.customBanks.get(rawId);
-    if (!row) throw new Error('词库数据已不存在，可能刚被删除');
-    return toWordContribution(row, meta);
-  };
-
-  /** 导出为贡献格式并触发浏览器下载 */
-  const handleExportContribution = async (meta: WordbankMeta) => {
-    setContribMsg(null);
-    try {
-      const contribution = await buildContribution(meta);
-      downloadJson(contribution.json, contribution.fileName);
-      setContribMsg(
-        `已导出 ${contribution.meta.count} 个词条，可提交到 GitHub Issues 或放进 public/dicts/。` +
-          (contribution.warnings.length ? ` 注意：${contribution.warnings.join('；')}` : ''),
-      );
-    } catch (e) {
-      setContribMsg(e instanceof Error ? `导出失败：${e.message}` : '导出失败');
-    }
-  };
-
-  /** 拼一个预填好标题/正文的 GitHub Issue 并打开（不经过任何后端） */
-  const handleSubmitToGitHub = async (meta: WordbankMeta) => {
-    setContribMsg(null);
-    try {
-      const contribution = await buildContribution(meta);
-      const url = buildIssueUrl(contribution);
-      const win = window.open(url, '_blank', 'noopener,noreferrer');
-      // 被弹窗拦截时给出可点击的备用提示，而不是静默失败
-      if (!win) {
-        setContribMsg(`提交页被浏览器拦截了，请手动打开：${url}`);
-        return;
-      }
-      // Issue 正文里请用户粘贴 JSON，所以这里顺手把文件也导出到下载目录
-      downloadJson(contribution.json, contribution.fileName);
-      setContribMsg(
-        `已打开 GitHub 提交页，同时导出了 JSON 文件（${contribution.fileName}），` +
-          '请把文件内容粘贴进 Issue 正文的代码块里。',
-      );
-    } catch (e) {
-      setContribMsg(e instanceof Error ? `打开提交页失败：${e.message}` : '打开提交页失败');
-    }
-  };
-
   if (!banks) {
     return (
       <div className="grid gap-2 sm:grid-cols-2">
@@ -228,12 +167,6 @@ function BanksTab() {
       {importMsg && (
         <div className="mb-3 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-accent">
           {importMsg}
-        </div>
-      )}
-
-      {contribMsg && (
-        <div className="mb-3 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-accent">
-          {contribMsg}
         </div>
       )}
 
@@ -283,30 +216,6 @@ function BanksTab() {
                 </span>
               </div>
               <div className="text-[10px] text-muted/60">{CATEGORY_LABEL[b.category]}</div>
-
-              {/* 众包入口：只有自定义词库能导出回馈社区，内置词库的来源已固定 */}
-              {isCustom && (
-                <div className="flex flex-wrap items-center gap-1 border-t border-line pt-2">
-                  <button
-                    type="button"
-                    onClick={() => void handleExportContribution(b)}
-                    className="tf-btn px-2 py-1 text-[10px]"
-                    title="导出成可直接提交给官方的词库 JSON"
-                  >
-                    <IconDownload width={11} height={11} />
-                    导出为贡献格式
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => void handleSubmitToGitHub(b)}
-                    className="tf-btn px-2 py-1 text-[10px]"
-                    title="在 GitHub 上开一个 Issue，附上导出的 JSON"
-                  >
-                    <IconArrowRight width={11} height={11} />
-                    提交到 GitHub
-                  </button>
-                </div>
-              )}
             </div>
           );
         })}
@@ -469,204 +378,4 @@ function normalizeEntry(raw: unknown): WordEntry | null {
   if (!t) return null;
   const p = typeof r.p === 'string' && r.p.trim() ? r.p.trim() : undefined;
   return { w, t, ...(p ? { p } : {}) };
-}
-
-/* ------------------------- 词库众包：导出与提交 -------------------------
- *
- * 用户自己攒的词表往往是最有价值的贡献源，但导入后只能自己用。
- * 这里把自定义词库转成**官方词库的贡献格式**（public/dicts/<id>.json 的结构），
- * 再借 GitHub Issues 当提交入口——不需要自建后端。
- *
- * 下面的函数全部是纯函数（除了 downloadIssue/downloadJson 这类 DOM 操作），
- * 目的是让「导出的文件能不能过 scripts/verify-data.mjs」这件事可被直接验证。
- */
-
-/**
- * 贡献文件的结构，必须与 public/dicts/<id>.json 完全一致。
- *
- * 注意 meta 的**字段集合与顺序**都是硬约束：
- * - 字段集合：verify-data.mjs 要求恰好是 category/count/description/id/name/source 六个；
- * - 字段顺序：index.json 里的 bank 条目要和单文件 meta 做 JSON.stringify 全等比较，
- *   所以两边必须用同一套插入顺序（本顺序与现有 16 个词库一致）。
- */
-export interface WordContributionFile {
-  meta: WordbankMeta;
-  words: WordEntry[];
-}
-
-/** 一次导出的完整产物：文件对象 + 文本 + 建议文件名 + 给用户的提醒 */
-export interface WordContributionExport {
-  meta: WordbankMeta;
-  file: WordContributionFile;
-  json: string;
-  fileName: string;
-  /** 会导致 CI 红灯或维护者退回的问题，导出时直接告诉用户 */
-  warnings: string[];
-}
-
-/**
- * 贡献文件的 source 文案。
- *
- * 必须同时满足 scripts/verify-data.mjs 的两条硬检查（该脚本只读、不能改）：
- *   1. 含 `qwerty learner`（大小写不敏感）——沿用上游词库的格式与字段规范；
- *   2. 含半角 `(MIT)` ——许可必须标清楚。
- * 所以这里既写明「用户贡献」这个真实出处，也说明格式继承自 Qwerty Learner。
- */
-const CONTRIBUTION_SOURCE = '用户贡献 (MIT) · 词库格式与字段规范沿用 Qwerty Learner (MIT)';
-
-/** 词条数下限，与 verify-data.mjs 的 MIN_WORDS 保持一致 */
-const MIN_CONTRIBUTION_WORDS = 100;
-
-/**
- * 生成贡献用的词库 id（同时也是文件名）。
- *
- * verify-data.mjs 会断言 meta.id 与文件名一致，且文件按 `<id>.json` 拼路径，
- * 所以这里只产 ASCII 小写字母/数字/连字符；纯中文名生成不出 ASCII 时
- * 退回词库的本地主键（DB 里天然唯一）。
- */
-export function contributionIdFor(bank: CustomBank): string {
-  const ascii = bank.name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-  const raw = ascii.length >= 2 ? `user-${ascii}` : `user-${bank.id}`;
-  return (
-    raw
-      .replace(/[^a-z0-9-]/g, '')
-      .slice(0, 48)
-      .replace(/-+$/g, '') || 'user-custom'
-  );
-}
-
-/** 音标是否满足 verify-data.mjs 的要求：形如 /…/ 且长度 ≥ 3 */
-function isVerifiedPhonetic(p: string): boolean {
-  return p.length >= 3 && p.startsWith('/') && p.endsWith('/');
-}
-
-/**
- * 把一条自定义词条清洗成合法词条；不合法返回 null。
- *
- * 对应 verify-data.mjs 的逐条检查：w 非空且首尾无空白、长度 ≤ 64、不含换行、
- * t 非空、p 要么省略要么形如 /…/。
- */
-function cleanWordEntry(word: { w: string; t: string; p?: string }): WordEntry | null {
-  const w = String(word?.w ?? '').trim();
-  const t = String(word?.t ?? '')
-    .trim()
-    .replace(/\s+/g, ' ');
-  if (!w || w.length > 64 || /[\r\n]/.test(w)) return null;
-  if (!t) return null;
-  const p = typeof word?.p === 'string' ? word.p.trim() : '';
-  // 音标不合规就丢掉这个字段，而不是让整份文件校验失败
-  return { w, t, ...(isVerifiedPhonetic(p) ? { p } : {}) };
-}
-
-/**
- * 自定义词库 → 贡献格式（纯函数，不碰 DOM / 数据库）。
- *
- * 负责三件事：去重（大小写不敏感）、清洗非法词条、按契约填好 meta。
- */
-export function toWordContribution(bank: CustomBank, meta: WordbankMeta): WordContributionExport {
-  const seen = new Set<string>();
-  const words: WordEntry[] = [];
-  let dropped = 0;
-
-  for (const raw of bank.words ?? []) {
-    const entry = cleanWordEntry(raw);
-    if (!entry) {
-      dropped += 1;
-      continue;
-    }
-    const key = entry.w.toLowerCase();
-    if (seen.has(key)) {
-      dropped += 1;
-      continue;
-    }
-    seen.add(key);
-    words.push(entry);
-  }
-
-  const id = contributionIdFor(bank);
-  const contributionMeta: WordbankMeta = {
-    id,
-    name: (meta.name || bank.name || '用户贡献词库').trim().slice(0, 60),
-    category: 'basic',
-    description:
-      (meta.description || bank.description || `用户贡献的 ${words.length} 词词表`)
-        .trim()
-        .slice(0, 200) || `用户贡献的 ${words.length} 词词表`,
-    count: words.length,
-    source: CONTRIBUTION_SOURCE,
-  };
-
-  const file: WordContributionFile = { meta: contributionMeta, words };
-
-  const warnings: string[] = [];
-  if (dropped > 0) warnings.push(`已丢弃 ${dropped} 条重复或不合规的词条`);
-  if (words.length < MIN_CONTRIBUTION_WORDS) {
-    warnings.push(
-      `只有 ${words.length} 个词条，低于官方下限 ${MIN_CONTRIBUTION_WORDS}，` +
-        `直接合并会校验失败（更适合作为内容补充提交）`,
-    );
-  }
-
-  return {
-    meta: contributionMeta,
-    file,
-    // 2 空格缩进 + 结尾换行：便于维护者 review 与 git diff
-    json: `${JSON.stringify(file, null, 2)}\n`,
-    fileName: `${id}.json`,
-    warnings,
-  };
-}
-
-/** 用 Blob + createObjectURL 触发下载（与 SettingsPage 的备份导出同一套写法） */
-function downloadJson(json: string, fileName: string): void {
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = fileName;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-/** 项目 Issues 新建页，正文用 query 预填，不需要任何后端 */
-const ISSUE_NEW_URL = 'https://github.com/2327192084/englishmate/issues/new';
-
-/**
- * 拼 GitHub Issue 的预填 URL。
- *
- * 正文里必须写清词库名与词条数（便于维护者先判断价值），
- * 并明确提示用户把导出的 JSON **粘贴在下面**——Issue 正文无法附件上传文件内容。
- */
-export function buildIssueUrl(contribution: WordContributionExport): string {
-  const { meta, warnings } = contribution;
-  const lines = [
-    `## 词库名`,
-    meta.name,
-    '',
-    `## 词条数`,
-    `${meta.count} 条`,
-    '',
-    `## 建议的 id 与文件名`,
-    `public/dicts/${meta.id}.json`,
-    '',
-    `## 许可`,
-    `本人原创或有权分发，同意以 MIT 许可并入本项目。`,
-    '',
-    `## 词库简介`,
-    meta.description,
-    '',
-    ...(warnings.length ? ['## 自查提醒', ...warnings.map((w) => `- ${w}`), ''] : []),
-    `## 请把导出的 JSON 文件内容粘贴在下面`,
-    '',
-    '```json',
-    '（在这里粘贴 ' + contribution.fileName + ' 的全部内容）',
-    '```',
-    '',
-    '> 导出的文件已按 public/dicts/<id>.json 的格式生成，`meta.count` 与 `words.length` 已对齐。',
-  ];
-  const title = `[词库贡献] ${meta.name}（${meta.count} 词）`;
-  return `${ISSUE_NEW_URL}?title=${encodeURIComponent(title)}&body=${encodeURIComponent(lines.join('\n'))}`;
 }
