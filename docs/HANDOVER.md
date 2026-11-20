@@ -14,9 +14,9 @@
 |---|---|
 | 代码规模 | 约 11,000 行 TS/TSX + 6,000 行构建脚本 |
 | 测试 | 278 个，14 个文件，全绿 |
-| 词库 | 16 个 / 51,702 词条 |
+| 词库 | 16 个 / 55,560 词条 |
 | 文章 | 75 篇 / 490 句 |
-| 例句 | 53,882 条中英对照（覆盖 59% 词条） |
+| 例句 | 57,257 条中英对照（覆盖 58.2% 词条） |
 | 词关系 | 14,959 词（词形变化 + 形近易混） |
 | 产物 | JS 533KB（gzip 176KB）+ CSS 25KB |
 
@@ -116,15 +116,16 @@ node scripts/verify-data.mjs   # 数据契约（16 库 / 75 篇）
 | `scripts/build-sentences.mjs` | Tatoeba 离线 join 出例句 | **1 分钟**（扫 204 万句） |
 | `scripts/build-rich-dicts.mjs` | 补词性释义 + 例句 | 几分钟 |
 | `scripts/build-word-graph.mjs` | 挖词形变化 + 形近词 | 约 1 分钟 |
-| `scripts/build-articles.mjs` | 生成文章语料 | 依赖 `.tmp/articles-work/` |
+| `scripts/build-articles.mjs` | 生成文章语料 | 依赖 `data/articles-work/`（已进仓库） |
 
 **缓存都在 `.tmp/`**（已 gitignore），重跑不必重新下载：
 - `.tmp/rich-cache/ecdict.csv` — 63MB，ECDICT 完整数据
 - `.tmp/rich-cache/eng_sentences.tsv` 等 — Tatoeba 导出包
 - `.tmp/dicts.json` — Qwerty Learner 380 个词库的 sha 列表
 
-> ⚠️ 但 `.tmp/articles-work/` 里的**文章译稿是构建输入**，如果 `.tmp` 被清空，
-> `build-articles.mjs` 就跑不了了。**建议把译稿移到仓库内**（这是待办）。
+> ✅ 文章译稿已移入仓库 `data/articles-work/`（classics.json + zh-batch-01..07.json，共 132KB），
+> 别人 clone 后可以直接跑 `build-articles.mjs`。`.tmp/articles-work/` 里剩下的 16MB
+> 是试验脚本与中间产物，不需要进仓库；`.tmp` 被清空不影响文章构建。
 
 ---
 
@@ -172,7 +173,7 @@ node scripts/verify-data.mjs   # 数据契约（16 库 / 75 篇）
 | FSRS 间隔重复 | 完整实现 |
 | 抗休眠计时 | 空闲暂停 + 休眠不计时 |
 | 错词本/收藏/已掌握 | 收藏已真正参与调度 |
-| 16 个词库 + 自定义导入 | 51,702 词条 |
+| 16 个词库 + 自定义导入 | 55,560 词条 |
 | 75 篇文章 + 自定义文章导入 | 三种格式解析 + GBK 检测 |
 | 词形变化/形近词 | 14,959 词，练习界面提示 + 详情面板 |
 | 学习报告导出 | SVG / PDF |
@@ -206,11 +207,11 @@ AI 功能（要 API Key 或自训）、云同步（要后端）、排行榜（�
 
 ---
 
-## 九、两个待办事项
+## 九、待办事项
 
-1. **`.tmp/articles-work/` 的译稿应移入仓库**
-   现在文章构建依赖这个目录，但它被 gitignore 了。别人 clone 后跑不了 `build-articles.mjs`。
-   建议移到 `data/articles-work/`（不进 public，只是构建输入）。
+1. ~~**`.tmp/articles-work/` 的译稿应移入仓库**~~ ✅ 2026-11-21 已完成
+   译稿已迁到 `data/articles-work/`（8 个文件，132KB），`build-articles.mjs` 的 `WORK` 常量已指向新路径，
+   `node scripts/build-articles.mjs --check` 通过（75 篇 / 490 句）。别人 clone 后可直接构建文章。
 
 2. **桌面版安装目录名未跟随改名**
    程序还叫 `TypeFlow.exe`，装在 `%LOCALAPPDATA%\Programs\TypeFlow`。

@@ -146,6 +146,14 @@ async function startRound() {
         .filter(Boolean);
       throw new Error('找不到开始按钮，现有按钮: ' + JSON.stringify(all));
     }
+    /**
+     * 必须等到按钮可用再点。
+     * 按钮一渲染出来就带着「开始」，但此时 PracticePage 的初始化 effect 可能
+     * 还没跑完（bankId 仍是空串），按钮是 disabled 的——fireEvent.click 打
+     * 在一个 disabled 按钮上不会触发任何东西，于是干等到 5 秒超时失败。
+     * 这是个真实存在过的随机失败（跑 5 次挂 2 次），不是实现问题。
+     */
+    expect(btn).not.toBeDisabled();
     return btn;
   });
   await act(async () => {
