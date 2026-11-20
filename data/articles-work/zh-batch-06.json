@@ -1,0 +1,212 @@
+[
+  {
+    "id": "aesop-boy-and-filberts",
+    "title": "The Boy and the Filberts",
+    "titleZh": "男孩与榛子",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Boy put his hand into a jar of Filberts, and grasped as many as his fist could possibly hold.",
+        "zh": "一个男孩把手伸进装榛子的罐子，一把抓了满满一手。"
+      },
+      {
+        "en": "But when he tried to pull it out again, he found he couldn't do so …",
+        "zh": "可他想把手抽回来时，却怎么也不行……"
+      },
+      {
+        "en": "… for the neck of the jar was too small to allow of the passage of so large a handful.",
+        "zh": "……罐口太窄，那么一大把榛子过不去。"
+      },
+      {
+        "en": "Unwilling to lose his nuts but unable to withdraw his hand, he burst into tears.",
+        "zh": "榛子舍不得丢，手又抽不出，他急得哭了起来。"
+      },
+      {
+        "en": "A bystander, who saw where the trouble lay, said to him, \"Come, my boy, don't be so greedy …",
+        "zh": "旁边有人看出了毛病在哪儿，对他说：“好啦，孩子，别这么贪……"
+      },
+      {
+        "en": "… be content with half the amount, and you'll be able to get your hand out without difficulty.\"",
+        "zh": "……拿一半就够了，手自然就出来了。”"
+      },
+      {
+        "en": "Do not attempt too much at once.",
+        "zh": "一次别想拿太多。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-fox-without-tail",
+    "title": "The Fox Without a Tail",
+    "titleZh": "丢了尾巴的狐狸",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A fox once fell into a trap, and after a struggle managed to get free, but with the loss of his brush.",
+        "zh": "一只狐狸掉进陷阱，挣扎一番总算脱了身，尾巴却丢了。"
+      },
+      {
+        "en": "He was then so much ashamed of his appearance that he thought life was not worth living unless he could persuade the other Foxes to part …",
+        "zh": "它觉得自己这副模样实在难看，心想：除非能劝别的狐狸也把尾巴……"
+      },
+      {
+        "en": "… with their tails also, and thus divert attention from his own loss.",
+        "zh": "……都舍掉，把注意力从自己身上引开，否则这日子没法过。"
+      },
+      {
+        "en": "So he called a meeting of all the Foxes, and advised them to cut off their tails …",
+        "zh": "于是它召集了全体狐狸，劝大家把尾巴都割掉……"
+      },
+      {
+        "en": "… \"They're ugly things anyhow,\" he said, \"and besides they're heavy, and it's tiresome to be always carrying them about with you.\"",
+        "zh": "它说：“这东西本来就难看，又沉，整天拖在身上多累赘。”"
+      },
+      {
+        "en": "But one of the other Foxes said, \"My friend, if you hadn't lost your own tail, you wouldn't be so keen on getting us to cut off ours.\"",
+        "zh": "另一只狐狸却说：“朋友，你要是没丢自己的尾巴，才不会这么热心劝我们割呢。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-blacksmith-and-dog",
+    "title": "The Blacksmith and His Dog",
+    "titleZh": "铁匠与狗",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Blacksmith had a little Dog, which used to sleep when his master was at work, but was very wide awake indeed when it was time for meals.",
+        "zh": "一个铁匠养了条小狗。主人干活时它就睡觉，一到吃饭的点儿倒是清醒得很。"
+      },
+      {
+        "en": "One day his master pretended to be disgusted at this …",
+        "zh": "有一天，主人装作看不下去的样子……"
+      },
+      {
+        "en": "… and when he had thrown him a bone as usual, he said, \"What on earth is the good of a lazy cur like you?",
+        "zh": "……照旧扔给它一根骨头，说：“你这么条懒狗，到底有什么用？"
+      },
+      {
+        "en": "When I am hammering away at my anvil, you just curl up and go to sleep …",
+        "zh": "我在铁砧上叮叮当当干活的时候，你就蜷起来睡大觉……"
+      },
+      {
+        "en": "… but no sooner do I stop for a mouthful of food than you wake up and wag your tail to be fed.\"",
+        "zh": "……可我只要一停下来吃口东西，你立马就醒，摇着尾巴要吃的。”"
+      },
+      {
+        "en": "Those who will not work deserve to starve.",
+        "zh": "不肯干活的，活该挨饿。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-eagle-and-captor",
+    "title": "The Eagle and His Captor",
+    "titleZh": "鹰与捉它的人",
+    "level": "考研",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Man once caught an Eagle, and after clipping his wings turned him loose among the fowls in his hen-house, where he moped in a corner …",
+        "zh": "有人捉住一只鹰，剪了它的翅膀，把它丢进鸡棚里跟鸡待在一处。它缩在角落里发呆……"
+      },
+      {
+        "en": "… looking very dejected and forlorn.",
+        "zh": "……一副丧气落魄的样子。"
+      },
+      {
+        "en": "After a while his Captor was glad enough to sell him to a neighbour, who took him home and let his wings grow again.",
+        "zh": "过了些日子，捉它的人乐得把它卖给一个邻居；邻居带回家，任它重新长出羽翼。"
+      },
+      {
+        "en": "As soon as he had recovered the use of them, the Eagle flew out and caught a hare, which he brought home and presented to his benefactor.",
+        "zh": "翅膀一能用了，鹰就飞出去抓了一只野兔，带回来送给这位恩人。"
+      },
+      {
+        "en": "A fox observed this, and said to the Eagle, \"Don't waste your gifts on him!",
+        "zh": "一只狐狸看在眼里，对鹰说：“别把心思花在他身上！"
+      },
+      {
+        "en": "Go and give them to the man who first caught you …",
+        "zh": "去送给当初捉住你的那个人……"
+      },
+      {
+        "en": "… make him your friend, and then perhaps he won't catch you and clip your wings a second time.\"",
+        "zh": "……跟他交个朋友，这样他说不定就不会再捉你一次、再剪一次你的翅膀了。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-she-goats-and-beards",
+    "title": "The She-Goats and Their Beards",
+    "titleZh": "母山羊与胡须",
+    "level": "雅思",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "Jupiter granted beards to the She-Goats at their own request, much to the disgust of the he-Goats …",
+        "zh": "母山羊们自己请求长胡子，朱庇特就准了。这让公山羊们十分不满……"
+      },
+      {
+        "en": "… who considered this to be an unwarrantable invasion of their rights and dignities.",
+        "zh": "……它们觉得这是对自家权利和体面的无理侵夺。"
+      },
+      {
+        "en": "So they sent a deputation to him to protest against his action.",
+        "zh": "于是它们派了个代表去见朱庇特，抗议这一决定。"
+      },
+      {
+        "en": "He, however, advised them not to raise any objections.",
+        "zh": "朱庇特却劝它们不必反对。"
+      },
+      {
+        "en": "\"What's in a tuft of hair?\" said he.",
+        "zh": "“一撮毛算什么？”他说。"
+      },
+      {
+        "en": "\"Let them have it if they want it.",
+        "zh": "“她们想要，就让她们留着。"
+      },
+      {
+        "en": "They can never be a match for you in strength.\"",
+        "zh": "论力气，她们永远比不上你们。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-shipwrecked-man-and-sea",
+    "title": "The Shipwrecked Man and the Sea",
+    "titleZh": "遇难者与大海",
+    "level": "考研",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Shipwrecked Man cast up on the beach fell asleep after his struggle with the waves.",
+        "zh": "一个遇难的人被浪冲上海滩，跟波涛搏斗了一场，就睡着了。"
+      },
+      {
+        "en": "When he woke up, he bitterly reproached the Sea for its treachery in enticing men with its smooth and smiling surface …",
+        "zh": "醒来后，他痛骂大海阴险：先用平静含笑的水面把人诱来……"
+      },
+      {
+        "en": "… and then, when they were well embarked, turning in fury upon them and sending both ship and sailors to destruction.",
+        "zh": "……等人都上了船，又翻脸发怒，把船和船上的人一并葬送。"
+      },
+      {
+        "en": "The Sea arose in the form of a woman, and replied, \"Lay not the blame on me, O sailor, but on the Winds.",
+        "zh": "大海化作一个女子现身，答道：“水手啊，别怪我，去怪风吧。"
+      },
+      {
+        "en": "By nature I am as calm and safe as the land itself …",
+        "zh": "我本性就跟陆地一样平静可靠……"
+      },
+      {
+        "en": "… but the Winds fall upon me with their gusts and gales, and lash me into a fury that is not natural to me.\"",
+        "zh": "……是风一阵阵扑上来，把我抽打得狂怒——那份狂暴本不是我的性子。”"
+      }
+    ]
+  }
+]

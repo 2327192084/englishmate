@@ -1,0 +1,394 @@
+[
+  {
+    "id": "aesop-bat-and-weasels",
+    "title": "The Bat and the Weasels",
+    "titleZh": "蝙蝠与黄鼠狼",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Bat fell to the ground and was caught by a Weasel, and was just going to be killed and eaten when it begged to be let go.",
+        "zh": "一只蝙蝠掉到地上，被黄鼠狼捉住了。眼看就要被弄死吃掉，它哀求放它一条生路。"
+      },
+      {
+        "en": "The Weasel said he couldn't do that because he was an enemy of all birds on principle.",
+        "zh": "黄鼠狼说这不行，因为他天生就是一切鸟类的敌人。"
+      },
+      {
+        "en": "\"Oh, but,\" said the Bat, \"I'm not a bird at all: I'm a mouse.\"",
+        "zh": "“哦，可我不是鸟啊，”蝙蝠说，“我是老鼠。”"
+      },
+      {
+        "en": "\"So you are,\" said the Weasel, \"now I come to look at you\"; and he let it go.",
+        "zh": "“可不是嘛，”黄鼠狼说，“这么一瞧，还真是。”于是把它放了。"
+      },
+      {
+        "en": "Some time after this the Bat was caught in just the same way by another Weasel, and, as before, begged for its life.",
+        "zh": "过了些日子，蝙蝠又以同样的方式被另一只黄鼠狼捉住，它照旧求饶保命。"
+      },
+      {
+        "en": "\"No,\" said the Weasel, \"I never let a mouse go by any chance.\"",
+        "zh": "“不行，”黄鼠狼说，“我从不放过任何一只老鼠。”"
+      },
+      {
+        "en": "\"But I'm not a mouse,\" said the Bat; \"I'm a bird.\"",
+        "zh": "“可我不是老鼠，”蝙蝠说，“我是鸟。”"
+      },
+      {
+        "en": "\"Why, so you are,\" said the Weasel; and he too let the Bat go.",
+        "zh": "“咦，还真是。”黄鼠狼说着，也把蝙蝠放了。"
+      },
+      {
+        "en": "Look and see which way the wind blows before you commit yourself.",
+        "zh": "先看清风向，再决定自己站哪一边。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-dog-cock-and-fox",
+    "title": "The Dog, the Cock, and the Fox",
+    "titleZh": "狗、公鸡与狐狸",
+    "level": "考研",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Dog and a Cock became great friends, and agreed to travel together.",
+        "zh": "一条狗和一只公鸡成了好朋友，说好一起出门远行。"
+      },
+      {
+        "en": "At nightfall the Cock flew up into the branches of a tree to roost, while the Dog curled himself up inside the trunk, which was hollow.",
+        "zh": "天黑时，公鸡飞上树枝栖息，狗就蜷在空心的树干里。"
+      },
+      {
+        "en": "At break of day the Cock woke up and crew, as usual.",
+        "zh": "天一亮，公鸡醒来，照例打起鸣来。"
+      },
+      {
+        "en": "A Fox heard, and, wishing to make a breakfast of him, came and stood under the tree and begged him to come down.",
+        "zh": "一只狐狸听见了，想拿它当早饭，便走到树下，请公鸡下来。"
+      },
+      {
+        "en": "\"I should so like,\" said he, \"to make the acquaintance of one who has such a beautiful voice.\"",
+        "zh": "狐狸说：“嗓子这么好的人，我真想结识一下。”"
+      },
+      {
+        "en": "The Cock replied, \"Would you just wake my porter who sleeps at the foot of the tree?",
+        "zh": "公鸡答道：“那你能不能先叫醒睡在树根那儿的门房？"
+      },
+      {
+        "en": "He'll open the door and let you in.\"",
+        "zh": "他会开门让你进来的。”"
+      },
+      {
+        "en": "The Fox accordingly rapped on the trunk, when out rushed the Dog and tore him in pieces.",
+        "zh": "狐狸便去敲树干，狗猛地冲出来，把它撕成了碎片。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-crab-and-mother",
+    "title": "The Crab and His Mother",
+    "titleZh": "螃蟹母子",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "An Old Crab said to her son, \"Why do you walk sideways like that, my son?",
+        "zh": "老螃蟹对儿子说：“孩子，你怎么老是横着走？"
+      },
+      {
+        "en": "You ought to walk straight.\"",
+        "zh": "你该直着走才对。”"
+      },
+      {
+        "en": "The Young Crab replied, \"Show me how, dear mother, and I'll follow your example.\"",
+        "zh": "小螃蟹答道：“妈妈，您走给我看看，我照着学。”"
+      },
+      {
+        "en": "The Old Crab tried, but tried in vain, and then saw how foolish she had been to find fault with her child.",
+        "zh": "老螃蟹试了又试，怎么也走不直，这才明白自己挑孩子的毛病是多么可笑。"
+      },
+      {
+        "en": "Example is better than precept.",
+        "zh": "身教胜于言传。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-two-pots",
+    "title": "The Two Pots",
+    "titleZh": "两只罐子",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "Two Pots, one of earthenware and the other of brass, were carried away down a river in flood.",
+        "zh": "一只陶罐和一只铜罐，被洪水冲下了河。"
+      },
+      {
+        "en": "The Brazen Pot urged his companion to keep close by his side, and he would protect him.",
+        "zh": "铜罐劝同伴紧挨着自己走，说这样能护着它。"
+      },
+      {
+        "en": "The other thanked him, but begged him not to come near him on any account: \"For that,\" he said, \"is just what I am most afraid of.",
+        "zh": "陶罐谢过它，却求它千万别靠近：“因为，”它说，“我最怕的正是这个。"
+      },
+      {
+        "en": "One touch from you and I should be broken in pieces.\"",
+        "zh": "你只要碰我一下，我就碎了。”"
+      },
+      {
+        "en": "Equals make the best friends.",
+        "zh": "势均力敌，才做得成好伙伴。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-grasshopper-and-ants",
+    "title": "The Grasshopper and the Ants",
+    "titleZh": "蚱蜢与蚂蚁",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "One fine day in winter some Ants were busy drying their store of corn, which had got rather damp during a long spell of rain.",
+        "zh": "冬天的一个晴日，几只蚂蚁正忙着晾晒存粮——那场下了很久的雨把谷子浸得有些潮了。"
+      },
+      {
+        "en": "Presently up came a Grasshopper and begged them to spare her a few grains, \"For,\" she said, \"I'm simply starving.\"",
+        "zh": "不一会儿，一只蚱蜢过来，求它们分几粒谷子给它：“我实在是饿坏了。”"
+      },
+      {
+        "en": "The Ants stopped work for a moment, though this was against their principles.",
+        "zh": "蚂蚁们停下手里的活——虽然这有违它们一贯的做法。"
+      },
+      {
+        "en": "\"May we ask,\" said they, \"what you were doing with yourself all last summer?",
+        "zh": "它们问：“能问问吗，去年整个夏天你都在做什么？"
+      },
+      {
+        "en": "Why didn't you collect a store of food for the winter?\"",
+        "zh": "怎么不攒点过冬的粮食呢？”"
+      },
+      {
+        "en": "\"The fact is,\" replied the Grasshopper, \"I was so busy singing that I hadn't the time.\"",
+        "zh": "蚱蜢答道：“实话说，我忙着唱歌，没工夫。”"
+      },
+      {
+        "en": "\"If you spent the summer singing,\" replied the Ants, \"you can't do better than spend the winter dancing.\"",
+        "zh": "蚂蚁们说：“夏天既然用来唱歌，那冬天跳舞就再合适不过了。”"
+      },
+      {
+        "en": "And they chuckled and went on with their work.",
+        "zh": "说完，它们笑了笑，接着干活。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-hound-and-fox",
+    "title": "The Hound and the Fox",
+    "titleZh": "猎犬与狐狸",
+    "level": "雅思",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Hound, roaming in the forest, spied a lion, and being well used to lesser game, gave chase, thinking he would make a fine quarry.",
+        "zh": "一条猎犬在林子里游荡，望见一头狮子。它追惯了小家伙，便撵了上去，只当是碰上了好猎物。"
+      },
+      {
+        "en": "Presently the lion perceived that he was being pursued; so, stopping short, he rounded on his pursuer and gave a loud roar.",
+        "zh": "狮子很快察觉有东西在追它，猛地停住，转身对着追兵大吼一声。"
+      },
+      {
+        "en": "The Hound immediately turned tail and fled.",
+        "zh": "猎犬立刻掉头就跑。"
+      },
+      {
+        "en": "A Fox, seeing him running away, jeered at him and said, \"Ho! ho!",
+        "zh": "一只狐狸见它逃得狼狈，嘲笑说：“哟哟！"
+      },
+      {
+        "en": "There goes the coward who chased a lion and ran away the moment he roared!\"",
+        "zh": "这就是那位追狮子的好汉啊——狮子一吼，掉头就跑！”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-wolf-and-horse",
+    "title": "The Wolf and the Horse",
+    "titleZh": "狼与马",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Wolf on his rambles came to a field of oats, but, not being able to eat them, he was passing on his way when a Horse came along.",
+        "zh": "一只狼闲逛到一片燕麦地。它吃不了燕麦，正要走开，一匹马过来了。"
+      },
+      {
+        "en": "\"Look,\" said the Wolf, \"here's a fine field of oats.",
+        "zh": "“瞧，”狼说，“多好的一片燕麦。"
+      },
+      {
+        "en": "For your sake I have left it untouched, and I shall greatly enjoy the sound of your teeth munching the ripe grain.\"",
+        "zh": "我是看你的面子才没动它。我倒是很想听听你嚼这熟谷子的声响。”"
+      },
+      {
+        "en": "But the Horse replied, \"If wolves could eat oats, my fine friend, you would hardly have indulged your ears at the cost of your belly.\"",
+        "zh": "马答道：“好朋友，狼要是能吃燕麦，你就不会为了饱耳福而饿肚子了。”"
+      },
+      {
+        "en": "There is no virtue in giving to others what is useless to oneself.",
+        "zh": "把自己用不上的东西送给别人，算不上什么美德。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-frogs-against-sun",
+    "title": "The Frogs' Complaint Against the Sun",
+    "titleZh": "青蛙对太阳的抱怨",
+    "level": "考研",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "Once upon a time the Sun was about to take to himself a wife.",
+        "zh": "从前，太阳打算娶妻。"
+      },
+      {
+        "en": "The Frogs in terror all raised their voices to the skies, and Jupiter, disturbed by the noise, asked them what they were croaking about.",
+        "zh": "青蛙们吓坏了，齐声向天叫喊。朱庇特被吵得不得安宁，问它们究竟在呱呱叫什么。"
+      },
+      {
+        "en": "They replied, \"The Sun is bad enough even while he is single, drying up our marshes with his heat as he does.",
+        "zh": "它们答道：“太阳一个人就已经够受了，他这么一晒，把我们的沼泽都晒干了。"
+      },
+      {
+        "en": "But what will become of us if he marries and begets other Suns?\"",
+        "zh": "要是他娶了妻、又生出许多太阳来，我们可怎么活？”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-hare-and-hound",
+    "title": "The Hare and the Hound",
+    "titleZh": "野兔与猎犬",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Hound started a Hare from her form, and pursued her for some distance; but as she gradually gained upon him, he gave up the chase.",
+        "zh": "一条猎犬把一只野兔从窝里轰了出来，追了一程；可野兔渐渐拉开了距离，它便放弃了。"
+      },
+      {
+        "en": "A rustic who had seen the race met the Hound as he was returning, and taunted him with his defeat.",
+        "zh": "一个瞧见这场追逐的乡下人，在猎犬往回走时遇上了它，便拿它的败绩打趣。"
+      },
+      {
+        "en": "\"The little one was too much for you,\" said he.",
+        "zh": "他说：“这么个小东西，你都奈何不了。”"
+      },
+      {
+        "en": "\"Ah, well,\" said the Hound, \"don't forget it's one thing to be running for your dinner, but quite another to be running for your life.\"",
+        "zh": "“唉，”猎犬说，“别忘了，为了一顿饭而跑是一回事，为了活命而跑是另一回事。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-stag-and-lion",
+    "title": "The Stag and the Lion",
+    "titleZh": "雄鹿与狮子",
+    "level": "雅思",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Stag was chased by the hounds, and took refuge in a cave, where he hoped to be safe from his pursuers.",
+        "zh": "一头雄鹿被猎犬追赶，躲进一个山洞，指望在那里能避开追兵。"
+      },
+      {
+        "en": "Unfortunately the cave contained a Lion, to whom he fell an easy prey.",
+        "zh": "不巧洞里有一头狮子，它轻易就成了狮子的口中食。"
+      },
+      {
+        "en": "\"Unhappy that I am,\" he cried, \"I am saved from the power of the dogs only to fall into the clutches of a Lion.\"",
+        "zh": "它叫道：“我好苦命！刚逃出狗的爪牙，又落进了狮子的掌心。”"
+      },
+      {
+        "en": "Out of the frying-pan into the fire.",
+        "zh": "才出煎锅，又入火坑。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-goose-golden-eggs",
+    "title": "The Goose That Laid the Golden Eggs",
+    "titleZh": "下金蛋的鹅",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Man and his Wife had the good fortune to possess a Goose which laid a Golden Egg every day.",
+        "zh": "有对夫妇运气好，养了一只每天下一个金蛋的鹅。"
+      },
+      {
+        "en": "Lucky though they were, they soon began to think they were not getting rich fast enough, and, imagining the bird must be made of gold …",
+        "zh": "他们虽算走运，却很快嫌发财太慢，又猜想这鹅肚子里准是一整块金子……"
+      },
+      {
+        "en": "… inside, they decided to kill it in order to secure the whole store of precious metal at once.",
+        "zh": "……于是一刀把鹅杀了，想一次把那些贵金属全拿到手。"
+      },
+      {
+        "en": "But when they cut it open they found it was just like any other goose.",
+        "zh": "可剖开一看，这鹅跟别的鹅没什么两样。"
+      },
+      {
+        "en": "Thus, they neither got rich all at once, as they had hoped, nor enjoyed any longer the daily addition to their wealth.",
+        "zh": "结果，他们既没能像盼望的那样一下子暴富，也再没有每天进项了。"
+      },
+      {
+        "en": "Much wants more and loses all.",
+        "zh": "贪多反失。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-mischievous-dog",
+    "title": "The Mischievous Dog",
+    "titleZh": "爱捣乱的狗",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "There was once a Dog who used to snap at people and bite them without any provocation …",
+        "zh": "从前有条狗，没人招惹它，它也动不动就扑上去咬人……"
+      },
+      {
+        "en": "… and who was a great nuisance to every one who came to his master's house.",
+        "zh": "……凡是到主人家里来的人，都被它搅得不得安宁。"
+      },
+      {
+        "en": "So his master fastened a bell round his neck to warn people of his presence.",
+        "zh": "于是主人在它脖子上系了个铃铛，好让人事先知道它来了。"
+      },
+      {
+        "en": "The Dog was very proud of the bell, and strutted about tinkling it with immense satisfaction.",
+        "zh": "这狗却把铃铛当成了体面，走起路来趾高气扬，一路叮当作响，得意得很。"
+      },
+      {
+        "en": "But an old dog came up to him and said, \"The fewer airs you give yourself the better, my friend.",
+        "zh": "有条老狗走过来对它说：“朋友，你少摆点架子为好。"
+      },
+      {
+        "en": "You don't think, do you, that your bell was given you as a reward of merit?",
+        "zh": "你总不会以为，这铃铛是赏你的功劳吧？"
+      },
+      {
+        "en": "On the contrary, it is a badge of disgrace.\"",
+        "zh": "恰恰相反，那是块耻辱的标记。”"
+      },
+      {
+        "en": "Notoriety is often mistaken for fame.",
+        "zh": "臭名常被误当美名。"
+      }
+    ]
+  }
+]

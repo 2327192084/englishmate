@@ -146,7 +146,7 @@ Aesop's Fables 为公有领域作品：
    两半拼起来即原句，**不增删任何词**——与仓库原有 6 篇的处理方式完全一致。
 5. **清理**：修掉 1912 年排版产生的重复引号（`!"` → `!"`）；
    去掉 Gutenberg 表示斜体的 `_word_` 下划线（词本身不动）。
-6. **人工翻译**：逐篇译成中文，译文存在 `.tmp/articles-work/zh-batch-*.json`。
+6. **人工翻译**：逐篇译成中文，译文存在 `data/articles-work/zh-batch-*.json`。
 7. **校验 + 合并**：`scripts/build-articles.mjs` 逐条校验并写出 `public/articles/index.json`。
 
 ### 校验项（任一不过即整体失败，不写半成品）
@@ -182,8 +182,8 @@ Aesop's Fables 为公有领域作品：
 ## 六、复现方式
 
 ```bash
-# 1. 下载原文（约 10-15 秒）
-curl -o .tmp/articles-work/pg/11339.txt \
+# 1. 下载原文（约 10-15 秒；下载目录是临时缓存，用 .tmp）
+curl -o .tmp/pg11339.txt \
   https://gutenberg.pglaf.org/cache/epub/11339/pg11339.txt
 
 # 2. 重新生成 public/articles/index.json（只校验不写的用 --check）
@@ -194,9 +194,13 @@ npx tsc --noEmit
 npx vitest run src/lib/text.test.ts
 ```
 
-> `.tmp/articles-work/` 下的中间产物（`aesop-final.json`、`zh-batch-*.json`、`classics.json`）
-> 是构建输入。`classics.json` 是从原有 `src/data/articles.ts` 导出的 6 篇快照，
-> 必须保留，否则构建脚本会报错退出（防止老内容意外丢失）。
+> **构建输入在仓库内**：`data/articles-work/` 下有 8 个文件——
+> `classics.json`（从原有 `src/data/articles.ts` 导出的 6 篇快照，必须保留，
+> 否则构建脚本会报错退出，防止老内容意外丢失）与 `zh-batch-01..07.json`（人工译文，共 132KB）。
+> 2026-11-21 之前这些文件在 `.tmp/articles-work/`，因为 `.tmp` 被 gitignore，
+> 别人 clone 后跑不了 `build-articles.mjs`，已迁入仓库。
+> 同一目录下的其它中间产物（`aesop-raw.json`、`candidates.json`、`joined.jsonl` 等约 16MB
+> 与试验脚本）**不需要进仓库**，仍留在 `.tmp/articles-work/`。
 
 ---
 

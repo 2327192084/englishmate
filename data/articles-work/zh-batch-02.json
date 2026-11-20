@@ -1,0 +1,345 @@
+[
+  {
+    "id": "aesop-fox-and-crow",
+    "title": "The Fox and the Crow",
+    "titleZh": "狐狸与乌鸦",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Crow was sitting on a branch of a tree with a piece of cheese in her beak when a Fox observed her and set his wits to work to discover …",
+        "zh": "一只乌鸦衔着一块奶酪停在树枝上，被一只狐狸看见了。狐狸便动起脑筋，想找出……"
+      },
+      {
+        "en": "… some way of getting the cheese.",
+        "zh": "……弄到那块奶酪的法子。"
+      },
+      {
+        "en": "Coming and standing under the tree he looked up and said, \"What a noble bird I see above me!",
+        "zh": "它走到树下站定，抬头道：“我头顶上这只鸟，可真高贵！"
+      },
+      {
+        "en": "Her beauty is without equal, the hue of her plumage exquisite.",
+        "zh": "论美貌无人能比，这一身羽色更是精美。"
+      },
+      {
+        "en": "If only her voice is as sweet as her looks are fair, she ought without doubt to be Queen of the Birds.\"",
+        "zh": "只要她的嗓音也像模样一样动人，那无疑就该做鸟中之王了。”"
+      },
+      {
+        "en": "The Crow was hugely flattered by this, and just to show the Fox that she could sing she gave a loud caw.",
+        "zh": "乌鸦被夸得飘飘然，为了向狐狸证明自己能唱，就大声“嘎”了一声。"
+      },
+      {
+        "en": "Down came the cheese, of course, and the Fox, snatching it up, said, \"You have a voice, madam, I see: what you want is wits.\"",
+        "zh": "奶酪自然就掉了下来。狐狸一口叼起，说：“夫人，我看出来了，您有嗓子，缺的是脑子。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-cat-and-birds",
+    "title": "The Cat and the Birds",
+    "titleZh": "猫与鸟",
+    "level": "考研",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Cat heard that the Birds in an aviary were ailing.",
+        "zh": "一只猫听说鸟舍里的鸟都病了。"
+      },
+      {
+        "en": "So he got himself up as a doctor, and, taking with him a set of the instruments proper to his profession, presented himself at the door …",
+        "zh": "它便打扮成医生的样子，带上这套行当该有的一套器具，来到鸟舍门口……"
+      },
+      {
+        "en": "… and inquired after the health of the Birds.",
+        "zh": "……问候起鸟儿们的病情。"
+      },
+      {
+        "en": "\"We shall do very well,\" they replied, without letting him in, \"when we've seen the last of you.\"",
+        "zh": "“我们好得很，”鸟儿们没让它进门，答道，“等你走远了就好。”"
+      },
+      {
+        "en": "A villain may disguise himself, but he will not deceive the wise.",
+        "zh": "恶人可以乔装，却骗不过明白人。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-wolf-in-sheeps-clothing",
+    "title": "The Wolf in Sheep's Clothing",
+    "titleZh": "披着羊皮的狼",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Wolf resolved to disguise himself in order that he might prey upon a flock of sheep without fear of detection.",
+        "zh": "一只狼打定主意要乔装一番，好去祸害羊群而不被察觉。"
+      },
+      {
+        "en": "So he clothed himself in a sheepskin, and slipped among the sheep when they were out at pasture.",
+        "zh": "它披上一张羊皮，趁羊群在外放牧时混了进去。"
+      },
+      {
+        "en": "He completely deceived the shepherd, and when the flock was penned for the night he was shut in with the rest.",
+        "zh": "它把牧人骗得死死的，晚上羊群入圈时，它也跟着一起被关了进去。"
+      },
+      {
+        "en": "But that very night as it happened, the shepherd, requiring a supply of mutton for the table, laid hands on the Wolf in mistake for a …",
+        "zh": "可就在那天夜里，牧人要做菜，需要一只羊，错手抓起了这只狼……"
+      },
+      {
+        "en": "… Sheep, and killed him with his knife on the spot.",
+        "zh": "……当成羊，当场一刀把它宰了。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-fir-tree-and-bramble",
+    "title": "The Fir-Tree and the Bramble",
+    "titleZh": "枞树与荆棘",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Fir-tree was boasting to a Bramble, and said, somewhat contemptuously, \"You poor creature, you are of no use whatever.",
+        "zh": "一棵枞树向荆棘夸口，语气里颇有些不屑：“你这可怜东西，一点用处都没有。"
+      },
+      {
+        "en": "Now, look at me: I am useful for all sorts of things, particularly when men build houses; they can't do without me then.\"",
+        "zh": "你看看我：我样样都用得上，尤其是人盖房的时候，离了我就没法动工。”"
+      },
+      {
+        "en": "But the Bramble replied, \"Ah, that's all very well …",
+        "zh": "荆棘却答道：“啊，这话说得倒好听……"
+      },
+      {
+        "en": "… but you wait till they come with axes and saws to cut you down, and then you'll wish you were a Bramble and not a Fir.\"",
+        "zh": "……可你等着吧，等他们拎着斧子锯子来砍你的时候，你就宁愿自己是荆棘，不是枞树了。”"
+      },
+      {
+        "en": "Better poverty without a care than wealth with its many obligations.",
+        "zh": "无牵无挂的穷，胜过拖累缠身的富。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-gnat-and-bull",
+    "title": "The Gnat and the Bull",
+    "titleZh": "蚋与公牛",
+    "level": "雅思",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Gnat alighted on one of the horns of a Bull, and remained sitting there for a considerable time.",
+        "zh": "一只蚋落在公牛的角上，在那儿待了好一阵子。"
+      },
+      {
+        "en": "When it had rested sufficiently and was about to fly away, it said to the Bull, \"Do you mind if I go now?\"",
+        "zh": "等歇够了要走的时候，它问公牛：“我现在走，你不介意吧？”"
+      },
+      {
+        "en": "The Bull merely raised his eyes and remarked, without interest, \"It's all one to me …",
+        "zh": "公牛只是抬了抬眼皮，淡淡地说：“对我来说都一样……"
+      },
+      {
+        "en": "… I didn't notice when you came, and I shan't know when you go away.\"",
+        "zh": "……你来的时候我没留意，你走的时候我也不会知道。”"
+      },
+      {
+        "en": "We may often be of more consequence in our own eyes than in the eyes of our neighbours.",
+        "zh": "我们常常把自己看得比在别人眼中重要得多。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-lamp",
+    "title": "The Lamp",
+    "titleZh": "油灯",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Lamp, well filled with oil, burned with a clear and steady light …",
+        "zh": "一盏油灯灌得满满的，烧出一团清亮而稳定的光……"
+      },
+      {
+        "en": "… and began to swell with pride and boast that it shone more brightly than the sun himself.",
+        "zh": "……它便渐渐得意起来，夸口说自己比太阳还亮。"
+      },
+      {
+        "en": "Just then a puff of wind came and blew it out.",
+        "zh": "就在这时，一阵风吹来，把它吹灭了。"
+      },
+      {
+        "en": "Some one struck a match and lit it again, and said, \"You just keep alight, and never mind the sun.",
+        "zh": "有人划了根火柴重新点亮它，说：“你只管亮着就好，别去管太阳。"
+      },
+      {
+        "en": "Why, even the stars never need to be relit as you had to be just now.\"",
+        "zh": "人家星星可从来不用像你刚才那样，还得再点一次。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-ass-in-lions-skin",
+    "title": "The Ass in the Lion's Skin",
+    "titleZh": "披狮皮的驴",
+    "level": "雅思",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "An Ass found a Lion's Skin, and dressed himself up in it.",
+        "zh": "一头驴捡到一张狮皮，就披在了身上。"
+      },
+      {
+        "en": "Then he went about frightening every one he met, for they all took him to be a lion, men and beasts alike …",
+        "zh": "然后它四处走动，见谁吓谁——人和兽都把它当成了狮子……"
+      },
+      {
+        "en": "… and took to their heels when they saw him coming.",
+        "zh": "……一看见它过来就撒腿跑。"
+      },
+      {
+        "en": "Elated by the success of his trick, he loudly brayed in triumph.",
+        "zh": "这招得逞，驴得意忘形，扯着嗓子大叫起来。"
+      },
+      {
+        "en": "The Fox heard him, and recognised him at once for the Ass he was, and said to him, \"Oho, my friend, it's you, is it?",
+        "zh": "狐狸听见了，立刻认出它是头驴，便说：“哦哟，朋友，原来是你呀？"
+      },
+      {
+        "en": "I, too, should have been afraid if I hadn't heard your voice.\"",
+        "zh": "要不是听见你这嗓子，我本来也会怕的。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-boy-bathing",
+    "title": "The Boy Bathing",
+    "titleZh": "洗澡的男孩",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Boy was bathing in a river and got out of his depth, and was in great danger of being drowned.",
+        "zh": "一个男孩在河里洗澡，不知不觉到了深处，眼看就要淹死。"
+      },
+      {
+        "en": "A man who was passing along a road heard his cries for help …",
+        "zh": "有人从路上经过，听见他呼救……"
+      },
+      {
+        "en": "… and went to the riverside and began to scold him for being so careless as to get into deep water, but made no attempt to help him.",
+        "zh": "……便走到岸边，责备他太不小心，居然走到深水里去，却一点也没有要救他的意思。"
+      },
+      {
+        "en": "\"Oh, sir,\" cried the Boy, \"please help me first and scold me afterwards.\"",
+        "zh": "“哎，先生，”男孩喊道，“求您先救我，再骂我吧。”"
+      },
+      {
+        "en": "Give assistance, not advice, in a crisis.",
+        "zh": "危急关头要的是搭把手，不是讲道理。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-quack-frog",
+    "title": "The Quack Frog",
+    "titleZh": "招摇撞骗的青蛙",
+    "level": "考研",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "Once upon a time a Frog came forth from his home in the marshes and proclaimed to all the world that he was a learned physician, skilled …",
+        "zh": "从前，一只青蛙从沼泽里的家出来，向世人宣称自己是个博学的医生，精通……"
+      },
+      {
+        "en": "… in drugs and able to cure all diseases.",
+        "zh": "……药理，什么病都能治好。"
+      },
+      {
+        "en": "Among the crowd was a Fox, who called out, \"You a doctor!",
+        "zh": "人群里有只狐狸，高声说：“你，当医生！"
+      },
+      {
+        "en": "Why, how can you set up to heal others when you cannot even cure your own lame legs and blotched and wrinkled skin?\"",
+        "zh": "你自己那两条瘸腿、那一身斑斑驳驳的皱皮都治不好，怎么还张罗着给别人治病？”"
+      },
+      {
+        "en": "Physician, heal thyself.",
+        "zh": "医生，先治治你自己吧。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-oxen-and-axletrees",
+    "title": "The Oxen and the Axletrees",
+    "titleZh": "牛与车轴",
+    "level": "考研",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A pair of Oxen were drawing a heavily loaded waggon along the highway, and, as they tugged and strained at the yoke, the Axletrees …",
+        "zh": "两头牛拉着满载的大车走在路上。它们使劲拽着轭，车轴却……"
+      },
+      {
+        "en": "… creaked and groaned terribly.",
+        "zh": "……吱吱呀呀叫得厉害。"
+      },
+      {
+        "en": "This was too much for the Oxen, who turned round indignantly and said, \"Hullo, you there!",
+        "zh": "牛实在忍不住了，气愤地回过头说：“喂，你们这些家伙！"
+      },
+      {
+        "en": "Why do you make such a noise when we do all the work?\"",
+        "zh": "活都是我们干的，你们叫唤什么？”"
+      },
+      {
+        "en": "They complain most who suffer least.",
+        "zh": "叫得最响的，往往是吃苦最少的。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-man-and-lion",
+    "title": "The Man and the Lion",
+    "titleZh": "人与狮子",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Man and a Lion were companions on a journey, and in the course of conversation they began to boast about their prowess …",
+        "zh": "一个人和一头狮子结伴同行，聊着聊着，就各自夸起自己的本事来……"
+      },
+      {
+        "en": "… and each claimed to be superior to the other in strength and courage.",
+        "zh": "……都说自己在力气和胆量上胜过对方。"
+      },
+      {
+        "en": "They were still arguing with some heat when they came to a cross-road where there was a statue of a Man strangling a Lion.",
+        "zh": "两人正争得面红耳赤，走到一个路口，那里立着一座人掐死狮子的雕像。"
+      },
+      {
+        "en": "\"There!\" said the Man triumphantly, \"look at that!",
+        "zh": "“瞧！”人得意地说，“看见没有！"
+      },
+      {
+        "en": "Doesn't that prove to you that we are stronger than you?\"",
+        "zh": "这还不说明我们比你们强吗？”"
+      },
+      {
+        "en": "\"Not so fast, my friend,\" said the Lion: \"that is only your view of the case.",
+        "zh": "“别急，朋友，”狮子说，“那不过是你们那边的说法。"
+      },
+      {
+        "en": "If we Lions could make statues, you may be sure that in most of them you would see the Man underneath.\"",
+        "zh": "要是我们狮子会雕像，你准会看到，多半的像底下躺着的都是人。”"
+      },
+      {
+        "en": "There are two sides to every question.",
+        "zh": "凡事都有两面。"
+      }
+    ]
+  }
+]

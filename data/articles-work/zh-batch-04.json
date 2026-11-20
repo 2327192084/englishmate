@@ -1,0 +1,426 @@
+[
+  {
+    "id": "aesop-fly-and-mule",
+    "title": "The Fly and the Draught-Mule",
+    "titleZh": "苍蝇与拉车的骡子",
+    "level": "雅思",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Fly sat on one of the shafts of a cart and said to the Mule who was pulling it, \"How slow you are!",
+        "zh": "一只苍蝇停在车辕上，对拉车的骡子说：“你走得真慢！"
+      },
+      {
+        "en": "Do mend your pace, or I shall have to use my sting as a goad.\"",
+        "zh": "快些走，不然我只好把这根刺当鞭子用了。”"
+      },
+      {
+        "en": "The Mule was not in the least disturbed.",
+        "zh": "骡子一点儿也没被它唬住。"
+      },
+      {
+        "en": "\"Behind me, in the cart,\" said he, \"sits my master.",
+        "zh": "“我身后这车上，”它说，“坐着我的主人。"
+      },
+      {
+        "en": "He holds the reins, and flicks me with his whip, and him I obey …",
+        "zh": "他握着缰绳，用鞭子抽我，我听他的……"
+      },
+      {
+        "en": "… but I don't want any of your impertinence. I know when I may dawdle and when I may not.\"",
+        "zh": "……可轮不到你来放肆。什么时候能磨蹭、什么时候不能，我自己清楚。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-charger-and-miller",
+    "title": "The Charger and the Miller",
+    "titleZh": "战马与磨坊主",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Horse, who had been used to carry his rider into battle, felt himself growing old and chose to work in a mill instead.",
+        "zh": "一匹马惯于驮着主人上阵，后来自觉老了，便改去磨坊干活。"
+      },
+      {
+        "en": "He now no longer found himself stepping out proudly to the beating of the drums …",
+        "zh": "如今它再不能踏着鼓点昂首阔步……"
+      },
+      {
+        "en": "… but was compelled to slave away all day grinding the corn.",
+        "zh": "……而是被迫整日像牛马一样拉着磨碾谷子。"
+      },
+      {
+        "en": "Bewailing his hard lot, he said one day to the Miller, \"Ah me!",
+        "zh": "有一天它向磨坊主叹起自己的苦命：“哎！"
+      },
+      {
+        "en": "I was once a splendid war-horse, gaily caparisoned, and attended by a groom whose sole duty was to see to my wants.",
+        "zh": "我当年是多神气的战马，披着华丽的鞍辔，有专人侍候，那人唯一的差事就是照料我。"
+      },
+      {
+        "en": "How different is my present condition!",
+        "zh": "如今这光景，真是天差地别！"
+      },
+      {
+        "en": "I wish I had never given up the battlefield for the mill.\"",
+        "zh": "我真希望自己从没拿战场换过这座磨坊。”"
+      },
+      {
+        "en": "The Miller replied with asperity, \"It's no use your regretting the past.",
+        "zh": "磨坊主没好气地答道：“后悔过去有什么用。"
+      },
+      {
+        "en": "Fortune has many ups and downs: you must just take them as they come.\"",
+        "zh": "运气本来就有起有落，来了什么，你就得受着什么。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-sick-man-and-doctor",
+    "title": "The Sick Man and the Doctor",
+    "titleZh": "病人与医生",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Sick Man received a visit from his Doctor, who asked him how he was.",
+        "zh": "一个病人有医生来看他，医生问他感觉如何。"
+      },
+      {
+        "en": "\"Fairly well, Doctor,\" said he, \"but I find I sweat a great deal.\"",
+        "zh": "“还好，大夫，”他说，“就是我发现自己出汗出得厉害。”"
+      },
+      {
+        "en": "\"Ah,\" said the Doctor, \"that's a good sign.\"",
+        "zh": "“啊，”医生说，“那是好兆头。”"
+      },
+      {
+        "en": "On his next visit he asked the same question, and his patient replied, \"I'm much as usual …",
+        "zh": "下一次来，医生又问了一遍，病人答道：“跟平常差不多……"
+      },
+      {
+        "en": "… but I've taken to having shivering fits, which leave me cold all over.\"",
+        "zh": "……只是近来常打寒战，一阵下来浑身冰凉。”"
+      },
+      {
+        "en": "\"Ah,\" said the Doctor, \"that's a good sign too.\"",
+        "zh": "“啊，”医生说，“这也是好兆头。”"
+      },
+      {
+        "en": "When he came the third time and inquired as before about his patient's health, the Sick Man said that he felt very feverish.",
+        "zh": "第三次来，他照旧询问病情，病人说自己烧得厉害。"
+      },
+      {
+        "en": "\"A very good sign,\" said the Doctor; \"you are doing very nicely indeed.\"",
+        "zh": "“很好的兆头，”医生说，“你恢复得确实不错。”"
+      },
+      {
+        "en": "Afterwards a friend came to see the invalid, and on asking him how he did, received this reply: \"My dear friend, I'm dying of good signs.\"",
+        "zh": "后来有位朋友来探望，问他怎么样，得到的回答是：“好朋友，我是被一堆好兆头给拖死的。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-lion-and-hare",
+    "title": "The Lion and the Hare",
+    "titleZh": "狮子与野兔",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Lion found a Hare sleeping in her form, and was just going to devour her when he caught sight of a passing stag.",
+        "zh": "一头狮子发现一只野兔在窝里睡觉，正要吃掉它，瞥见一头雄鹿走过。"
+      },
+      {
+        "en": "Dropping the Hare, he at once made for the bigger game …",
+        "zh": "它丢下野兔，立刻去追那更大的猎物……"
+      },
+      {
+        "en": "… but finding, after a long chase, that he could not overtake the stag, he abandoned the attempt and came back for the Hare.",
+        "zh": "……可追了许久，发现赶不上雄鹿，只好放弃，回头再去找那只野兔。"
+      },
+      {
+        "en": "When he reached the spot, however, he found she was nowhere to be seen, and he had to go without his dinner.",
+        "zh": "然而到了那地方，野兔早已不见踪影，它只好空着肚子。"
+      },
+      {
+        "en": "\"It serves me right,\" he said; \"I should have been content with what I had got, instead of hankering after a better prize.\"",
+        "zh": "“这是我自找的，”它说，“我本该守着已经到手的东西，何必还惦记着更好的。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-wolves-and-dogs",
+    "title": "The Wolves and the Dogs",
+    "titleZh": "狼与狗",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "Once upon a time the Wolves said to the Dogs, \"Why should we continue to be enemies any longer?",
+        "zh": "从前，狼对狗说：“我们何必还继续做仇敌？"
+      },
+      {
+        "en": "You are very like us in most ways: the main difference between us is one of training only.",
+        "zh": "你们在多数方面都跟我们很像，彼此最大的差别只在于所受的调教。"
+      },
+      {
+        "en": "We live a life of freedom; but you are enslaved to mankind, who beat you, and put heavy collars round your necks …",
+        "zh": "我们活得自由，你们却给人做奴隶：人打你们，把沉重的项圈套在你们脖子上……"
+      },
+      {
+        "en": "… and compel you to keep watch over their flocks and herds for them, and, to crown all, they give you nothing but bones to eat.",
+        "zh": "……还逼你们替他们看守牛羊；最可气的是，他们只丢骨头给你们啃。"
+      },
+      {
+        "en": "Don't put up with it any longer, but hand over the flocks to us, and we will all live on the fat of the land and feast together.\"",
+        "zh": "别再忍了，把羊群交给我们，咱们一起过好日子、一同享用。”"
+      },
+      {
+        "en": "The Dogs allowed themselves to be persuaded by these words, and accompanied the Wolves into their den.",
+        "zh": "狗被这番话劝动了，跟着狼进了它们的窝。"
+      },
+      {
+        "en": "But no sooner were they well inside than the Wolves set upon them and tore them to pieces.",
+        "zh": "可它们刚一进去，狼就扑上来，把它们撕成了碎片。"
+      },
+      {
+        "en": "Traitors richly deserve their fate.",
+        "zh": "背叛者的下场，一点不冤。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-trees-and-axe",
+    "title": "The Trees and the Axe",
+    "titleZh": "树与斧头",
+    "level": "雅思",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Woodman went into the forest and begged of the Trees the favour of a handle for his Axe.",
+        "zh": "一个樵夫走进林子，求树们给他一截做斧柄的木料。"
+      },
+      {
+        "en": "The principal Trees at once agreed to so modest a request …",
+        "zh": "那些大树见要求不过分，立刻就答应了……"
+      },
+      {
+        "en": "… and unhesitatingly gave him a young ash sapling, out of which he fashioned the handle he desired.",
+        "zh": "……毫不犹豫地给了他一株小梣树苗，他就用它做出了想要的斧柄。"
+      },
+      {
+        "en": "No sooner had he done so than he set to work to fell the noblest Trees in the wood.",
+        "zh": "斧柄一装好，他立刻动手砍林子里最雄伟的那些树。"
+      },
+      {
+        "en": "When they saw the use to which he was putting their gift, they cried, \"Alas! alas!",
+        "zh": "树们见自己送出的东西被这样用，叫道：“唉！唉！"
+      },
+      {
+        "en": "We are undone, but we are ourselves to blame.",
+        "zh": "我们完了，可这只能怪自己。"
+      },
+      {
+        "en": "The little we gave has cost us all: had we not sacrificed the rights of the ash, we might ourselves have stood for ages.\"",
+        "zh": "我们让出那么一点，却赔上了全部：当初要不是牺牲了梣树的权利，我们本可以再立上几百年。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-ass-and-dog",
+    "title": "The Ass and the Dog",
+    "titleZh": "驴与狗",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "An Ass and a Dog were on their travels together, and, as they went along, they found a sealed packet lying on the ground.",
+        "zh": "一头驴和一条狗结伴出门，走着走着，在地上捡到一个封了口的纸包。"
+      },
+      {
+        "en": "The Ass picked it up, broke the seal, and found it contained some writing, which he proceeded to read out aloud to the Dog.",
+        "zh": "驴把它捡起来，拆开封口，见里面是些文字，便大声念给狗听。"
+      },
+      {
+        "en": "As he read on it turned out to be all about grass and barley and hay--in short, all the kinds of fodder that Asses are fond of.",
+        "zh": "念下去才知道，通篇讲的都是草、大麦和干草——总之，全是驴爱吃的饲料。"
+      },
+      {
+        "en": "The Dog was a good deal bored with listening to all this, till at last his impatience got the better of him …",
+        "zh": "狗听得十分腻烦，最后实在忍不住了……"
+      },
+      {
+        "en": "… and he cried, \"Just skip a few pages, friend, and see if there isn't something about meat and bones.\"",
+        "zh": "……叫道：“朋友，跳几页，看看有没有讲肉和骨头的。”"
+      },
+      {
+        "en": "The Ass glanced all through the packet, but found nothing of the sort, and said so.",
+        "zh": "驴把整包翻了一遍，没找到这类内容，就照实说了。"
+      },
+      {
+        "en": "Then the Dog said in disgust, \"Oh, throw it away, do: what's the good of a thing like that?\"",
+        "zh": "狗便厌恶地说：“嗨，扔了吧，这种东西有什么用？”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-goatherd-and-goat",
+    "title": "The Goatherd and the Goat",
+    "titleZh": "牧羊人与山羊",
+    "level": "考研",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Goatherd was one day gathering his flock to return to the fold, when one of his goats strayed and refused to join the rest.",
+        "zh": "一天，牧羊人正把羊群拢起来赶回圈里，有一只山羊却走散了，怎么也不肯归队。"
+      },
+      {
+        "en": "He tried for a long time to get her to return by calling and whistling to her, but the Goat took no notice of him at all …",
+        "zh": "他又是喊又是吹口哨，试了很久想把它叫回来，那山羊却理都不理……"
+      },
+      {
+        "en": "… so at last he threw a stone at her and broke one of her horns.",
+        "zh": "……他最后扔了块石头过去，打断了它一只角。"
+      },
+      {
+        "en": "In dismay, he begged her not to tell his master: but she replied, \"You silly fellow, my horn would cry aloud even if I held my tongue.\"",
+        "zh": "他慌了，求它别告诉主人；山羊却答道：“你这傻瓜，就算我不作声，我那只角也会喊出来的。”"
+      },
+      {
+        "en": "It's no use trying to hide what can't be hidden.",
+        "zh": "藏不住的事，想遮也遮不住。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-ploughman-ass-and-ox",
+    "title": "The Ploughman, the Ass, and the Ox",
+    "titleZh": "农夫、驴与牛",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Ploughman yoked his Ox and his Ass together, and set to work to plough his field.",
+        "zh": "一个农夫把牛和驴套在一副轭上，下地耕起田来。"
+      },
+      {
+        "en": "It was a poor makeshift of a team, but it was the best he could do, as he had but a single Ox.",
+        "zh": "这一对搭得实在勉强，可他只有一头牛，也只能这样凑合。"
+      },
+      {
+        "en": "At the end of the day, when the beasts were loosed from the yoke, the Ass said to the Ox, \"Well, we've had a hard day …",
+        "zh": "一天下来，卸了轭，驴对牛说：“咱们今天可累坏了……"
+      },
+      {
+        "en": "… which of us is to carry the master home?\"",
+        "zh": "……回去的时候，咱们俩谁驮主人？”"
+      },
+      {
+        "en": "The Ox looked surprised at the question.",
+        "zh": "牛听了这话，一脸诧异。"
+      },
+      {
+        "en": "\"Why,\" said he, \"you, to be sure, as usual.\"",
+        "zh": "“这还用问，”它说，“当然是你，一直都是你。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-wolf-and-his-shadow",
+    "title": "The Wolf and His Shadow",
+    "titleZh": "狼与自己的影子",
+    "level": "考研",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Wolf, who was roaming about on the plain when the sun was getting low in the sky, was much impressed by the size of his shadow …",
+        "zh": "太阳西沉时，一只狼在平原上闲荡，被自己影子的个头给镇住了……"
+      },
+      {
+        "en": "… and said to himself, \"I had no idea I was so big.",
+        "zh": "……它自言自语：“原来我这么大，我从前竟不知道。"
+      },
+      {
+        "en": "Fancy my being afraid of a lion!",
+        "zh": "想想看，我居然还怕狮子！"
+      },
+      {
+        "en": "Why, I, not he, ought to be King of the beasts\"; and, heedless of danger, he strutted about as if there could be no doubt at all about it.",
+        "zh": "该做百兽之王的是我，不是它。”它全不把危险放在心上，大摇大摆地走着，仿佛这事已毫无疑问。"
+      },
+      {
+        "en": "Just then a lion sprang upon him and began to devour him.",
+        "zh": "就在这时，一头狮子扑上来，开始撕咬它。"
+      },
+      {
+        "en": "\"Alas,\" he cried, \"had I not lost sight of the facts, I shouldn't have been ruined by my fancies.\"",
+        "zh": "“唉，”它叫道，“我要不是忘了实情，也不会被自己的幻想毁了。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-old-man-and-death",
+    "title": "The Old Man and Death",
+    "titleZh": "老人与死神",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "An Old Man cut himself a bundle of faggots in a wood and started to carry them home.",
+        "zh": "一个老人在林子里砍了一捆柴，背着往家走。"
+      },
+      {
+        "en": "He had a long way to go, and was tired out before he had got much more than half-way.",
+        "zh": "路还远，他走了不到一半就累垮了。"
+      },
+      {
+        "en": "Casting his burden on the ground, he called upon Death to come and release him from his life of toil.",
+        "zh": "他把柴往地上一撂，呼唤死神快来，把他从这劳碌的生涯里解脱出去。"
+      },
+      {
+        "en": "The words were scarcely out of his mouth when, much to his dismay, Death stood before him and professed his readiness to serve him.",
+        "zh": "话刚出口，死神就站到了他面前，说自己随时可以听候差遣。老人吓得不轻。"
+      },
+      {
+        "en": "He was almost frightened out of his wits, but he had enough presence of mind to stammer out, \"Good sir, if you'd be so kind, pray help me …",
+        "zh": "他几乎吓掉了魂，好在还稳得住，结结巴巴地说：“好先生，要是您肯帮忙，就请……"
+      },
+      {
+        "en": "… up with my burden again.\"",
+        "zh": "……帮我把这担柴再架上肩吧。”"
+      }
+    ]
+  },
+  {
+    "id": "aesop-fox-and-bramble",
+    "title": "The Fox and the Bramble",
+    "titleZh": "狐狸与荆棘",
+    "level": "雅思",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "In making his way through a hedge a Fox missed his footing and caught at a Bramble to save himself from falling.",
+        "zh": "一只狐狸穿过树篱时脚下一滑，急忙抓住一丛荆棘，免得摔下去。"
+      },
+      {
+        "en": "Naturally, he got badly scratched, and in disgust he cried to the Bramble, \"It was your help I wanted, and see how you have treated me!",
+        "zh": "它自然被划得皮破血流，气恼地向荆棘叫道：“我是想让你帮一把，你看看你是怎么待我的！"
+      },
+      {
+        "en": "I'd sooner have fallen outright.\"",
+        "zh": "我还不如干脆摔下去。”"
+      },
+      {
+        "en": "The Bramble, interrupting him, replied, \"You must have lost your wits, my friend, to catch at me …",
+        "zh": "荆棘打断它说：“朋友，你准是昏了头，才来抓我……"
+      },
+      {
+        "en": "… who am myself always catching at others.\"",
+        "zh": "……我自己向来就是抓着别人不放的。”"
+      }
+    ]
+  }
+]

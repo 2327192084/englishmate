@@ -6,8 +6,8 @@
  *   node scripts/build-articles.mjs --check   # 只校验，不写文件
  *
  * 这个脚本做三件事：
- *   1. 把 `.tmp/articles-work/classics.json`（原有 6 篇公版文章，原样保留）
- *      与 `.tmp/articles-work/zh-batch-*.json`（Aesop 寓言 + 人工译文）合并
+ *   1. 把 `data/articles-work/classics.json`（原有 6 篇公版文章，原样保留）
+ *      与 `data/articles-work/zh-batch-*.json`（Aesop 寓言 + 人工译文）合并
  *   2. 逐条校验：英文必须与 Gutenberg 原文逐字一致、长度 ≤140、
  *      归一化后全为可打印 ASCII、每篇 4–15 句、level 合法、id 不重复
  *   3. 写出 `public/articles/index.json`，由 `src/data/articles.ts` 直接 import
@@ -30,7 +30,14 @@ import { fileURLToPath } from 'node:url';
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(SCRIPT_DIR, '..');
-const WORK = path.join(ROOT, '.tmp', 'articles-work');
+/**
+ * 构建输入目录。译稿是**人工翻译的源数据**，必须进版本库——
+ * 放在 .tmp/（已被 .gitignore 忽略）里等于随时可能被清掉，仓库就再也构建不出文章了。
+ * 所以 2026-11-21 起从 `.tmp/articles-work/` 迁到 `data/articles-work/`，
+ * 只签入真正被本脚本读取的 8 个文件（classics.json + zh-batch-01..07.json，共 132KB）。
+ * 其余中间产物（aesop-raw/candidates/joined.jsonl 与试验脚本）留在 .tmp/，不进仓库。
+ */
+const WORK = path.join(ROOT, 'data', 'articles-work');
 const OUT_DIR = path.join(ROOT, 'public', 'articles');
 const OUT_FILE = path.join(OUT_DIR, 'index.json');
 
