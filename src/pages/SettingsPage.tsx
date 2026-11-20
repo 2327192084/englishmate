@@ -1,11 +1,20 @@
 /** 设置页：学习目标、发音、音效、主题、数据管理 */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, clearAllData, exportAllData, importAllData } from '@/db';
 import { useSettings } from '@/store/settings';
 import type { Accent } from '@/types';
+import { DEFAULT_SHORTCUTS } from '@/types';
+import {
+  SHORTCUT_ACTIONS,
+  SHORTCUT_LABELS,
+  assignShortcut,
+  assignableKeyError,
+  formatKeyLabel,
+  isDefaultShortcuts,
+} from '@/lib/keys';
 import { Segmented } from '@/components/ui';
-import { IconDownload, IconTrash, IconUpload, IconVolume } from '@/components/Icons';
+import { IconDownload, IconRefresh, IconTrash, IconUpload, IconVolume } from '@/components/Icons';
 import { canSpeak, speak } from '@/lib/speech';
 import { playKeySound } from '@/lib/sound';
 
@@ -204,6 +213,53 @@ export default function SettingsPage() {
         </Row>
       </Section>
 
+      {/* 快捷键 */}
+      <Section
+        title="练习快捷键"
+        hint="只在练习界面生效（网页上的输入框里不受影响）；点按钮后按下想用的键"
+      >
+        {SHORTCUT_ACTIONS.map((action) => (
+          <Row key={action} label={SHORTCUT_LABELS[action].label} hint={SHORTCUT_LABELS[action].hint}>
+            <KeyCapture
+              value={settings.shortcuts[action]}
+              onPick={(key) => {
+                const next = assignShortcut(settings.shortcuts, action, key);
+                // 交换了别的动作的键位时明确告诉用户，否则他会发现另一个键悄悄变了
+                const swapped = SHORTCUT_ACTIONS.filter(
+                  (a) => a !== action && next[a] !== settings.shortcuts[a],
+                );
+                void update({ shortcuts: next });
+                if (swapped.length > 0) {
+                  flash(
+                    `${SHORTCUT_LABELS[action].label} 与 ${swapped
+                      .map((a) => SHORTCUT_LABELS[a].label)
+                      .join('、')} 已互换键位`,
+                  );
+                }
+              }}
+              onInvalid={(reason) => flash(reason, 'err')}
+            />
+          </Row>
+        ))}
+        <div className="flex items-center justify-between gap-3 pt-0.5">
+          <p className="text-[11px] leading-relaxed text-muted">
+            字母键不能绑定：它们是练习内容本身，绑上去会让打字直接坏掉。
+          </p>
+          <button
+            type="button"
+            disabled={isDefaultShortcuts(settings.shortcuts, DEFAULT_SHORTCUTS)}
+            onClick={() => {
+              void update({ shortcuts: DEFAULT_SHORTCUTS });
+              flash('已恢复默认键位');
+            }}
+            className="tf-btn shrink-0 text-xs disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <IconRefresh width={13} height={13} />
+            恢复默认
+          </button>
+        </div>
+      </Section>
+
       {/* 外观 */}
       <Section title="外观">
         <Row label="主题">
@@ -361,6 +417,83 @@ function Row({
       </div>
       <div className="shrink-0">{children}</div>
     </div>
+  );
+}
+
+/**
+ * 快捷键录制按钮。
+ *
+ * 为什么不做一个「下拉框选键」：键盘上有上百个键，枚举出来既长又难找，
+ * 而且用户想绑的往往是 F 区或小键盘这种下拉里排到很后面的键。
+ * 直接按键最直观——想绑哪个键就按哪个键。
+ *
+ * 录制期间用**捕获阶段**监听 window 的 keydown：录入的键必须比页面上
+ * 任何其他键盘处理先被拿到，否则像 Space 会先触发页面滚动、
+ * Tab 会先跑焦点漫游，用户按下去看到的是页面在动而不是键在录。
+ */
+function KeyCapture({
+  value,
+  onPick,
+  onInvalid,
+}: {
+  value: string;
+  onPick: (key: string) => void;
+  onInvalid: (reason: string) => void;
+}) {
+  const [recording, setRecording] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!recording) return;
+
+    const onKey = (e: KeyboardEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      /**
+       * Esc 一律当取消，不当绑定目标。
+       *
+       * 录制态下按 Esc 的意图几乎总是「我不想改了」（这是所有软件的通用直觉），
+       * 把它当绑定目标会让取消变得非常反直觉。想恢复 Esc 键位用「恢复默认」。
+       */
+      if (e.key === 'Escape') {
+        setRecording(false);
+        return;
+      }
+      const reason = assignableKeyError(e.key);
+      if (reason) {
+        // 保留录制态：用户按了字母被拒后，应该能直接换一个键再按
+        onInvalid(reason);
+        return;
+      }
+      setRecording(false);
+      onPick(e.key);
+    };
+    // 点页面别处 = 放弃录制，避免按钮一直停在「按任意键」
+    const onPointerDown = (e: PointerEvent) => {
+      if (btnRef.current?.contains(e.target as Node)) return;
+      setRecording(false);
+    };
+
+    window.addEventListener('keydown', onKey, true);
+    window.addEventListener('pointerdown', onPointerDown, true);
+    return () => {
+      window.removeEventListener('keydown', onKey, true);
+      window.removeEventListener('pointerdown', onPointerDown, true);
+    };
+  }, [recording, onPick, onInvalid]);
+
+  return (
+    <button
+      ref={btnRef}
+      type="button"
+      onClick={() => setRecording((r) => !r)}
+      className={`tf-btn min-w-[5.5rem] justify-center font-mono text-xs ${
+        recording ? 'border-accent text-accent' : ''
+      }`}
+      title={recording ? '按下想用的键，Esc 取消' : '点击后按下新键位'}
+    >
+      {recording ? '按任意键…' : formatKeyLabel(value)}
+    </button>
   );
 }
 

@@ -13,6 +13,7 @@ import { db, clearAllData } from '@/db';
 import * as speech from '@/lib/speech';
 import { usePractice } from '@/store/practice';
 import { useSettings } from '@/store/settings';
+import { DEFAULT_SHORTCUTS } from '@/types';
 import App from '@/App';
 
 const WORDS = [
@@ -51,6 +52,7 @@ beforeEach(async () => {
     roundSize: 20,
     flowPreset: 'followOnly' as const,
     groupSize: 7,
+    shortcuts: DEFAULT_SHORTCUTS,
   };
   await db.settings.put(testSettings);
   useSettings.setState({ settings: testSettings });
@@ -268,6 +270,7 @@ describe('练习流程', () => {
       roundSize: 20,
       flowPreset: 'followOnly',
       groupSize: 7,
+      shortcuts: DEFAULT_SHORTCUTS,
     });
     await startRound();
     expect(useSettings.getState().settings.strictCorrection).toBe(false);
@@ -568,6 +571,7 @@ describe('练习流程', () => {
         roundSize: 20,
         flowPreset: preset,
         groupSize: 2,
+        shortcuts: DEFAULT_SHORTCUTS,
       });
       await startRound();
     }
@@ -639,6 +643,7 @@ describe('练习流程', () => {
         roundSize: 20,
         flowPreset: 'fullChain',
         groupSize: 2,
+        shortcuts: DEFAULT_SHORTCUTS,
       });
 
       const { buildPlan, flattenPlan } = await import('@/lib/flow');

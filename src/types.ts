@@ -238,6 +238,16 @@ export interface SerializedCard {
 
 export type Accent = 'en-US' | 'en-GB';
 
+/**
+ * 练习中可以改键的动作。
+ *
+ * 只有这四个：字母输入不参与——它是练习本身，不能改。
+ */
+export type ShortcutAction = 'next' | 'replay' | 'backspace' | 'exit';
+
+/** 动作 → 键名（`KeyboardEvent.key` 的写法） */
+export type ShortcutMap = Record<ShortcutAction, string>;
+
 export interface Settings {
   /** 主键，固定 1（单用户） */
   id?: number;
@@ -268,7 +278,28 @@ export interface Settings {
   flowPreset: FlowPresetId;
   /** 分组大小（流程为分组循环时生效），默认 7 */
   groupSize: number;
+  /**
+   * 练习快捷键。
+   *
+   * 存在设置里而不是写死在组件里：用户的手指习惯差别很大
+   * （有人用触控板、有人用分体键盘、有人的键盘没有 Tab 键），
+   * 这类偏好一旦挡住高频操作，整个练习节奏就废了。
+   */
+  shortcuts: ShortcutMap;
 }
+
+/**
+ * 默认键位。
+ *
+ * 与改造前写死的键位完全一致，保证升级后老用户的行为不发生任何变化——
+ * 新增设置项的默认值必须是「等于旧行为」，否则用户会莫名其妙地按不动。
+ */
+export const DEFAULT_SHORTCUTS: ShortcutMap = {
+  next: ' ',
+  replay: 'Tab',
+  backspace: 'Backspace',
+  exit: 'Escape',
+};
 
 export const DEFAULT_SETTINGS: Omit<Settings, 'id'> = {
   dailyNewTarget: 20,
@@ -283,6 +314,7 @@ export const DEFAULT_SETTINGS: Omit<Settings, 'id'> = {
   roundSize: 20,
   flowPreset: 'listenWrite',
   groupSize: 7,
+  shortcuts: DEFAULT_SHORTCUTS,
 };
 
 /** ---------- 文章 ---------- */

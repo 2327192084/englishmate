@@ -7,6 +7,9 @@
  *   Backspace → 退一格（错误计数不回退）
  *   Esc    → 退出练习
  *   自动聚焦，点击空白处自动抢回焦点（但点按钮不要抢）
+ *
+ * 上面四个键位是**默认值**，用户可在设置里改（见 src/lib/keys.ts）。
+ * 页面底部的按键提示也跟着设置变，不能写死——否则改完键提示还是在教旧键。
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { PracticeMode, WordEntry } from '@/types';
@@ -15,6 +18,7 @@ import { useSettings } from '@/store/settings';
 import { speak } from '@/lib/speech';
 import { playKeySound, buzz } from '@/lib/sound';
 import { isComplete } from '@/lib/typing';
+import { formatKeyLabel, matchShortcut } from '@/lib/keys';
 import { IconVolume } from './Icons';
 import { WordDetail } from './WordDetail';
 import { WordFamilyHint } from './WordFamilyHint';
@@ -108,13 +112,14 @@ export function TypingArea() {
       const k = e.key;
 
       /**
-       * 提交键只保留 Space 一个。
+       * 快捷键全部从设置里读，不再写死。
        *
-       * 原来 Space 和 Enter 走同一分支，两个键做同一件事——
-       * 用户不知道该按哪个，提示里也只能写一个，另一个等于隐藏功能。
-       * 统一到 Space：它在打字流里离手指最近，且不会与输入法候选上屏冲突。
+       * 判定集中在 `matchShortcut`（src/lib/keys.ts）而不是这里写一串 if：
+       * 用户改键或导入旧备份后可能出现「两个动作抢同一个键」的脏配置，
+       * 集中判定才能保证只有一个动作生效，行为可预测。
        */
-      if (k === ' ') {
+      const action = matchShortcut(settings.shortcuts, k);
+      if (action === 'next') {
         e.preventDefault();
         if (isComplete(p.typing) || p.mode === 'typing') {
           handleNext();
@@ -123,30 +128,19 @@ export function TypingArea() {
         }
         return;
       }
-      /**
-       * 发音快捷键：Tab。
-       *
-       * Tab 原本是"跳过当前词"，已按用户要求移除（与 Space 重复），
-       * 现在这个键空出来，正好给发音——练听写时反复听一个词是高频操作，
-       * 鼠标去点按钮太打断节奏。
-       *
-       * 为什么不用 Ctrl+某键：单手按组合键会分散打字注意力，
-       * 而 Tab 在左手小指位置，按一下就能重听，不打断双手姿势。
-       */
-      if (k === 'Tab') {
+      if (action === 'replay') {
         e.preventDefault();
         const now = usePractice.getState().current();
         if (now) speak(now.w, { accent: settings.accent, rate: settings.speechRate });
         return;
       }
-
-      if (k === 'Backspace') {
+      if (action === 'backspace') {
         e.preventDefault();
         p.backspace();
         if (settings.keySound) playKeySound(settings.keyVolume, 'up');
         return;
       }
-      if (k === 'Escape') {
+      if (action === 'exit') {
         e.preventDefault();
         if (window.confirm('退出本轮练习？已完成的词会保留记录。')) {
           window.location.hash = '';
@@ -182,6 +176,7 @@ export function TypingArea() {
       settings.strictCorrection,
       settings.accent,
       settings.speechRate,
+      settings.shortcuts,
     ],
   );
 
@@ -384,10 +379,10 @@ export function TypingArea() {
         */}
         <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-lg border border-line/70 bg-surface2/40 px-3 py-2 text-xs text-muted">
           <Hint keys={['字母']} label="输入" />
-          <Hint keys={['Space']} label="下一个" />
-          <Hint keys={['Tab']} label="再听一遍" />
-          <Hint keys={['⌫']} label="退格" />
-          <Hint keys={['Esc']} label="退出" />
+          <Hint keys={[formatKeyLabel(settings.shortcuts.next)]} label="下一个" />
+          <Hint keys={[formatKeyLabel(settings.shortcuts.replay)]} label="再听一遍" />
+          <Hint keys={[formatKeyLabel(settings.shortcuts.backspace)]} label="退格" />
+          <Hint keys={[formatKeyLabel(settings.shortcuts.exit)]} label="退出" />
         </div>
       </div>
 
