@@ -6,6 +6,7 @@ import PracticePage from '@/pages/PracticePage';
 import WordsPage from '@/pages/WordsPage';
 import ReviewPage from '@/pages/ReviewPage';
 import ArticlesPage from '@/pages/ArticlesPage';
+import SentencesPage from '@/pages/SentencesPage';
 import StatsPage from '@/pages/StatsPage';
 import AchievementsPage from '@/pages/AchievementsPage';
 import SettingsPage from '@/pages/SettingsPage';
@@ -37,6 +38,7 @@ export default function App() {
         <Route path="/words" element={<WordsPage />} />
         <Route path="/review" element={<ReviewPage />} />
         <Route path="/articles" element={<ArticlesPage />} />
+        <Route path="/sentences" element={<SentencesPage />} />
         <Route path="/stats" element={<StatsPage />} />
         <Route path="/achievements" element={<AchievementsPage />} />
         <Route path="/settings" element={<SettingsPage />} />

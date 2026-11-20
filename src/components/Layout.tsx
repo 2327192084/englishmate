@@ -18,6 +18,7 @@ const NAV = [
   { to: '/words', label: '词库', icon: IconBook },
   { to: '/review', label: '复习', icon: IconFlame },
   { to: '/articles', label: '文章', icon: IconBook },
+  { to: '/sentences', label: '句子', icon: IconChart },
   { to: '/stats', label: '数据', icon: IconChart },
   { to: '/achievements', label: '成就', icon: IconTrophy },
 ];
@@ -136,7 +137,8 @@ export function Layout({ children }: { children: ReactNode }) {
       {/* 移动端底部导航 */}
       {!isPractice && (
         <nav className="fixed inset-x-0 bottom-0 z-20 flex border-t border-line bg-surface md:hidden">
-          {NAV.slice(0, 5).map((item) => {
+          {/* 只展示前 6 项：每项 flex-1、中文标签 2 字，窄屏 320px 下每格约 53px 仍放得下 */}
+          {NAV.slice(0, 6).map((item) => {
             const Icon = item.icon;
             return (
               <NavLink
