@@ -10,11 +10,11 @@
 
 **推荐主选方案：ECDICT（中文释义/词性/词频）+ kaikki.org（例句/词性补全）+ ipa-dict（英美双音标）三源合并，WordNet 做例句兜底。**
 
-| 组合 | 例句 | 词性 | 英音 | 美音 | 中文释义 |
-|---|---|---|---|---|---|
-| ECDICT 单源 | ❌ 无例句列 | ⚠️ 需解析（20% 有前缀） | ⚠️ 旧式非 IPA | ⚠️ 无区分 | ✅ 97.5% |
-| ECDICT + kaikki | ✅ 95% | ✅ 100% | ⚠️ 仅 60% 有标签 | ⚠️ 仅 60% 有标签 | ✅ |
-| **ECDICT + kaikki + ipa-dict** | ✅ 95% | ✅ 100% | ✅ 85–99% | ✅ 89–99.6% | ✅ |
+| 组合                           | 例句        | 词性                    | 英音             | 美音             | 中文释义 |
+| ------------------------------ | ----------- | ----------------------- | ---------------- | ---------------- | -------- |
+| ECDICT 单源                    | ❌ 无例句列 | ⚠️ 需解析（20% 有前缀） | ⚠️ 旧式非 IPA    | ⚠️ 无区分        | ✅ 97.5% |
+| ECDICT + kaikki                | ✅ 95%      | ✅ 100%                 | ⚠️ 仅 60% 有标签 | ⚠️ 仅 60% 有标签 | ✅       |
+| **ECDICT + kaikki + ipa-dict** | ✅ 95%      | ✅ 100%                 | ✅ 85–99%        | ✅ 89–99.6%      | ✅       |
 
 > ⚠️ **TypeWords 的数据不可直接取用**：它的词条字段确实最丰富（`sentences`/`phrases`/`trans`/`phonetic0`/`phonetic1`/`synos`/`etymology` 全都有），但仓库是 **GPL-3.0**。EnglishMate 是 MIT，直接拷贝其数据文件会构成 GPL 传染。**这是本次调研最重要的否决结论。**
 
@@ -24,43 +24,43 @@
 
 命中率口径：从 `public/dicts/*.json` 的 13,987 个去重词条中固定种子抽样 100 词（种子 `20261119`，可复现）。
 
-| 数据源 | 覆盖字段 | 例句命中率 | 许可 | 体积 | 离线可用 | 需 key |
-|---|---|---|---|---|---|---|
-| **ECDICT**<br>skywind3000 | word, phonetic, definition, translation, pos, collins, oxford, tag, bnc, frq, exchange | **0%**<br>（无例句列） | **MIT** | 66MB csv<br>→ 裁剪后 ~3.5MB | ✅ | ❌ |
-| **kaikki.org**<br>wiktextract | 释义, 例句, 词性, IPA, 同义词, 词源, 屈折 | **95%**<br>(37/39) | **CC-BY-SA 3.0**<br>需署名+同源 | 完整 3.2GB<br>按词抓 ~234KB/词 | ✅ 抓完即离线 | ❌ |
-| **Tatoeba** | 英中对照句 | **49%**<br>分库差异大 | **CC-BY 2.0 FR**<br>需署名 | 英 25MB + 中 1.2MB<br>+ 链接 471KB | ✅ | ❌ |
-| **dictionaryapi.dev** | 释义, 例句, 词性, IPA, 同义词 | **35%**<br>且 78% 被限流 | 代码 **GPL-3.0**<br>数据 Wiktionary | 无本地包 | ❌ 纯 API | ❌ |
-| **ipa-dict** | 英/美 IPA | — （只补音标） | 项目 **MIT**<br>en_UK 源自 **GPL-3.0** | en_US 3.0MB<br>en_UK 1.6MB | ✅ | ❌ |
-| **WordNet 3.1** | 释义, 例句, 同义词 | **70%**<br>兜底用 | **Princeton**<br>可商用 | 35MB 解包 | ✅ | ❌ |
-| ~~TypeWords~~ | 全字段最丰富 | ~~99.9%~~ | ~~**GPL-3.0**~~ | 4.3MB/库 | — | — |
+| 数据源                        | 覆盖字段                                                                               | 例句命中率               | 许可                                   | 体积                               | 离线可用      | 需 key |
+| ----------------------------- | -------------------------------------------------------------------------------------- | ------------------------ | -------------------------------------- | ---------------------------------- | ------------- | ------ |
+| **ECDICT**<br>skywind3000     | word, phonetic, definition, translation, pos, collins, oxford, tag, bnc, frq, exchange | **0%**<br>（无例句列）   | **MIT**                                | 66MB csv<br>→ 裁剪后 ~3.5MB        | ✅            | ❌     |
+| **kaikki.org**<br>wiktextract | 释义, 例句, 词性, IPA, 同义词, 词源, 屈折                                              | **95%**<br>(37/39)       | **CC-BY-SA 3.0**<br>需署名+同源        | 完整 3.2GB<br>按词抓 ~234KB/词     | ✅ 抓完即离线 | ❌     |
+| **Tatoeba**                   | 英中对照句                                                                             | **49%**<br>分库差异大    | **CC-BY 2.0 FR**<br>需署名             | 英 25MB + 中 1.2MB<br>+ 链接 471KB | ✅            | ❌     |
+| **dictionaryapi.dev**         | 释义, 例句, 词性, IPA, 同义词                                                          | **35%**<br>且 78% 被限流 | 代码 **GPL-3.0**<br>数据 Wiktionary    | 无本地包                           | ❌ 纯 API     | ❌     |
+| **ipa-dict**                  | 英/美 IPA                                                                              | — （只补音标）           | 项目 **MIT**<br>en_UK 源自 **GPL-3.0** | en_US 3.0MB<br>en_UK 1.6MB         | ✅            | ❌     |
+| **WordNet 3.1**               | 释义, 例句, 同义词                                                                     | **70%**<br>兜底用        | **Princeton**<br>可商用                | 35MB 解包                          | ✅            | ❌     |
+| ~~TypeWords~~                 | 全字段最丰富                                                                           | ~~99.9%~~                | ~~**GPL-3.0**~~                        | 4.3MB/库                           | —             | —      |
 
 ### 各源分库命中率（实测）
 
 **ipa-dict 音标覆盖**（en_US 125,927 条）：
 
-| 词库 | 命中 | 覆盖率 |
-|---|---|---|
-| cet4 | 2596 / 2607 | 99.6% |
-| cet6 | 2344 / 2345 | 99.6% |
-| gaokao | 3633 / 3665 | 99.1% |
-| toefl | 4176 / 4264 | 97.9% |
-| ielts | 3450 / 3575 | 96.5% |
-| kaoyan | 3584 / 3731 | 96.1% |
-| gre | 5784 / 6514 | 88.8% |
-| linux | 161 / 575 | 28.0% |
+| 词库   | 命中        | 覆盖率 |
+| ------ | ----------- | ------ |
+| cet4   | 2596 / 2607 | 99.6%  |
+| cet6   | 2344 / 2345 | 99.6%  |
+| gaokao | 3633 / 3665 | 99.1%  |
+| toefl  | 4176 / 4264 | 97.9%  |
+| ielts  | 3450 / 3575 | 96.5%  |
+| kaoyan | 3584 / 3731 | 96.1%  |
+| gre    | 5784 / 6514 | 88.8%  |
+| linux  | 161 / 575   | 28.0%  |
 
 **Tatoeba 英中例句覆盖**（76,607 对，16,521 个可索引词头）：
 
-| 词库 | 命中 | 覆盖率 |
-|---|---|---|
-| gaokao | 3357 / 3665 | **91.6%** |
+| 词库     | 命中        | 覆盖率    |
+| -------- | ----------- | --------- |
+| gaokao   | 3357 / 3665 | **91.6%** |
 | **cet4** | 2194 / 2607 | **84.2%** |
 | **cet6** | 1559 / 2345 | **66.5%** |
-| ielts | 2207 / 3575 | 61.7% |
-| kaoyan | 2269 / 3731 | 60.8% |
-| toefl | 2341 / 4264 | 54.9% |
-| gre | 1849 / 6514 | **28.4%** |
-| linux | 113 / 575 | 19.7% |
+| ielts    | 2207 / 3575 | 61.7%     |
+| kaoyan   | 2269 / 3731 | 60.8%     |
+| toefl    | 2341 / 4264 | 54.9%     |
+| gre      | 1849 / 6514 | **28.4%** |
+| linux    | 113 / 575   | 19.7%     |
 
 > 规律很清晰：**Tatoeba 是生活化语料，越基础的词库命中越高，越学术/越生僻越差。** GRE 只有 28.4%，单靠 Tatoeba 补 GRE 例句不可行。
 
@@ -79,14 +79,14 @@ $ curl -sS https://api.github.com/repos/skywind3000/ECDICT
 
 **文件清单（`git/trees/master?recursive=1`，16 个 blob）：**
 
-| 大小 | 路径 |
-|---|---|
-| 66,009,548 | `ecdict.csv` ← 主数据 |
-| 51,577,449 | `stardict.7z` |
-| 2,318,694 | `lemma.en.txt` |
-| 529,302 | `resemble.txt` |
-| 370,702 | `wordroot.txt` |
-| 4,204 | `ecdict.mini.csv` ← 4KB 样本，用来验证列名 |
+| 大小       | 路径                                       |
+| ---------- | ------------------------------------------ |
+| 66,009,548 | `ecdict.csv` ← 主数据                      |
+| 51,577,449 | `stardict.7z`                              |
+| 2,318,694  | `lemma.en.txt`                             |
+| 529,302    | `resemble.txt`                             |
+| 370,702    | `wordroot.txt`                             |
+| 4,204      | `ecdict.mini.csv` ← 4KB 样本，用来验证列名 |
 
 **列结构（13 列，实测 `ecdict.mini.csv` 表头）：**
 
@@ -118,24 +118,24 @@ word,phonetic,definition,translation,pos,collins,oxford,tag,bnc,frq,exchange,det
 
 **字段实际情况（全库 770,611 行统计）：**
 
-| 字段 | 非空 | 说明 |
-|---|---|---|
+| 字段       | 非空             | 说明                                                                                                                                  |
+| ---------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | `phonetic` | 218,065（28.3%） | **旧式音标**（`'kænsәl`），用 `ә`(U+04D9) 而非 `ə`(U+0259)，`'` 代替 `ˈ`。98.3% 含现代 IPA 记号，但**不是标准 IPA**，且**无英美区分** |
-| `pos` | **0（全空）** | 这一列实际不可用 |
-| `tag` | 14,942 | 考试词库标记，正是我们需要的 |
-| `exchange` | 96,290 | 词形变化（时态/复数/比较级） |
-| `detail` | 1 | 实质为空 |
+| `pos`      | **0（全空）**    | 这一列实际不可用                                                                                                                      |
+| `tag`      | 14,942           | 考试词库标记，正是我们需要的                                                                                                          |
+| `exchange` | 96,290           | 词形变化（时态/复数/比较级）                                                                                                          |
+| `detail`   | 1                | 实质为空                                                                                                                              |
 
 **词性怎么来？** `pos` 列是空的，词性藏在 `translation` 的行首缩写里（`n.` `vt.` `vi.` `a.` `adv.`…）。实测抽样 5000 行，**20.3% 的行有 POS 前缀**——覆盖不足，需要从 `definition` 兜底或让 kaikki 提供。
 
 **Tag 分布（考试词库标记）：**
 
-| tag | 词数 | | tag | 词数 |
-|---|---|---|---|---|
-| gre | 7,504 | | cet4 | 3,849 |
-| toefl | 6,974 | | gk（高考） | 3,677 |
-| cet6 | 5,407 | | zk（中考） | 1,603 |
-| ielts | 5,040 | | ky（考研） | 4,801 |
+| tag   | 词数  |     | tag        | 词数  |
+| ----- | ----- | --- | ---------- | ----- |
+| gre   | 7,504 |     | cet4       | 3,849 |
+| toefl | 6,974 |     | gk（高考） | 3,677 |
+| cet6  | 5,407 |     | zk（中考） | 1,603 |
+| ielts | 5,040 |     | ky（考研） | 4,801 |
 
 **命中率（实测 100 词抽样）：**
 
@@ -194,16 +194,16 @@ https://kaikki.org/dictionary/English/meaning/{首字母}/{前两字母}/{词}.h
 
 实测各词页面大小：
 
-| 词 | HTTP | 大小 | 耗时 |
-|---|---|---|---|
-| cancel | 200 | 473KB | 2.7s |
-| abandon | 200 | 560KB | 2.7s |
-| mode | 200 | 391KB | 3.4s |
-| tilt | 200 | 237KB | 2.4s |
-| radio | 200 | 536KB | 6.1s |
-| agriculture | 200 | 311KB | 2.6s |
-| protect | 200 | 207KB | 4.8s |
-| significant | 200 | 169KB | 3.2s |
+| 词          | HTTP | 大小  | 耗时 |
+| ----------- | ---- | ----- | ---- |
+| cancel      | 200  | 473KB | 2.7s |
+| abandon     | 200  | 560KB | 2.7s |
+| mode        | 200  | 391KB | 3.4s |
+| tilt        | 200  | 237KB | 2.4s |
+| radio       | 200  | 536KB | 6.1s |
+| agriculture | 200  | 311KB | 2.6s |
+| protect     | 200  | 207KB | 4.8s |
+| significant | 200  | 169KB | 3.2s |
 
 > 平均 **~234KB/词**。全量 13,987 词 × 234KB ≈ **3.3GB 流量**，每词 2–6 秒（3 并发约 3 小时）。只做 CET4+CET6+高考（6,149 词）约 1.4GB / 1 小时。这是我推荐的方案里最需要正视的成本。
 
@@ -251,6 +251,7 @@ probed 40 | pages found 40
 ```
 
 **关键结论：**
+
 - ✅ 例句 95%、词性 100%、IPA 87% —— 三项里两项最优
 - ❌ **中文翻译只有 13%** —— 不能替代 ECDICT 的中文释义
 - ✅ **英美双音标可以拆出来**（已实测验证，见下）
@@ -288,9 +289,9 @@ ipa but untagged only: 11   ← 28% 有音标但没标地域
 
 判别规则（实测有效）：
 
-| 目标 | 识别的 tag |
-|---|---|
-| 美音 | `US` / `General-American` / `General American` |
+| 目标 | 识别的 tag                                         |
+| ---- | -------------------------------------------------- |
+| 美音 | `US` / `General-American` / `General American`     |
 | 英音 | `UK` / `Received-Pronunciation` / `British` / `RP` |
 
 实测样例：
@@ -332,13 +333,13 @@ Content-Length: 534186395                               # 509MB（gzip 后）
 
 **文件体积（实测 `Content-Length`）：**
 
-| 文件 | 大小 |
-|---|---|
-| `per_language/eng/eng_sentences.tsv.bz2` | 24,947,715（23.8MB） |
-| `per_language/eng/eng_sentences_detailed.tsv.bz2` | 34,995,780（33.4MB） |
-| `per_language/cmn/cmn_sentences_detailed.tsv.bz2` | 1,727,335（1.6MB） |
-| `per_language/eng/eng-cmn_links.tsv.bz2` | 482,470（471KB） ← 英中对照索引，很小 |
-| `links.csv` | 459,242,252（438MB）← 全语言，不需要 |
+| 文件                                              | 大小                                  |
+| ------------------------------------------------- | ------------------------------------- |
+| `per_language/eng/eng_sentences.tsv.bz2`          | 24,947,715（23.8MB）                  |
+| `per_language/eng/eng_sentences_detailed.tsv.bz2` | 34,995,780（33.4MB）                  |
+| `per_language/cmn/cmn_sentences_detailed.tsv.bz2` | 1,727,335（1.6MB）                    |
+| `per_language/eng/eng-cmn_links.tsv.bz2`          | 482,470（471KB） ← 英中对照索引，很小 |
+| `links.csv`                                       | 459,242,252（438MB）← 全语言，不需要  |
 
 **格式（实测 `sentences_detailed.csv` 头部）：**
 
@@ -449,19 +450,35 @@ with 2+ distinct IPA 10
 **字段实证（`cancel`）：**
 
 ```json
-[{
-  "word": "cancel",
-  "phonetic": "/ˈkænsl̩/",
-  "phonetics": [{ "text": "/ˈkænsl̩/", "audio": "https://api.dictionaryapi.dev/media/…/cancel-au.mp3",
-                  "license": { "name": "BY-SA 4.0", "url": "https://creativecommons.org/licenses/by-sa/4.0" } }],
-  "meanings": [{
-    "partOfSpeech": "verb",
-    "definitions": [
-      { "definition": "To cross out something with lines etc.", "synonyms": [], "antonyms": [] },
-      { "definition": "To invalidate or annul something.", "example": "He cancelled his order on their website." }
+[
+  {
+    "word": "cancel",
+    "phonetic": "/ˈkænsl̩/",
+    "phonetics": [
+      {
+        "text": "/ˈkænsl̩/",
+        "audio": "https://api.dictionaryapi.dev/media/…/cancel-au.mp3",
+        "license": { "name": "BY-SA 4.0", "url": "https://creativecommons.org/licenses/by-sa/4.0" }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To cross out something with lines etc.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To invalidate or annul something.",
+            "example": "He cancelled his order on their website."
+          }
+        ]
+      }
     ]
-  }]
-}]
+  }
+]
 ```
 
 > 注意 `phonetics[].license` 字段自己写着 **BY-SA 4.0** —— 连音频都带传染性许可。
@@ -474,8 +491,8 @@ with 2+ distinct IPA 10
 
 **许可证：项目 MIT，但数据来源分级。** README 的 Credits 一节实测原文：
 
-> * English (US) IPA data based on modified version of **cmudict-ipa** by @lingz (MIT)
-> * English (UK) IPA data derived from **ipacards** by @leoboiko (**GPL 3.0**)
+> - English (US) IPA data based on modified version of **cmudict-ipa** by @lingz (MIT)
+> - English (UK) IPA data derived from **ipacards** by @leoboiko (**GPL 3.0**)
 
 **⚠️ 这是本次调研第二个重要发现：`en_UK.txt` 的上游是 GPL-3.0。** 项目整体挂 MIT，但 UK 音标数据的来源许可更严格。**如果 EnglishMate 要保持纯 MIT，应当只用 `en_US`，英音另行获取**（或接受 GPL 风险并注明）。
 
@@ -571,15 +588,15 @@ all:    lemma hit 13181/13987, with >=1 example 9840/13987
 
 ### 为什么是这两个
 
-| 需求 | 由谁提供 | 覆盖率 |
-|---|---|---|
-| 中文释义 | **ECDICT** `translation` | 97.5% |
-| 音标（英/美） | **ipa-dict** `en_US` / `en_UK` | 89–99.6% |
-| 词性 | **kaikki** `pos`（ECDICT `pos` 列全空） | 100% |
-| 例句（英文） | **kaikki** `senses[].examples[]` | 95% |
-| 例句（中文对照） | **Tatoeba**（可选增强） | 高考 91.6% / CET4 84.2% / GRE 28.4% |
-| 例句兜底 | **WordNet** | +70% |
-| 例句兜底（离线） | **ECDICT** `exchange`（词形）+ 无 | — |
+| 需求             | 由谁提供                                | 覆盖率                              |
+| ---------------- | --------------------------------------- | ----------------------------------- |
+| 中文释义         | **ECDICT** `translation`                | 97.5%                               |
+| 音标（英/美）    | **ipa-dict** `en_US` / `en_UK`          | 89–99.6%                            |
+| 词性             | **kaikki** `pos`（ECDICT `pos` 列全空） | 100%                                |
+| 例句（英文）     | **kaikki** `senses[].examples[]`        | 95%                                 |
+| 例句（中文对照） | **Tatoeba**（可选增强）                 | 高考 91.6% / CET4 84.2% / GRE 28.4% |
+| 例句兜底         | **WordNet**                             | +70%                                |
+| 例句兜底（离线） | **ECDICT** `exchange`（词形）+ 无       | —                                   |
 
 **核心判断：ECDICT 解决"中文"，kaikki 解决"例句与词性"，ipa-dict 解决"英美双音标"。三者互补，无重叠浪费。**
 
@@ -595,6 +612,7 @@ tar -xzf ecdict-0.0.4.tgz package/assets/ecdict.csv
 ```
 
 裁剪逻辑：
+
 1. 只保留 8 个词库里出现的 13,987 个词（命中 13,641 = **97.5%**）
 2. 只留 5 个字段：`word, translation, phonetic, tag, exchange`（丢弃 `definition` 的英文长文本、`bnc`/`frq` 可留作排序）
 3. 从 `translation` 行首解析词性（`n.` `vt.` `a.` …），解析不出的交给 kaikki
@@ -633,8 +651,8 @@ curl -H "Accept: application/vnd.github.raw" \
 ```json
 {
   "cancel": {
-    "p": "/ˈkænsl/",              // 保留现有字段（美音，来自 ipa-dict en_US）
-    "pUk": "/ˈkænsəl/",           // 新增：英音
+    "p": "/ˈkænsl/", // 保留现有字段（美音，来自 ipa-dict en_US）
+    "pUk": "/ˈkænsəl/", // 新增：英音
     "pos": ["v.", "n."],
     "trans": [
       { "pos": "v.", "cn": "取消（计划好的事情）；终止，废除" },
@@ -650,12 +668,12 @@ curl -H "Accept: application/vnd.github.raw" \
 
 **体积估算（13,987 词）：**
 
-| 部分 | 估算 |
-|---|---|
-| 中文释义（ECDICT 裁剪） | ~3.5MB |
-| 例句（kaikki，2–3 条/词） | ~4–6MB |
-| 音标（ipa-dict 裁剪） | ~0.7MB |
-| **合计（gzip 后）** | **~2.5–3.5MB** |
+| 部分                      | 估算           |
+| ------------------------- | -------------- |
+| 中文释义（ECDICT 裁剪）   | ~3.5MB         |
+| 例句（kaikki，2–3 条/词） | ~4–6MB         |
+| 音标（ipa-dict 裁剪）     | ~0.7MB         |
+| **合计（gzip 后）**       | **~2.5–3.5MB** |
 
 > 对照：当前 `public/dicts/` 全部 8 个库合计 2.2MB。加例句后预计涨到 **5–6MB 未压缩**，对 Electron 应用完全可接受；如果做按需加载（首字母分片），首屏只加载 ~200KB。
 
@@ -665,17 +683,18 @@ curl -H "Accept: application/vnd.github.raw" \
 
 ### 1. ⚠️ 许可：这是最需要决策的地方
 
-| 源 | 许可 | 对 MIT 项目的影响 |
-|---|---|---|
-| ECDICT | MIT | ✅ 直接可用，保留声明 |
-| WordNet | Princeton（类 MIT） | ✅ 直接可用，保留声明 |
-| Tatoeba | CC-BY 2.0 FR | ⚠️ 需在应用内署名（关于页/数据来源页） |
-| **kaikki** | **CC-BY-SA 3.0** | 🔴 **要求衍生作品同源** —— 若把例句嵌进 MIT 仓库，理论上整个数据文件需以 CC-BY-SA 发布 |
-| **ipa-dict en_UK** | 上游 **GPL-3.0** | 🔴 同上 |
-| dictionaryapi.dev | GPL-3.0 代码 + CC-BY-SA 数据 | 🔴 不采用 |
-| **TypeWords** | **GPL-3.0** | 🔴 **绝不拷贝其数据文件** |
+| 源                 | 许可                         | 对 MIT 项目的影响                                                                      |
+| ------------------ | ---------------------------- | -------------------------------------------------------------------------------------- |
+| ECDICT             | MIT                          | ✅ 直接可用，保留声明                                                                  |
+| WordNet            | Princeton（类 MIT）          | ✅ 直接可用，保留声明                                                                  |
+| Tatoeba            | CC-BY 2.0 FR                 | ⚠️ 需在应用内署名（关于页/数据来源页）                                                 |
+| **kaikki**         | **CC-BY-SA 3.0**             | 🔴 **要求衍生作品同源** —— 若把例句嵌进 MIT 仓库，理论上整个数据文件需以 CC-BY-SA 发布 |
+| **ipa-dict en_UK** | 上游 **GPL-3.0**             | 🔴 同上                                                                                |
+| dictionaryapi.dev  | GPL-3.0 代码 + CC-BY-SA 数据 | 🔴 不采用                                                                              |
+| **TypeWords**      | **GPL-3.0**                  | 🔴 **绝不拷贝其数据文件**                                                              |
 
 **kaikki 的 CC-BY-SA 怎么办？** 有三条路：
+
 1. **数据与代码分离授权**（推荐）：`src/` 保持 MIT，`public/dict-details/` 单独声明 CC-BY-SA 并附 `NOTICE`。这是社区常见做法——数据文件的许可不会"传染"到使用它的程序代码，只约束数据文件本身的再分发。
 2. 只取"事实性内容"（单词 + 例句），主张例句是短语不构成独创表达 —— **法律上不稳，不建议依赖**。
 3. 放弃 kaikki，只用 Tatoeba（CC-BY）+ WordNet 做例句 —— 覆盖率降到 ~70%，但许可最干净。
@@ -719,15 +738,18 @@ curl -H "Accept: application/vnd.github.raw" \
 **值得，但要接受两个前提。**
 
 **做**，因为：
+
 - 三个核心字段都有 95%+ 覆盖的可靠来源，且**全部可离线**（除首次构建）
 - ECDICT（MIT）+ ipa-dict en_US（MIT）+ WordNet（Princeton）三个源许可干净，只有 kaikki 的 CC-BY-SA 需要"数据/代码分离授权"这一条工程约定
 - 产物只增加 3–3.5MB（gzip），对 Electron 无压力
 
 **不大幅扩张范围**，因为：
+
 - 词源/同根词（TypeWords 的 `etymology`/`relWords`）**只有 GPL-3.0 的 TypeWords 有**，本次不做是对的
 - 短语（`phrases`）同样只有 TypeWords 有，kaikki 的 `senses[].synonyms` 不能替代，本期不做
 
 **最小可行版本（建议第一期就做这个）：**
+
 1. ECDICT → 中文释义 + 词性（解析 `translation` 前缀）+ 词频
 2. ipa-dict en_US → 音标（覆盖 99.6% 的 CET4）
 3. kaikki → 例句 + 词性补全（只抓 CET4/CET6/高考，**去重后 6,149 词**，流量降到 ~1.4GB，1 小时内可完成）

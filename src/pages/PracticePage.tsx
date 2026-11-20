@@ -24,9 +24,18 @@ import {
 import { usePractice } from '@/store/practice';
 import { useSettings } from '@/store/settings';
 import { recordAttempt, saveSession, todayCounts } from '@/services/learning';
+import { checkAchievements } from '@/services/achievements';
+import { ACHIEVEMENT_MAP } from '@/data/achievements';
 import { TypingArea } from '@/components/TypingArea';
 import { Chip, Progress, Skeleton } from '@/components/ui';
-import { IconArrowRight, IconRefresh, IconVolume, IconX, IconCheck } from '@/components/Icons';
+import {
+  IconArrowRight,
+  IconRefresh,
+  IconVolume,
+  IconX,
+  IconCheck,
+  IconTrophy,
+} from '@/components/Icons';
 import type { WordbankMeta } from '@/types';
 import { speak } from '@/lib/speech';
 import { playFinishSound } from '@/lib/sound';
@@ -49,6 +58,8 @@ export default function PracticePage() {
   const savedRef = useRef(false);
   /** 已经写进数据库的 attempts 数量，用于增量落库去重 */
   const savedUpToRef = useRef(0);
+  /** 本轮新解锁的成就 id，结算页展示用 */
+  const [newlyUnlocked, setNewlyUnlocked] = useState<string[]>([]);
 
   /** 初始化：词库列表 + 记忆上次选择 */
   useEffect(() => {
@@ -101,6 +112,7 @@ export default function PracticePage() {
     setError(null);
     savedRef.current = false;
     savedUpToRef.current = 0;
+    setNewlyUnlocked([]);
     try {
       const words = await loadWords(bankId);
       const remainingNew = Math.max(0, settings.dailyNewTarget - counts.todayNew);
@@ -112,6 +124,8 @@ export default function PracticePage() {
         size: buildMode === 'choice' ? Math.max(10, roundSize) : roundSize,
         newQuota: remainingNew,
         mode: buildMode,
+        // 每日复习上限要考虑今天已经复习过多少
+        reviewLimit: Math.max(0, settings.dailyReviewLimit - counts.todayReviewed),
       });
       if (round.entries.length === 0) {
         setError('这个词库暂时没有可练的词，换一个词库试试。');
@@ -157,6 +171,7 @@ export default function PracticePage() {
     roundSize,
     setParams,
     settings.dailyNewTarget,
+    settings.dailyReviewLimit,
     settings.flowPreset,
     settings.groupSize,
   ]);
@@ -208,6 +223,15 @@ export default function PracticePage() {
           activeMs: p.elapsed(),
         });
         setCounts(await todayCounts());
+
+        /**
+         * 成就判定。
+         * 必须在 saveSession 之后 —— 判定要用到刚落库的这一轮的统计。
+         * 新解锁的成就存进 state，由结算页展示。
+         */
+        const fresh = await checkAchievements();
+        if (fresh.length) setNewlyUnlocked(fresh);
+
         if (settings.keySound) playFinishSound(settings.keyVolume);
       } finally {
         setSaving(false);
@@ -282,7 +306,14 @@ export default function PracticePage() {
   }
 
   if (p.phase === 'finished') {
-    return <Summary saving={saving} onAgain={() => void startRound()} onBack={() => p.reset()} />;
+    return (
+      <Summary
+        saving={saving}
+        newlyUnlocked={newlyUnlocked}
+        onAgain={() => void startRound()}
+        onBack={() => p.reset()}
+      />
+    );
   }
 
   // setup
@@ -597,10 +628,12 @@ function ChoiceBoard() {
 /** 结算页 */
 function Summary({
   saving,
+  newlyUnlocked,
   onAgain,
   onBack,
 }: {
   saving: boolean;
+  newlyUnlocked: string[];
   onAgain: () => void;
   onBack: () => void;
 }) {
@@ -630,6 +663,32 @@ function Summary({
           {saving ? '正在保存学习记录…' : '记录已保存，复习计划已按 FSRS 更新'}
         </p>
       </div>
+
+      {/* 新解锁成就：放在最上面，是本轮最值得看到的信息 */}
+      {newlyUnlocked.length > 0 && (
+        <div className="mb-5 rounded-xl border border-amber-400/40 bg-amber-400/10 px-4 py-3">
+          <div className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-amber-400">
+            <IconTrophy width={13} height={13} />
+            解锁 {newlyUnlocked.length} 个成就
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {newlyUnlocked.map((id) => {
+              const def = ACHIEVEMENT_MAP.get(id);
+              if (!def) return null;
+              return (
+                <span
+                  key={id}
+                  className="flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-surface px-2.5 py-1 text-xs"
+                  title={def.description}
+                >
+                  <span>{def.icon}</span>
+                  <span className="font-medium text-ink">{def.name}</span>
+                </span>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
         <SummaryStat label="词数" value={total} />

@@ -77,6 +77,7 @@ export default function ReviewPage() {
           size: Math.min(settings.roundSize, topWords.length),
           newQuota: 0,
           mode,
+          reviewLimit: settings.dailyReviewLimit,
         });
         if (plan.entries.length === 0 && entryMap.size > 0) {
           // 兜底：直接用到期词条拼
@@ -98,6 +99,7 @@ export default function ReviewPage() {
           size: Math.min(settings.roundSize, Math.max(5, topWords.length)),
           newQuota: 0,
           mode,
+          reviewLimit: settings.dailyReviewLimit,
         });
         // buildRound 会优先出 due 词；若不足，用到期词直接补
         const picked = new Set(plan.entries.map((e) => e.w.toLowerCase()));

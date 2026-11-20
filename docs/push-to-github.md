@@ -84,9 +84,9 @@ release/
 
 ## 六、常见问题
 
-| 现象 | 原因 | 处理 |
-|---|---|---|
-| `remote origin already exists` | 已配过远端 | `git remote set-url origin <新地址>` |
-| `Updates were rejected` | 远程有初始提交（建仓库时勾了 README） | `git pull --rebase origin main` 后再推，或 `git push -f`（仅当确认远程无内容） |
-| `Authentication failed` | 用了密码而非 token | 改用 token 或浏览器登录 |
-| 推送卡住很久 | 网络 | 项目仅 4.9MB，正常几秒；卡住建议 `git config --global http.postBuffer 524288000` |
+| 现象                           | 原因                                  | 处理                                                                             |
+| ------------------------------ | ------------------------------------- | -------------------------------------------------------------------------------- |
+| `remote origin already exists` | 已配过远端                            | `git remote set-url origin <新地址>`                                             |
+| `Updates were rejected`        | 远程有初始提交（建仓库时勾了 README） | `git pull --rebase origin main` 后再推，或 `git push -f`（仅当确认远程无内容）   |
+| `Authentication failed`        | 用了密码而非 token                    | 改用 token 或浏览器登录                                                          |
+| 推送卡住很久                   | 网络                                  | 项目仅 4.9MB，正常几秒；卡住建议 `git config --global http.postBuffer 524288000` |

@@ -7,22 +7,22 @@
 
 ## 一、总结
 
-| 项 | 数值 |
-| --- | --- |
-| 文章总数 | **75 篇** |
-| 句子总数 | **490 句** |
-| 语料源 | Project Gutenberg（公版）+ 本项目人工译文 |
-| 许可 | 公版作品（无版权限制）+ 译文随仓库 MIT |
-| 是否需要署名 | 否（公版已进入公有领域） |
+| 项           | 数值                                      |
+| ------------ | ----------------------------------------- |
+| 文章总数     | **75 篇**                                 |
+| 句子总数     | **490 句**                                |
+| 语料源       | Project Gutenberg（公版）+ 本项目人工译文 |
+| 许可         | 公版作品（无版权限制）+ 译文随仓库 MIT    |
+| 是否需要署名 | 否（公版已进入公有领域）                  |
 
 level 分布：
 
 | level | 篇数 |
-| --- | --- |
-| CET-4 | 22 |
-| CET-6 | 21 |
-| 考研 | 20 |
-| 雅思 | 12 |
+| ----- | ---- |
+| CET-4 | 22   |
+| CET-6 | 21   |
+| 考研  | 20   |
+| 雅思  | 12   |
 
 ---
 
@@ -32,14 +32,14 @@ level 分布：
 
 ### ✅ 采用：Project Gutenberg（经 pglaf 镜像）
 
-| 地址 | 状态 | 说明 |
-| --- | --- | --- |
-| `www.gutenberg.org` | **503** | 全站 `Temporarily Down for Maintenance`，实测期间持续不可用 |
-| `aleph.gutenberg.org` | 连接失败 | — |
-| `gutenberg.readingroo.ms` | DNS/连接失败 | — |
-| `mirror.dur.ac.uk/gutenberg` | DNS/连接失败 | — |
-| `gutenberg.mirror.xtom.com` | DNS/连接失败 | — |
-| **`gutenberg.pglaf.org`** | **✅ 200** | **本文档采用的镜像** |
+| 地址                         | 状态         | 说明                                                        |
+| ---------------------------- | ------------ | ----------------------------------------------------------- |
+| `www.gutenberg.org`          | **503**      | 全站 `Temporarily Down for Maintenance`，实测期间持续不可用 |
+| `aleph.gutenberg.org`        | 连接失败     | —                                                           |
+| `gutenberg.readingroo.ms`    | DNS/连接失败 | —                                                           |
+| `mirror.dur.ac.uk/gutenberg` | DNS/连接失败 | —                                                           |
+| `gutenberg.mirror.xtom.com`  | DNS/连接失败 | —                                                           |
+| **`gutenberg.pglaf.org`**    | **✅ 200**   | **本文档采用的镜像**                                        |
 
 `gutenberg.pglaf.org` 是 Project Gutenberg Literary Archive Foundation 自己的镜像站（不是第三方），
 内容与正站一致。实测速度约 10–15 KB/s，一本 240 KB 的书约 10–15 秒下完。
@@ -58,17 +58,17 @@ level 分布：
 
 ### ❌ 实测不可用 / 未采用
 
-| 源 | 实测结果 | 结论 |
-| --- | --- | --- |
-| `raw.githubusercontent.com` | 被阻断 | 不可用 |
-| `cdn.jsdelivr.net` | 被阻断 | 不可用 |
-| huggingface | 被阻断 | 不可用 |
-| `standardebooks.org` | `fetch failed` | 不可用 |
-| `en.wikipedia.org` / `simple.wikipedia.org` API | `fetch failed` | 不可用 |
-| `zh.wikipedia.org` / `zh.wikisource.org` API | `fetch failed` | 不可用 |
-| `archive.org` metadata API | `fetch failed` | 不可用 |
-| `gutendex.com`（Gutenberg 元数据 API） | 超时 | 不可用 |
-| `api.github.com` | ✅ 200（每小时 60 次） | **许可核查找不到可用的双语语料**，见下 |
+| 源                                              | 实测结果               | 结论                                   |
+| ----------------------------------------------- | ---------------------- | -------------------------------------- |
+| `raw.githubusercontent.com`                     | 被阻断                 | 不可用                                 |
+| `cdn.jsdelivr.net`                              | 被阻断                 | 不可用                                 |
+| huggingface                                     | 被阻断                 | 不可用                                 |
+| `standardebooks.org`                            | `fetch failed`         | 不可用                                 |
+| `en.wikipedia.org` / `simple.wikipedia.org` API | `fetch failed`         | 不可用                                 |
+| `zh.wikipedia.org` / `zh.wikisource.org` API    | `fetch failed`         | 不可用                                 |
+| `archive.org` metadata API                      | `fetch failed`         | 不可用                                 |
+| `gutendex.com`（Gutenberg 元数据 API）          | 超时                   | 不可用                                 |
+| `api.github.com`                                | ✅ 200（每小时 60 次） | **许可核查找不到可用的双语语料**，见下 |
 
 ### GitHub 双语语料搜索结论
 
@@ -78,13 +78,13 @@ level 分布：
 
 找到的仓库里，**没有一个是"英中对照的文章/读物"且许可明确**：
 
-| 仓库 | Stars | 许可 | 不采用的原因 |
-| --- | --- | --- | --- |
-| `mahavivo/nytimes-chn` | 18 | **NONE** | 新闻版权归 NYT，无许可 |
-| `bfsujason/mac` | 12 | GPL-3.0 | 文学文本，但 GPL 传染性不适合静态语料；且需核对原文版权 |
-| `qxred/2MParallelCorpus` | 9 | Unlicense | 纯句对，无篇章结构（同样是"散句"问题） |
-| `foreyes/ted-parallel-corpus-Chinese-English` | 2 | **NONE** | TED 演讲有版权 |
-| 其余 | ≤1 | NONE / NOASSERTION | 许可不明 |
+| 仓库                                          | Stars | 许可               | 不采用的原因                                            |
+| --------------------------------------------- | ----- | ------------------ | ------------------------------------------------------- |
+| `mahavivo/nytimes-chn`                        | 18    | **NONE**           | 新闻版权归 NYT，无许可                                  |
+| `bfsujason/mac`                               | 12    | GPL-3.0            | 文学文本，但 GPL 传染性不适合静态语料；且需核对原文版权 |
+| `qxred/2MParallelCorpus`                      | 9     | Unlicense          | 纯句对，无篇章结构（同样是"散句"问题）                  |
+| `foreyes/ted-parallel-corpus-Chinese-English` | 2     | **NONE**           | TED 演讲有版权                                          |
+| 其余                                          | ≤1    | NONE / NOASSERTION | 许可不明                                                |
 
 **结论**：GitHub 上没有可直接用的、许可清晰的英中对照读物语料。
 

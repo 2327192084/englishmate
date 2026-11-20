@@ -26,6 +26,12 @@ export interface BuildRoundOptions {
   size: number;
   /** 今日还可学的新词数 */
   newQuota: number;
+  /**
+   * 每日复习上限（设置项 dailyReviewLimit 的实际生效点）。
+   * 超过上限的到期词顺延到明天，避免积压几十个到期词时一轮做不完。
+   * 省略或 <=0 视为不限。
+   */
+  reviewLimit?: number;
   mode: PracticeMode;
   /** 随机种子，默认 Math.random；单测可注入 */
   rng?: () => number;
@@ -86,9 +92,28 @@ export function buildRound(opts: BuildRoundOptions): RoundPlan {
     const cb = known.get(b.w.toLowerCase())!.card.due;
     return ca - cb;
   });
+
+  /**
+   * 每日复习上限：到期词再多，这一轮最多也只取 reviewLimit 个。
+   * 剩余顺延到下一轮/第二天。这是设置里 dailyReviewLimit 的唯一生效点——
+   * 之前它只是个能拖动但没人读的滑杆。
+   */
+  /**
+   * 注意 0 是**有效值**（表示今天不再复习），不能用 `> 0` 判断。
+   * 只有 undefined / null 才是"不限"。这里用 == null 判断，
+   * 避免把 0 误当成"未设置"。
+   */
+  const reviewCap =
+    opts.reviewLimit == null || Number.isNaN(opts.reviewLimit)
+      ? Infinity
+      : Math.max(0, opts.reviewLimit);
+  let reviewTaken = 0;
   for (const e of due) {
     if (picked.length >= Math.ceil(limit * 0.7)) break;
+    if (reviewTaken >= reviewCap) break;
+    const before = picked.length;
     push(e, 'review');
+    if (picked.length > before) reviewTaken++;
   }
 
   // 2) 错词提前干预（错得越多越优先）

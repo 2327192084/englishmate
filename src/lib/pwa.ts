@@ -9,7 +9,8 @@ export function registerServiceWorker(): void {
   if (!('serviceWorker' in navigator)) return;
   if (import.meta.env.DEV) return;
   // 桌面客户端（file://）里没有 SW 的作用域，注册会静默失败，直接跳过
-  if ((window as unknown as { englishmate?: { isDesktop?: boolean } }).englishmate?.isDesktop) return;
+  if ((window as unknown as { englishmate?: { isDesktop?: boolean } }).englishmate?.isDesktop)
+    return;
   if (!window.location.protocol.startsWith('http')) return;
 
   window.addEventListener('load', () => {

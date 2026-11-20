@@ -72,7 +72,15 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     name: '一丝不苟',
     description: '单轮正确率达到 95%',
     icon: '🎯',
-    check: (c) => c.accuracy >= 0.95,
+    /**
+     * 判定条件有三重，缺一不可：
+     *  1. 至少练过一轮 —— 没有练习时 accuracy 按约定返回 1（避免除零），
+     *     不判这个的话全新用户一打开 App 就白得成就；
+     *  2. 累计至少 100 词次 —— 只练 5 个词全对就发"一丝不苟"太廉价，
+     *     这类成就的意义是"长期稳定"，需要足够样本量支撑；
+     *  3. 正确率 ≥ 95%。
+     */
+    check: (c) => c.totalSessions > 0 && c.totalWords >= 100 && c.accuracy >= 0.95,
   },
   {
     id: 'mastered-50',

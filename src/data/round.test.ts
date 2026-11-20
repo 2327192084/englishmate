@@ -258,4 +258,81 @@ describe('辨认模式选项', () => {
     const opts = buildChoices(pool[0], [pool[0]], seeded(12));
     expect(opts.filter((o) => o.correct)).toHaveLength(1);
   });
+
+  describe('每日复习上限（dailyReviewLimit 生效点）', () => {
+    const now = 10 * DAY;
+
+    it('上限为 0 时不返回任何到期复习词', () => {
+      const known = new Map<string, UserWord>();
+      for (let i = 0; i < 5; i++) {
+        const w = `w${i}`;
+        known.set(w, userWord(w, { card: { ...createCard(0), due: now - DAY, reps: 2 } as never }));
+      }
+      const all = Array.from({ length: 10 }, (_, i) => entry(`w${i}`));
+      const plan = buildRound({
+        bankId: 'cet4',
+        allWords: all,
+        known,
+        size: 10,
+        newQuota: 0,
+        mode: 'typing',
+        reviewLimit: 0,
+        rng: seeded(20),
+        now,
+      });
+      // 一个到期词都不该以 review 身份出现
+      const reviews = plan.entries.filter((e) => plan.reasons.get(e.w.toLowerCase()) === 'review');
+      if (reviews.length > 0) {
+        console.log(
+          '  意外出现 review 的词:',
+          reviews.map((r) => r.w),
+        );
+        console.log('  reasons:', JSON.stringify([...plan.reasons.entries()]));
+      }
+      expect(reviews).toHaveLength(0);
+    });
+
+    it('上限为 2 时最多只取 2 个到期词', () => {
+      const known = new Map<string, UserWord>();
+      for (let i = 0; i < 8; i++) {
+        const w = `w${i}`;
+        known.set(w, userWord(w, { card: { ...createCard(0), due: now - DAY, reps: 2 } as never }));
+      }
+      const all = Array.from({ length: 8 }, (_, i) => entry(`w${i}`));
+      const plan = buildRound({
+        bankId: 'cet4',
+        allWords: all,
+        known,
+        size: 10,
+        newQuota: 0,
+        mode: 'typing',
+        reviewLimit: 2,
+        rng: seeded(21),
+        now,
+      });
+      const reviews = plan.entries.filter((e) => plan.reasons.get(e.w.toLowerCase()) === 'review');
+      expect(reviews.length).toBeLessThanOrEqual(2);
+    });
+
+    it('省略 reviewLimit 时不限制（向后兼容）', () => {
+      const known = new Map<string, UserWord>();
+      for (let i = 0; i < 5; i++) {
+        const w = `w${i}`;
+        known.set(w, userWord(w, { card: { ...createCard(0), due: now - DAY, reps: 2 } as never }));
+      }
+      const all = Array.from({ length: 5 }, (_, i) => entry(`w${i}`));
+      const plan = buildRound({
+        bankId: 'cet4',
+        allWords: all,
+        known,
+        size: 10,
+        newQuota: 0,
+        mode: 'typing',
+        rng: seeded(22),
+        now,
+      });
+      const reviews = plan.entries.filter((e) => plan.reasons.get(e.w.toLowerCase()) === 'review');
+      expect(reviews.length).toBeGreaterThan(0);
+    });
+  });
 });
