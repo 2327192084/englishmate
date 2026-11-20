@@ -23,6 +23,7 @@ const REASON_LABEL: Record<string, { text: string; cls: string }> = {
   wrong: { text: '错词', cls: 'text-error' },
   new: { text: '新词', cls: 'text-correct' },
   random: { text: '加练', cls: 'text-muted' },
+  favorite: { text: '收藏', cls: 'text-amber-400' },
 };
 
 /** 单个字符的渲染状态 */

@@ -335,4 +335,117 @@ describe('辨认模式选项', () => {
       expect(reviews.length).toBeGreaterThan(0);
     });
   });
+
+  describe('收藏优先级（favorite 真正参与调度）', () => {
+    const now = 10 * DAY;
+
+    it('到期词里收藏的排在前面', () => {
+      const known = new Map<string, UserWord>();
+      // 三个都到期，最早到期的是 w0（未收藏），w2 最晚到期但被收藏
+      known.set(
+        'w0',
+        userWord('w0', { card: { ...createCard(0), due: now - 3 * DAY, reps: 2 } as never }),
+      );
+      known.set(
+        'w1',
+        userWord('w1', { card: { ...createCard(0), due: now - 2 * DAY, reps: 2 } as never }),
+      );
+      known.set(
+        'w2',
+        userWord('w2', {
+          favorite: true,
+          card: { ...createCard(0), due: now - DAY, reps: 2 } as never,
+        }),
+      );
+
+      const all = [entry('w0'), entry('w1'), entry('w2')];
+      const plan = buildRound({
+        bankId: 'cet4',
+        allWords: all,
+        known,
+        size: 3,
+        newQuota: 0,
+        mode: 'typing',
+        rng: seeded(30),
+        now,
+      });
+      // 收藏的 w2 应该排第一
+      expect(plan.entries[0].w).toBe('w2');
+    });
+
+    it('未到期的收藏词也会被拉进来', () => {
+      const known = new Map<string, UserWord>();
+      // w0 已学、未到期、被收藏
+      known.set(
+        'w0',
+        userWord('w0', {
+          favorite: true,
+          card: { ...createCard(0), due: now + 30 * DAY, reps: 3 } as never,
+        }),
+      );
+
+      const all = [entry('w0'), entry('w1'), entry('w2'), entry('w3')];
+      const plan = buildRound({
+        bankId: 'cet4',
+        allWords: all,
+        known,
+        size: 4,
+        newQuota: 0,
+        mode: 'typing',
+        rng: seeded(31),
+        now,
+      });
+      const hit = plan.entries.find((e) => e.w === 'w0');
+      expect(hit).toBeDefined();
+      expect(plan.reasons.get('w0')).toBe('favorite');
+    });
+
+    it('已掌握的收藏词不会被拉进来', () => {
+      const known = new Map<string, UserWord>();
+      known.set(
+        'w0',
+        userWord('w0', {
+          favorite: true,
+          mastered: true,
+          card: { ...createCard(0), due: now + 30 * DAY, reps: 3 } as never,
+        }),
+      );
+      const all = [entry('w0'), entry('w1'), entry('w2'), entry('w3')];
+      const plan = buildRound({
+        bankId: 'cet4',
+        allWords: all,
+        known,
+        size: 4,
+        newQuota: 0,
+        mode: 'typing',
+        rng: seeded(32),
+        now,
+      });
+      expect(plan.entries.find((e) => e.w === 'w0')).toBeUndefined();
+    });
+
+    it('收藏词不会重复入队（既到期又收藏）', () => {
+      const known = new Map<string, UserWord>();
+      known.set(
+        'w0',
+        userWord('w0', {
+          favorite: true,
+          card: { ...createCard(0), due: now - DAY, reps: 3 } as never,
+        }),
+      );
+      const all = [entry('w0'), entry('w1')];
+      const plan = buildRound({
+        bankId: 'cet4',
+        allWords: all,
+        known,
+        size: 5,
+        newQuota: 0,
+        mode: 'typing',
+        rng: seeded(33),
+        now,
+      });
+      const occurrences = plan.entries.filter((e) => e.w === 'w0').length;
+      expect(occurrences).toBe(1);
+    });
+  });
 });

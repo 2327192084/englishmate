@@ -13,7 +13,7 @@ import { isDue } from '@/lib/fsrs';
 export interface RoundPlan {
   entries: WordEntry[];
   /** 每个词进入本轮的原因，用于 UI 标注 */
-  reasons: Map<string, 'review' | 'wrong' | 'new' | 'random'>;
+  reasons: Map<string, 'review' | 'wrong' | 'new' | 'random' | 'favorite'>;
 }
 
 export interface BuildRoundOptions {
@@ -58,14 +58,14 @@ export function buildRound(opts: BuildRoundOptions): RoundPlan {
   const rng = opts.rng ?? Math.random;
   const now = opts.now ?? Date.now();
 
-  const reasons = new Map<string, 'review' | 'wrong' | 'new' | 'random'>();
+  const reasons = new Map<string, 'review' | 'wrong' | 'new' | 'random' | 'favorite'>();
   const picked: WordEntry[] = [];
 
   // 辨认模式消耗低，给多一点；其余按 size
   const limit = mode === 'choice' ? Math.ceil(size * 1.5) : size;
 
   const seen = new Set<string>();
-  const push = (entry: WordEntry, reason: 'review' | 'wrong' | 'new' | 'random') => {
+  const push = (entry: WordEntry, reason: 'review' | 'wrong' | 'new' | 'random' | 'favorite') => {
     const key = entry.w.toLowerCase();
     if (seen.has(key) || picked.length >= limit) return;
     seen.add(key);
@@ -86,11 +86,18 @@ export function buildRound(opts: BuildRoundOptions): RoundPlan {
       wrong.push(entry);
     }
   }
-  // 到期越久越靠前
+  /**
+   * 到期词的排序：**收藏优先，其次按到期时间**。
+   *
+   * 收藏此前只是个标记——能点星标、能筛选，但出题调度完全不看它，
+   * 用户收藏了重点词却得不到任何复习倾斜，功能等于没有。
+   * 现在让它真正起作用：到期词里收藏的排前面，用户想重点巩固的词先练。
+   */
   due.sort((a, b) => {
-    const ca = known.get(a.w.toLowerCase())!.card.due;
-    const cb = known.get(b.w.toLowerCase())!.card.due;
-    return ca - cb;
+    const ua = known.get(a.w.toLowerCase())!;
+    const ub = known.get(b.w.toLowerCase())!;
+    if (ua.favorite !== ub.favorite) return ua.favorite ? -1 : 1;
+    return ua.card.due - ub.card.due;
   });
 
   /**
@@ -116,7 +123,33 @@ export function buildRound(opts: BuildRoundOptions): RoundPlan {
     if (picked.length > before) reviewTaken++;
   }
 
-  // 2) 错词提前干预（错得越多越优先）
+  /**
+   * 2) 收藏的词即使没到期也提前拉进来。
+   *
+   * 收藏的语义是"我要重点练这个词"。如果只等 FSRS 到期，
+   * 用户收藏完可能要隔好几天才见到它，功能价值就被架空了。
+   * 这里给收藏词一条"插队"通道：排在到期词之后、错词之前。
+   */
+  const favNotDue: WordEntry[] = [];
+  for (const entry of allWords) {
+    const uw = known.get(entry.w.toLowerCase());
+    if (!uw || uw.mastered || !uw.favorite) continue;
+    // 已经作为到期词入队的跳过，避免重复
+    if (picked.some((p) => p.w.toLowerCase() === entry.w.toLowerCase())) continue;
+    favNotDue.push(entry);
+  }
+  // 收藏词里也优先练错得多的
+  favNotDue.sort((a, b) => {
+    const ua = known.get(a.w.toLowerCase())!;
+    const ub = known.get(b.w.toLowerCase())!;
+    return ub.mistakes - ua.mistakes;
+  });
+  for (const e of favNotDue) {
+    if (picked.length >= limit) break;
+    push(e, 'favorite');
+  }
+
+  // 3) 错词提前干预（错得越多越优先）
   wrong.sort((a, b) => {
     const wa = known.get(a.w.toLowerCase())!.mistakes;
     const wb = known.get(b.w.toLowerCase())!.mistakes;
@@ -127,7 +160,7 @@ export function buildRound(opts: BuildRoundOptions): RoundPlan {
     push(e, 'wrong');
   }
 
-  // 3) 新词
+  // 4) 新词
   if (newQuota > 0) {
     const fresh = allWords.filter((e) => !known.has(e.w.toLowerCase()));
     const ordered = shuffle(fresh, rng);
@@ -141,9 +174,20 @@ export function buildRound(opts: BuildRoundOptions): RoundPlan {
     }
   }
 
-  // 4) 兜底补齐（比如复习都做完了、新词额度也用光了）
+  /**
+   * 5) 兜底补齐（比如复习都做完了、新词额度也用光了）
+   *
+   * 注意要排除已掌握的词。原实现只排了 `seen`（本轮已入队的），
+   * 于是"标记为已掌握"的词会在兜底阶段被当成加练重新拉进来——
+   * 用户明明标记了"不用再练"，却还是会出现。这是个一直存在的 bug，
+   * 在做收藏优先级时被测试暴露出来。
+   */
   if (picked.length < Math.min(limit, allWords.length)) {
-    const rest = allWords.filter((e) => !seen.has(e.w.toLowerCase()));
+    const rest = allWords.filter((e) => {
+      if (seen.has(e.w.toLowerCase())) return false;
+      const uw = known.get(e.w.toLowerCase());
+      return !(uw && uw.mastered);
+    });
     for (const e of shuffle(rest, rng)) {
       if (picked.length >= limit) break;
       push(e, 'random');

@@ -38,7 +38,7 @@ interface PracticeState {
   mode: PracticeMode;
   bankId: string;
   queue: WordEntry[];
-  reasons: Map<string, 'review' | 'wrong' | 'new' | 'random'>;
+  reasons: Map<string, 'review' | 'wrong' | 'new' | 'random' | 'favorite'>;
   index: number;
   typing: TypingState;
   /** 当前词的错误数（每次进入新词归零） */
@@ -78,7 +78,7 @@ interface PracticeState {
     mode: PracticeMode;
     bankId: string;
     queue: WordEntry[];
-    reasons: Map<string, 'review' | 'wrong' | 'new' | 'random'>;
+    reasons: Map<string, 'review' | 'wrong' | 'new' | 'random' | 'favorite'>;
     /** 可选：流程链展开结果；不传即单模式 */
     plan?: PlannedItem[];
   }) => void;

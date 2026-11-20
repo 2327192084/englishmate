@@ -14,9 +14,10 @@ import {
   summarize,
 } from '@/lib/stats';
 import { todayCounts } from '@/services/learning';
+import { downloadReportSvg, printReport } from '@/lib/report';
 import { ACHIEVEMENTS, ACHIEVEMENT_MAP } from '@/data/achievements';
 import { EmptyState, Segmented, Skeleton, StatBlock } from '@/components/ui';
-import { IconFlame, IconChart, IconTrophy } from '@/components/Icons';
+import { IconFlame, IconChart, IconTrophy, IconDownload } from '@/components/Icons';
 
 type Range = '7' | '30' | '90';
 
@@ -26,6 +27,26 @@ export default function StatsPage() {
   const unlocked = useLiveQuery(() => db.achievements.toArray(), [], []);
   const [range, setRange] = useState<Range>('30');
   const [counts, setCounts] = useState({ todayNew: 0, todayReviewed: 0 });
+  const [exportMsg, setExportMsg] = useState<string | null>(null);
+
+  const handleExportSvg = async () => {
+    try {
+      await downloadReportSvg();
+      setExportMsg('报告已下载');
+    } catch (e) {
+      setExportMsg(e instanceof Error ? e.message : '导出失败');
+    }
+    window.setTimeout(() => setExportMsg(null), 3000);
+  };
+
+  const handlePrintPdf = async () => {
+    try {
+      await printReport();
+    } catch (e) {
+      setExportMsg(e instanceof Error ? e.message : '打印失败');
+      window.setTimeout(() => setExportMsg(null), 3000);
+    }
+  };
 
   useMemo(() => {
     void todayCounts().then(setCounts);
@@ -70,17 +91,47 @@ export default function StatsPage() {
           <h1 className="text-xl font-semibold text-ink">学习数据</h1>
           <p className="mt-1 text-sm text-muted">所有数据都保存在这台设备上</p>
         </div>
-        <Segmented<Range>
-          value={range}
-          onChange={setRange}
-          size="sm"
-          options={[
-            { value: '7', label: '7天' },
-            { value: '30', label: '30天' },
-            { value: '90', label: '90天' },
-          ]}
-        />
+        <div className="flex flex-col items-end gap-2">
+          <Segmented<Range>
+            value={range}
+            onChange={setRange}
+            size="sm"
+            options={[
+              { value: '7', label: '7天' },
+              { value: '30', label: '30天' },
+              { value: '90', label: '90天' },
+            ]}
+          />
+          {/* 导出报告：SVG 可分享，或打印成 PDF */}
+          {hasData && (
+            <div className="flex gap-1.5">
+              <button
+                type="button"
+                onClick={() => void handleExportSvg()}
+                className="tf-btn px-2 py-1 text-[11px]"
+                title="下载一张包含核心数据的报告卡片（SVG）"
+              >
+                <IconDownload width={12} height={12} />
+                导出报告
+              </button>
+              <button
+                type="button"
+                onClick={() => void handlePrintPdf()}
+                className="tf-btn px-2 py-1 text-[11px]"
+                title="打印对话框中可选「另存为 PDF」"
+              >
+                存为 PDF
+              </button>
+            </div>
+          )}
+        </div>
       </header>
+
+      {exportMsg && (
+        <div className="mb-3 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-accent">
+          {exportMsg}
+        </div>
+      )}
 
       {!hasData ? (
         <EmptyState
