@@ -1,6 +1,6 @@
 # 词库目录
 
-EnglishMate 内置 **16 个词库 / 51,702 条词条 / 去重后 18,716 个不重复单词**。
+EnglishMate 内置 **16 个词库 / 55,560 条词条 / 去重后 19,331 个不重复单词**。
 
 > 本文档由 `scripts/build-more-dicts.mjs` 与 `scripts/build-dicts.mjs` 的产物汇总而来。
 > 重新生成：`node scripts/build-more-dicts.mjs`（可重复运行，缓存优先，不重复消耗 API 配额）。
@@ -8,25 +8,25 @@ EnglishMate 内置 **16 个词库 / 51,702 条词条 / 去重后 18,716 个不�
 
 ## 一览
 
-| 顺序 | id        | 名称                | 类别        |       条数 |        体积 |
-| ---: | --------- | ------------------- | ----------- | ---------: | ----------: |
-|    1 | `primary` | 小学 · 人教版分册   | basic       |        813 |       35 KB |
-|    2 | `junior`  | 初中 · 人教版分册   | basic       |      2,260 |      118 KB |
-|    3 | `gaokao`  | 高考 · 高中词汇     | basic       |      3,665 |     1.30 MB |
-|    4 | `cet4`    | CET-4 · 四级核心    | exam        |      2,607 |      850 KB |
-|    5 | `cet6`    | CET-6 · 六级核心    | exam        |      2,345 |      697 KB |
-|    6 | `kaoyan`  | 考研 · 核心词       | exam        |      3,731 |     1.04 MB |
-|    7 | `tem4`    | 专四 TEM-4          | exam        |      3,922 |      278 KB |
-|    8 | `tem8`    | 专八 TEM-8          | exam        |      8,000 |      570 KB |
-|    9 | `ielts`   | 雅思 IELTS          | exam        |      3,575 |      966 KB |
-|   10 | `toefl`   | 托福 TOEFL          | exam        |      4,264 |     1.08 MB |
-|   11 | `gre`     | GRE                 | exam        |      6,514 |     1.20 MB |
-|   12 | `sat`     | SAT                 | exam        |      4,456 |      290 KB |
-|   13 | `bec`     | BEC · 商务英语      | exam        |      2,817 |      205 KB |
-|   14 | `coding`  | 程序员 · 通用术语   | programming |      1,665 |      102 KB |
-|   15 | `linux`   | 程序员 · Linux 命令 | programming |        575 |     78.6 KB |
-|   16 | `medical` | 医学 · 基础术语     | basic       |        493 |     27.2 KB |
-|      |           | **合计**            |             | **51,702** | **8.74 MB** |
+| 顺序 | id        | 名称                | 类别        |        条数 |        体积 |
+| ---: | --------- | ------------------- | ----------- | ----------: | ----------: |
+|    1 | `primary` | 小学 · 人教版分册   | basic       |         813 |      239 KB |
+|    2 | `junior`  | 初中 · 人教版分册   | basic       |       2,260 |      682 KB |
+|    3 | `gaokao`  | 高考 · 高中词汇     | basic       |       3,665 |     1.30 MB |
+|    4 | `cet4`    | CET-4 · 四级核心    | exam        |       2,607 |      850 KB |
+|    5 | `cet6`    | CET-6 · 六级核心    | exam        |       2,345 |      697 KB |
+|    6 | `kaoyan`  | 考研 · 核心词       | exam        |       3,731 |     1.04 MB |
+|    7 | `tem4`    | 专四 TEM-4          | exam        |       3,922 |     1.02 MB |
+|    8 | `tem8`    | 专八 TEM-8          | exam        |      11,858 |     2.87 MB |
+|    9 | `ielts`   | 雅思 IELTS          | exam        |       3,575 |      966 KB |
+|   10 | `toefl`   | 托福 TOEFL          | exam        |       4,264 |     1.08 MB |
+|   11 | `gre`     | GRE                 | exam        |       6,514 |     1.20 MB |
+|   12 | `sat`     | SAT                 | exam        |       4,456 |      838 KB |
+|   13 | `bec`     | BEC · 商务英语      | exam        |       2,817 |      793 KB |
+|   14 | `coding`  | 程序员 · 通用术语   | programming |       1,665 |      527 KB |
+|   15 | `linux`   | 程序员 · Linux 命令 | programming |         575 |       78 KB |
+|   16 | `medical` | 医学 · 基础术语     | basic       |         493 |       82 KB |
+|      |           | **合计**            |             | **55,560** | **14.1 MB** |
 
 `index.json` 的 `banks` 按上表顺序排列（从易到难、先基础后考试再专业），重跑顺序稳定。
 
@@ -53,61 +53,63 @@ EnglishMate 内置 **16 个词库 / 51,702 条词条 / 去重后 18,716 个不�
 
 ## 数据来源与许可
 
-全部数据来自 **Qwerty Learner**（<https://github.com/RealKai42/qwerty-learner>，**MIT License**）的 `public/dicts/` 目录，共 380 个分册词表，本项目取其中 16 个。
+| 来源             | 用途                             | 许可                                 |
+| ---------------- | -------------------------------- | ------------------------------------ |
+| Qwerty Learner   | 词表（单词 + 中文释义 + 音标）   | MIT                                  |
+| ECDICT           | 词性释义、词频、柯林斯星级       | MIT                                  |
+| Tatoeba          | 英中对照例句                     | CC-BY 2.0 FR（**必须在应用内署名**） |
 
-**所有词库的许可统一为 MIT**，`meta.source` 字段里逐条标注了具体文件名，`scripts/verify-data.mjs` 会强制校验 `source` 含 `Qwerty Learner` 与 `(MIT)` 字样。
+词表全部来自 **Qwerty Learner**（<https://github.com/RealKai42/qwerty-learner>，MIT）的
+`public/dicts/` 目录，共 380 个分册词表，本项目取其中 16 个。
+`meta.source` 字段里逐条标注了具体文件名，`scripts/verify-data.mjs` 会强制校验
+`source` 含 `Qwerty Learner` 与 `(MIT)` 字样。
 
-### 本轮新增（8 个）
+> ⚠️ **许可红线**：TypeWords 是 GPL-3.0，不能拷它的数据；ipa-dict 的 `en_UK` 上游也是 GPL-3.0，
+> 只能用 `en_US`。这两条已写进 `docs/HANDOVER.md`，新增数据源时必须先查上游许可。
 
-| id        | 源文件                                                    | 原始条数 |  产出 | 丢弃说明                 |
-| --------- | --------------------------------------------------------- | -------: | ----: | ------------------------ |
-| `primary` | `PEPXiaoXue3_1_T.json` … `PEPXiaoXue6_2_T.json`（8 册）   |      849 |   813 | 空释义 3、跨册重复 30    |
-| `junior`  | `PEPChuZhong7_1_T.json` … `PEPChuZhong9_1_T.json`（5 册） |    2,320 | 2,260 | 空释义 21、跨册重复 38   |
-| `tem4`    | `Level4luan_2_T.json`                                     |    4,025 | 3,922 | 清理解析噪声 103         |
-| `tem8`    | `Level8luan_2_T.json`                                     |   12,197 | 8,000 | 按体积上限截断（见下）   |
-| `sat`     | `SAT_3_T.json`                                            |    4,464 | 4,456 | 释义噪声 7、重复 1       |
-| `bec`     | `BEC_2_T.json` + `BEC_3_T.json`                           |    5,578 | 2,817 | 两册重叠 2,692、噪声 69  |
-| `coding`  | `itVocabulary.json`                                       |    1,665 | 1,665 | 源里混入音标碎片，已剥离 |
-| `medical` | `BIOmedical.json`                                         |      560 |   493 | 重复 24、人工剔除 43     |
+### 各库构成
 
-### 既有（8 个，由 `scripts/build-dicts.mjs` 产出）
+| id        | 源文件                                                    | 原始条数 |  产出 | 丢弃说明                    |
+| --------- | --------------------------------------------------------- | -------: | ----: | --------------------------- |
+| `primary` | `PEPXiaoXue3_1_T.json` … `PEPXiaoXue6_2_T.json`（8 册）   |      849 |   813 | 空释义 3、跨册重复 30       |
+| `junior`  | `PEPChuZhong7_1_T.json` … `PEPChuZhong9_1_T.json`（5 册） |    2,320 | 2,260 | 空释义 21、跨册重复 38      |
+| `tem4`    | `Level4luan_2_T.json`                                     |    4,025 | 3,922 | 清理解析噪声 103            |
+| `tem8`    | `Level8luan_2_T.json`                                     |   12,197 | 11,858 | 空释义 339（原按体积截断 8000，2026-11-21 已放开） |
+| `sat`     | `SAT_3_T.json`                                            |    4,464 | 4,456 | 释义噪声 7、重复 1          |
+| `bec`     | `BEC_2_T.json` + `BEC_3_T.json`                           |    5,578 | 2,817 | 两册重叠 2,692、噪声 69     |
+| `coding`  | `itVocabulary.json`                                       |    1,665 | 1,665 | 源里混入音标碎片，已剥离    |
+| `medical` | `BIOmedical.json`                                         |      560 |   493 | 重复 24、人工剔除 43        |
 
+既有 8 库（由 `scripts/build-dicts.mjs` 产出）：
 `cet4`(`CET4_T.json`) / `cet6`(`CET6_T.json`) / `kaoyan`(`KaoYan_2024.json`) /
 `ielts`(`IELTS_3_T.json`) / `toefl`(`TOEFL_3_T.json`) / `gre`(`GRE_3_T.json`) /
 `gaokao`(`GaoZhongluan_2_T.json`) / `linux`(`linux-command.json`)
 
-## 扩充效果
+## 体积与按需加载
 
-| 指标         |  扩充前 |     扩充后 |                  变化 |
-| ------------ | ------: | ---------: | --------------------: |
-| 词库数       |       8 |     **16** |                    +8 |
-| 词条总数     |  27,276 | **51,702** | **+24,426（+89.6%）** |
-| 去重后单词数 |  13,987 | **18,716** |  **+4,729（+33.8%）** |
-| 总体积       | 7.16 MB |    8.74 MB |              +1.58 MB |
+单文件体积**不等于用户实际下载量**。词库是按需 fetch 的（`src/data/wordbanks.ts` 的
+`loadWords()`：进入某个词库时才下载，加载后在内存里缓存），首屏不加载任何词库。
+传输层还会再压缩一层，以最大的 `tem8` 为例：
 
-### 新增词库与原 8 库的重叠率
+| 词库     | 原始   | gzip 后 | brotli 后 |
+| -------- | ------ | ------- | --------- |
+| `tem8`   | 2.87MB | 1.12MB  | 734KB     |
+| `gaokao` | 1.30MB | 530KB   | 349KB     |
+| `gre`    | 1.20MB | 464KB   | 336KB     |
 
-新词库与原 8 库共享大量基础词（这是正常的——同一个人可能同时备考四级和专四）。各库的**净新增**词汇：
+### tem8 截断已放开（2026-11-21）
 
-| 词库      |  条数 | 与原 8 库重叠 | 重叠率 | 净新增 |
-| --------- | ----: | ------------: | -----: | -----: |
-| `primary` |   813 |           602 |  74.0% |    211 |
-| `junior`  | 2,260 |         1,729 |  76.5% |    531 |
-| `tem4`    | 3,922 |         3,033 |  77.3% |    889 |
-| `tem8`    | 8,000 |         5,976 |  74.7% |  2,024 |
-| `sat`     | 4,456 |         3,359 |  75.4% |  1,097 |
-| `bec`     | 2,817 |         2,337 |  83.0% |    480 |
-| `coding`  | 1,665 |         1,381 |  82.9% |    284 |
-| `medical` |   493 |           200 |  40.6% |    293 |
+之前 `BANKS` 里 `tem8` 有 `limit: 8000`，源文件 12,197 条只取前 8,000 条，
+理由是「全量约 2.5MB，超出首屏可接受范围」。这个判断有两个问题：
 
-`medical` 重叠率最低（40.6%），专业术语的增量价值最高；`bec` / `coding` 重叠率偏高，但它们覆盖的是**场景**而非新词——同一个词在商务/编程语境下的义项更贴题。
+1. **体积顾虑不成立**：词库本来就不在首屏加载，2.87MB 与 `gaokao`(1.30MB) / `gre`(1.20MB)
+   同一量级，brotli 后只有 734KB。
+2. **按源顺序截断会成片丢词**：源文件顺序不等于难度顺序。实测截断后词表停在 `slime`，
+   按字母序靠后的词大量缺失，等于随机丢掉 4,197 个高阶词。
 
-## 体积与截断说明
-
-- 单个词库最大 1.30 MB（`gaokao`，数据源本身偏大，非本轮产物）。
-- 本轮新增的 8 个词库里最大的是 `tem8`（570 KB）。
-- **`tem8` 做了截断**：源文件 `Level8luan_2_T.json` 有 12,197 条，全量产出会到 2.5 MB，超过首屏加载的可接受范围。脚本按源文件顺序取前 8,000 条（同源同质），释义质量与完整版完全一致。如后续要放开，删掉 `BANKS` 里 `tem8` 的 `limit: 8000` 一行即可，`scripts/build-more-dicts.mjs` 会重新生成。
-- 截断在 `build-more-dicts.mjs` 的 `BANKS[].limit` 里显式声明，不是隐式丢弃。
+现已放开，全量产出 11,858 条（原始 12,197，丢弃 339 条空释义）。
+`scripts/build-more-dicts.mjs` 的 `BANKS[].limit` 机制保留，将来若真要截断应显式声明，
+不要靠隐式丢弃。
 
 ## 数据清洗规则
 
@@ -127,7 +129,7 @@ EnglishMate 内置 **16 个词库 / 51,702 条词条 / 去重后 18,716 个不�
 | 词条自我重复           | `testis: 睾丸`                        | 去掉 `testis:` 前缀             |
 | 词组末尾句号           | `house.` / `go swimming.`             | 砍掉（缩写白名单除外）          |
 | 省略号不统一           | `from... to...`                       | 统一成全角 `……` / `…`           |
-| 单词内斜杠分隔         | 释义里的 `a                           | b                               | c`  | 按竖线拆义项 |
+| 单词内斜杠分隔         | 释义里的 `a \| b \| c`                | 按竖线拆义项                    |
 
 **保留原文的地方**：英文缩写（`a.m.` `p.m.` `P.E.` `Mr.` `Ms.` 等，走白名单）、语境限定词（`（外）祖母` `（口语）爸爸`）、多义项最多保留 3 个。
 
@@ -144,6 +146,17 @@ EnglishMate 内置 **16 个词库 / 51,702 条词条 / 去重后 18,716 个不�
 
 所以 `build-more-dicts.mjs` 与 `build-rich-dicts.mjs` 可以任意顺序重跑，不丢富化成果。
 日志里的 `保留富化 N` 就是接回的词条数。
+
+### 例句覆盖
+
+32,312 / 55,560 = **58.2%** 的词条带例句，共 57,257 对中英例句。
+分库覆盖率差异大，冷僻词与命令名在 Tatoeba 的 7.8 万对英中语料里本就罕见，不是代码问题：
+
+| 覆盖高                                            | 覆盖低                                       |
+| ------------------------------------------------- | -------------------------------------------- |
+| gaokao 93% / cet4 86% / primary 84% / junior 81%  | gre 30% / sat 30% / medical 24% / linux 20%   |
+
+其余词条只有词性释义、没有例句，界面按字段存在性渲染（有就显示「例句」区，没有就不显示）。
 
 ## 契约
 
@@ -168,26 +181,22 @@ EnglishMate 内置 **16 个词库 / 51,702 条词条 / 去重后 18,716 个不�
 - `p` 可选；有则必须形如 `/…/`。
 - `defs` / `sentences` 由另一条流水线补，本脚本不产出。
 
+## 如何新增 / 修改词库
+
+1. 在 `scripts/build-more-dicts.mjs` 的 `BANKS` 数组里加一项（`files` 指向 Qwerty Learner 的分册文件名）。
+2. `node scripts/build-more-dicts.mjs`（走 `.tmp/` 缓存，不联网；`--only=<id>` 只重建一个）。
+3. `node scripts/build-rich-dicts.mjs --offline --only=<id>` 补词性释义与例句。
+4. `node scripts/verify-data.mjs` 验收。
+5. 更新本文档的表格数字。
+
 ## 校验
 
 ```bash
 node scripts/build-more-dicts.mjs --offline   # 重建 + 自检（条数/重复/空释义/音标/噪声）
 node scripts/build-more-dicts.mjs --verify    # 全量契约校验（等价于 verify-data.mjs 的词库部分）
 npx tsc --noEmit                              # 类型检查
-node scripts/verify-data.mjs                  # 全量数据契约（见下）
+node scripts/verify-data.mjs                  # 全量数据契约
 ```
 
-> ⚠️ **`scripts/verify-data.mjs` 目前硬编码了 8 个词库**（`BANK_IDS` 常量，且断言
-> `index.banks.length === 8`），词库扩到 16 个后它会报两类失败：
-> `[index] banks 应为 8 项` 与 `[index] banks 的 count 之和与词条总数不符`。
-> 这是**预期内的**，需要把该脚本里的 `BANK_IDS` 同步成 16 个 id 才能通过。
-> 按分工约定本方未修改该脚本。
->
-> 在同步之前，用 `--verify` 替代（校验同样的契约，只是词库清单从 `index.json` 动态读取）：
->
-> ```bash
-> node scripts/build-more-dicts.mjs --verify
-> ```
->
-> 另有 `[articles] 执行模块失败` 一类报错，来自并行的例句流水线对 `src/data/articles.ts`
-> 的改动，与本轮词库工作无关。
+`scripts/verify-data.mjs` 的词库清单是**动态读取** `index.json` 的，不硬编码库数，
+所以增删词库不需要改脚本（本轮已确认它 16 个库全过）。
