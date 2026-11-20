@@ -17,6 +17,7 @@ import { playKeySound, buzz } from '@/lib/sound';
 import { isComplete } from '@/lib/typing';
 import { IconVolume } from './Icons';
 import { WordDetail } from './WordDetail';
+import { WordFamilyHint } from './WordFamilyHint';
 
 const REASON_LABEL: Record<string, { text: string; cls: string }> = {
   review: { text: '复习', cls: 'text-accent' },
@@ -344,6 +345,9 @@ export function TypingArea() {
             </button>
           )}
         </div>
+
+        {/* 词族/形近词提示：卡住拼写时的救命入口 */}
+        <WordFamilyHint word={cur.w} mode={p.mode} />
 
         {/* 默写模式的输入回显 */}
         {hidden && (

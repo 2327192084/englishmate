@@ -6,9 +6,10 @@
  * 等富数据接进来（例句/短语/近义词），同一份代码自动显示新内容，
  * 不需要改这里。
  */
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { WordEntry } from '@/types';
 import { hasRichContent } from '@/types';
+import { getFamily, getLookalike, isGraphLoaded, loadWordGraph } from '@/data/wordGraph';
 import { speak } from '@/lib/speech';
 import { useSettings } from '@/store/settings';
 import { IconVolume, IconX } from './Icons';
@@ -43,7 +44,32 @@ export function WordDetail({
     if (open) panelRef.current?.focus({ preventScroll: true });
   }, [open]);
 
+  /**
+   * 词形变化与形近词来自独立的 word-graph.json（覆盖 1.5 万词）。
+   * 这个文件是异步加载的，面板可能在它加载完之前就打开——
+   * 所以这里等一次加载完成再取值，否则首次打开会显示空区块。
+   *
+   * 注意：**Hooks 必须放在任何提前 return 之前**。
+   * 最初把这几个 Hook 写在 `if (!open || !entry) return null` 之后，
+   * 导致「面板关闭时不调 Hook、打开时调 Hook」，React 直接抛 error #310
+   * （Rendered more hooks than during the previous render）。
+   */
+  const [graphReady, setGraphReady] = useState(isGraphLoaded());
+  useEffect(() => {
+    if (graphReady) return;
+    let alive = true;
+    void loadWordGraph().then(() => {
+      if (alive) setGraphReady(true);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [graphReady]);
+
   if (!open || !entry) return null;
+
+  const family = graphReady ? getFamily(entry.w) : [];
+  const lookalike = graphReady ? getLookalike(entry.w) : [];
 
   const rich = hasRichContent(entry);
 
@@ -177,6 +203,49 @@ export function WordDetail({
                 </li>
               ))}
             </ul>
+          </Section>
+        )}
+
+        {/* 词形变化与形近词 —— 来自 word-graph.json（ECDICT 挖掘） */}
+        {family.length > 0 && (
+          <Section title="词形变化" count={family.length}>
+            <div className="flex flex-wrap gap-1.5">
+              {family.map((w) => (
+                <button
+                  key={w}
+                  type="button"
+                  onClick={() => speak(w, { accent: settings.accent, rate: settings.speechRate })}
+                  className="tf-mono rounded bg-surface2 px-1.5 py-0.5 text-xs text-muted transition-colors hover:text-accent"
+                  title="点击朗读"
+                >
+                  {w}
+                </button>
+              ))}
+            </div>
+            <p className="mt-1.5 text-[11px] text-muted/70">
+              同一词根的不同形式，拼写时容易混淆，建议一起记。
+            </p>
+          </Section>
+        )}
+
+        {lookalike.length > 0 && (
+          <Section title="形近易混" count={lookalike.length}>
+            <div className="flex flex-wrap gap-1.5">
+              {lookalike.map((w) => (
+                <button
+                  key={w}
+                  type="button"
+                  onClick={() => speak(w, { accent: settings.accent, rate: settings.speechRate })}
+                  className="tf-mono rounded bg-amber-400/10 px-1.5 py-0.5 text-xs text-amber-400 transition-colors hover:bg-amber-400/20"
+                  title="拼写相近，注意区分（点击朗读）"
+                >
+                  {w}
+                </button>
+              ))}
+            </div>
+            <p className="mt-1.5 text-[11px] text-muted/70">
+              长得像但意思不同，是拼写错误的高发区。
+            </p>
           </Section>
         )}
 

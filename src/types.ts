@@ -34,6 +34,22 @@ export interface WordEntry {
   relWords?: string[];
 }
 
+/**
+ * 词关系（来自 word-graph.json，由 build-word-graph.mjs 从 ECDICT 挖出，
+ * 覆盖约 1.5 万词）。
+ *
+ * 为什么不塞进 WordEntry：词库是按需加载的，把这份关系复制进 16 个词库
+ * 文件会让体积翻几倍且大量重复。独立文件只下载一次，所有词库共用。
+ *
+ * 字段用单字母纯粹是为了控制文件体积。
+ */
+export interface WordRelation {
+  /** 词形变化：abandon → abandoned / abandoning / abandons */
+  f?: string[];
+  /** 形近易混词：adapt → adopt / adept */
+  l?: string[];
+}
+
 /** 一条带词性的释义 */
 export interface WordDef {
   /** 词性，如 n. / v. / adj. */
