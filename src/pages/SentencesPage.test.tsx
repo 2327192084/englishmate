@@ -90,4 +90,37 @@ describe('SentencesPage', () => {
     fireEvent.keyDown(ta, { key: 'Enter' });
     await waitFor(() => expect(screen.getByText(/第 2\//)).toBeInTheDocument());
   });
+
+  /**
+   * 只有 2 个词是带例句的，所以一轮实际只有 2 句，很容易跑到结算页。
+   * 回归点：点「再来一组」后必须重开一轮，不能因为拿到的是"长度相同的数组"
+   * 而让播放器复用它自己的 idx（那样会直接又落回结算页）。
+   */
+  it('「再来一组」回到第 1 句而不是卡在结算页', async () => {
+    const ta = await startBankRound();
+
+    for (let i = 0; i < 2; i += 1) {
+      const target = document.querySelector('.tf-card .tf-mono')?.textContent ?? '';
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: target } });
+      fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' });
+      await waitFor(() => expect(screen.getByText('完全正确')).toBeInTheDocument());
+      fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' });
+    }
+    void ta;
+
+    await waitFor(() => expect(screen.getByText(/一次打对/)).toBeInTheDocument());
+    fireEvent.click(screen.getByText('再来一组'));
+    await waitFor(() => expect(screen.getByText(/第 1\//)).toBeInTheDocument());
+  });
+
+  it('错词本为空时给出空状态而不是白屏', async () => {
+    render(
+      <MemoryRouter>
+        <SentencesPage />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByText('错词本'));
+    fireEvent.click(screen.getByText('开始'));
+    await waitFor(() => expect(screen.getByText(/错词本还是空的/)).toBeInTheDocument());
+  });
 });
