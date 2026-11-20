@@ -292,11 +292,125 @@ async function checkArticles() {
   return articles.length;
 }
 
+/**
+ * 校验文章点词释义表（`public/dicts/article-glossary.json`）。
+ *
+ * 这张表是离线产物（`scripts/build-article-glossary.mjs`），文章新增/改动后
+ * 必须重跑，否则新文章里的词点不开 —— 所以这里也检查「文章里的词是否都被
+ * 收录」，而不只是结构合法。
+ */
+async function checkGlossary(articleCount) {
+  console.log('\n■ 文章点词释义表');
+  const glossaryPath = path.join(DICT_DIR, 'article-glossary.json');
+  let glossary;
+  try {
+    glossary = JSON.parse(await readFile(glossaryPath, 'utf8'));
+  } catch (err) {
+    fail('glossary', `读取 ${glossaryPath} 失败（${err.message}）`);
+    return;
+  }
+
+  if (typeof glossary?.generatedAt !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(glossary.generatedAt)) {
+    fail('glossary', '缺 generatedAt 或格式不是 YYYY-MM-DD');
+  }
+  const entries = glossary?.entries ?? {};
+  const variants = glossary?.variants ?? {};
+  if (typeof entries !== 'object' || Array.isArray(entries)) {
+    fail('glossary', 'entries 不是对象');
+    return;
+  }
+  if (typeof variants !== 'object' || Array.isArray(variants)) {
+    fail('glossary', 'variants 不是对象');
+    return;
+  }
+
+  let emptyT = 0;
+  let badDefs = 0;
+  let badSent = 0;
+  for (const [key, entry] of Object.entries(entries)) {
+    if (!key.trim() || key !== key.toLowerCase()) fail('glossary', `词条 key 非小写：${key}`);
+    if (!entry || typeof entry !== 'object') {
+      fail('glossary', `${key} 不是对象`);
+      continue;
+    }
+    const hasDefs = Array.isArray(entry.defs) && entry.defs.length > 0;
+    // t 只在没有 defs 时存在，二者都没有就是空释义
+    if (typeof entry.t !== 'string' || !entry.t.trim()) {
+      if (!hasDefs) {
+        emptyT++;
+        if (emptyT <= 5) fail('glossary', `${key} 既无 defs 也无 t`);
+      }
+    }
+    if (entry.defs !== undefined) {
+      if (!hasDefs) badDefs++;
+      for (const d of Array.isArray(entry.defs) ? entry.defs : []) {
+        if (!Array.isArray(d) || d.length !== 2) badDefs++;
+        else if (typeof d[0] !== 'string' || typeof d[1] !== 'string' || !d[1].trim()) badDefs++;
+      }
+    }
+    if (entry.sentences !== undefined) {
+      if (!Array.isArray(entry.sentences) || entry.sentences.length === 0) badSent++;
+      for (const s of Array.isArray(entry.sentences) ? entry.sentences : []) {
+        if (!Array.isArray(s) || s.length !== 2) badSent++;
+        else if (typeof s[0] !== 'string' || typeof s[1] !== 'string') badSent++;
+      }
+    }
+    if (entry.p !== undefined && (typeof entry.p !== 'string' || !entry.p.trim())) {
+      fail('glossary', `${key} 的 p 为空`);
+    }
+  }
+  if (badDefs) fail('glossary', `${badDefs} 条 defs 结构非法`);
+  if (badSent) fail('glossary', `${badSent} 条 sentences 结构非法`);
+
+  // 变体必须都指向存在的词条，且不能指向自己
+  let badVariant = 0;
+  for (const [form, base] of Object.entries(variants)) {
+    if (form === base || !entries[base]) badVariant++;
+    if (form !== form.toLowerCase()) badVariant++;
+  }
+  if (badVariant) fail('glossary', `${badVariant} 条 variants 非法（指向不存在的词条或大小写不对）`);
+
+  // 文章里出现的词必须绝大多数能查到（产物过期会让新文章点不开词）
+  let tokens = 0;
+  let resolved = 0;
+  if (articleCount > 0) {
+    const articles = JSON.parse(
+      await readFile(path.join(ROOT, 'public', 'articles', 'index.json'), 'utf8'),
+    );
+    for (const article of articles) {
+      for (const sentence of article.sentences ?? []) {
+        for (const raw of String(sentence.en ?? '').split(/\s+/)) {
+          const core = raw.replace(/^[^A-Za-z]+/, '').replace(/[^A-Za-z]+$/, '');
+          if (!core) continue;
+          tokens++;
+          const lower = core.toLowerCase();
+          if (entries[lower] || variants[lower]) resolved++;
+        }
+      }
+    }
+  }
+  const coverage = tokens ? (resolved / tokens) * 100 : 0;
+  if (tokens && coverage < 90) {
+    fail(
+      'glossary',
+      `覆盖率只有 ${coverage.toFixed(1)}%（要求 ≥90%），产物可能过期，请重跑 build-article-glossary.mjs`,
+    );
+  }
+
+  const bytes = Buffer.byteLength(JSON.stringify(glossary));
+  console.log(
+    `  ${Object.keys(entries).length.toLocaleString()} 个词条 / ` +
+      `${Object.keys(variants).length} 个变体 / 约 ${(bytes / 1024).toFixed(0)}KB`,
+  );
+  console.log(`  文章 token 覆盖 ${coverage.toFixed(1)}%（${resolved}/${tokens}）  ✓`);
+}
+
 /* ------------------------------ 主流程 ------------------------------ */
 
 try {
   const wordCount = await checkDicts();
   const articleCount = await checkArticles();
+  await checkGlossary(articleCount);
 
   console.log('');
   if (problems.length) {

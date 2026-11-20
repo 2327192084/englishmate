@@ -23,13 +23,19 @@ import {
   titleFromFilename,
   type ArticleLevel,
 } from '@/data/customArticles';
-import type { Article } from '@/types';
+import type { Article, WordEntry } from '@/types';
+import {
+  loadArticleGlossary,
+  lookupInGlossary,
+  type ArticleGlossary,
+} from '@/data/articleGlossary';
 import { speak, stopSpeaking } from '@/lib/speech';
 import { tokenizeForCompare } from '@/lib/text';
 import { useSettings } from '@/store/settings';
 import { playKeySound, playFinishSound } from '@/lib/sound';
 import { saveSession } from '@/services/learning';
 import { Segmented, Progress } from '@/components/ui';
+import { WordDetail } from '@/components/WordDetail';
 import {
   IconArrowLeft,
   IconArrowRight,
@@ -450,6 +456,63 @@ function ImportConfirm({
   );
 }
 
+/**
+ * 可点词的目标句。
+ *
+ * 点词查释义是「增强」而非「必需」：释义表没加载完 / 加载失败 / 这个词
+ * 本来就没收录（古语 hath、专名 Stanford）时，一律渲染成普通文本，
+ * 不加下划线和手型，避免点了没反应。
+ *
+ * 用 span 而不是 button 包每个词：一屏几十个词，几十个 button 会拖慢
+ * 键盘 Tab 焦点漫游（用户按 Tab 是想切到输入框，不是逐词漫游）。
+ * 所以可点的词给 role="button" + tabIndex={-1}，只响应鼠标与触摸。
+ */
+function ClickableSentence({
+  text,
+  glossary,
+  onPick,
+}: {
+  text: string;
+  glossary: ArticleGlossary | null;
+  onPick: (entry: WordEntry) => void;
+}) {
+  const parts = useMemo(() => {
+    if (!glossary) return null;
+    // 按空白切分但保留原始分隔符，拼回去时与原文逐字一致
+    const tokens = text.split(/(\s+)/);
+    return tokens.map((token) => {
+      if (!token.trim()) return { token, entry: null as WordEntry | null };
+      return { token, entry: lookupInGlossary(glossary, token) };
+    });
+  }, [text, glossary]);
+
+  if (!parts) return <>{text}</>;
+
+  return (
+    <>
+      {parts.map(({ token, entry }, i) =>
+        entry ? (
+          <span
+            key={i}
+            role="button"
+            tabIndex={-1}
+            title={`${entry.w} ${entry.t}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onPick(entry);
+            }}
+            className="cursor-pointer rounded-sm decoration-dotted underline-offset-4 hover:bg-accent/10 hover:text-accent hover:underline"
+          >
+            {token}
+          </span>
+        ) : (
+          <span key={i}>{token}</span>
+        ),
+      )}
+    </>
+  );
+}
+
 function ArticlePlayer({ article, onExit }: { article: Article; onExit: () => void }) {
   const settings = useSettings((s) => s.settings);
   const navigate = useNavigate();
@@ -460,8 +523,21 @@ function ArticlePlayer({ article, onExit }: { article: Article; onExit: () => vo
   const [showZh, setShowZh] = useState(true);
   const [results, setResults] = useState<{ ok: boolean; mistakes: number }[]>([]);
   const [startedAt] = useState(Date.now());
+  const [glossary, setGlossary] = useState<ArticleGlossary | null>(null);
+  const [picked, setPicked] = useState<WordEntry | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const savedRef = useRef(false);
+
+  // 点词释义表：进文章就开始下，没下完也不挡练习（词先当普通文本）
+  useEffect(() => {
+    let alive = true;
+    void loadArticleGlossary().then((g) => {
+      if (alive) setGlossary(g);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const sentence = article.sentences[idx];
   const finished = idx >= article.sentences.length;
@@ -627,9 +703,15 @@ function ArticlePlayer({ article, onExit }: { article: Article; onExit: () => vo
         </div>
 
         {mode === 'typing' ? (
-          <p className="tf-mono text-base leading-relaxed text-ink">{sentence.en}</p>
+          <p className="tf-mono text-base leading-relaxed text-ink">
+            <ClickableSentence text={sentence.en} glossary={glossary} onPick={setPicked} />
+          </p>
         ) : (
           <p className="text-sm text-muted">（听写模式：听发音，凭记忆写出整句）</p>
+        )}
+
+        {glossary && mode === 'typing' && (
+          <div className="mt-1.5 text-[11px] text-muted/70">点句中的单词可查释义</div>
         )}
 
         {showZh && sentence.zh && (
@@ -732,6 +814,13 @@ function ArticlePlayer({ article, onExit }: { article: Article; onExit: () => vo
           </button>
         )}
       </div>
+
+      {/* 点词查释义 */}
+      <WordDetail
+        entry={picked}
+        open={picked !== null}
+        onClose={() => setPicked(null)}
+      />
     </div>
   );
 }

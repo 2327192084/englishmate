@@ -14,6 +14,7 @@
     "typecheck": "tsc --noEmit",
     "smoke": "node scripts/smoke.mjs",
     "dicts": "node scripts/build-dicts.mjs",
+    "glossary": "node scripts/build-article-glossary.mjs",
     "verify": "node scripts/verify-data.mjs",
     "electron:dev": "vite",
     "electron:run": "electron electron/main.cjs",
