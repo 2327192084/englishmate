@@ -17,6 +17,27 @@ export interface CustomBank {
   words: { w: string; t: string; p?: string }[];
 }
 
+/**
+ * 用户自己导入的文章。
+ *
+ * 相比内置文章的 `Article`（`src/types.ts`）多一个 `createdAt`，
+ * 用来在列表里按导入时间倒序排；其余字段一一对应，
+ * 因此读出来直接能当 `Article` 用，练习逻辑（ArticlePlayer）不需要任何改动。
+ */
+export interface CustomArticle {
+  id: string;
+  title: string;
+  titleZh: string;
+  /** 难度标签：'CET-4' | 'CET-6' | '考研' | '雅思' */
+  level: string;
+  author: string;
+  sentences: { en: string; zh: string }[];
+  /** 来源与许可说明，导入时写成 "导入自 xxx.txt" */
+  source: string;
+  /** 导入时间戳，列表倒序 + 导出用 */
+  createdAt: number;
+}
+
 /** 杂项键值（上次选择的词库、导入历史等） */
 export interface MetaRow {
   key: string;
@@ -29,6 +50,7 @@ export class EnglishMateDB extends Dexie {
   settings!: Table<Settings, number>;
   achievements!: Table<UnlockedAchievement, string>;
   customBanks!: Table<CustomBank, string>;
+  customArticles!: Table<CustomArticle, string>;
   meta!: Table<MetaRow, string>;
 
   constructor() {
@@ -42,6 +64,17 @@ export class EnglishMateDB extends Dexie {
       achievements: 'id',
       customBanks: 'id, createdAt',
       meta: 'key',
+    });
+
+    /**
+     * v2：新增自定义文章表。
+     *
+     * Dexie 的版本声明是「增量」的——只写本次新增/变更的表，
+     * v1 里的其余表定义自动继承，**不要**在这里重复声明旧表，
+     * 否则一旦旧表定义和 v1 有出入就会触发 SchemaError。
+     */
+    this.version(2).stores({
+      customArticles: 'id, createdAt',
     });
   }
 }

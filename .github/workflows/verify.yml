@@ -1,0 +1,61 @@
+# 数据与代码的守门人
+# ---------------------------------------------------------------------------
+# 任何人提 PR 改词库 / 文章，格式不对直接红灯，不用维护者手动查。
+# 四道关卡（任一失败即中断，后面的步骤不会再跑）：
+#   1. npm ci                —— 依赖能干净安装（lockfile 与 package.json 一致）
+#   2. npx tsc --noEmit      —— 类型零报错（strict + noUnusedLocals）
+#   3. npx vitest run        —— 单测全绿（含渲染测试，验证页面挂载不崩）
+#   4. node scripts/verify-data.mjs
+#                            —— 数据契约：条数匹配、无重复词、无空释义、
+#                               许可字段含 MIT、index.json 与单文件 meta 一致等
+#
+# 第 4 步是词库贡献的关键：贡献者只要过了这一关，数据格式就是可合并的。
+# 贡献方法见 docs/dict-contribution.md。
+name: verify
+
+on:
+  push:
+    # 只跑主干；功能分支提 PR 时由 pull_request 触发，避免同一次改动跑两遍
+    branches: [main]
+  # 所有 PR 都跑：不写 branches 过滤 = 不限目标分支
+  pull_request:
+
+# 同一分支的新提交可以把旧的一次跑取消掉，省 CI 时间
+concurrency:
+  group: verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# 只读：校验任务不需要写仓库
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: 类型 / 单测 / 数据契约
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      # Node 20：与本地开发环境对齐；缓存 npm 下载，第二次起明显更快
+      - name: 安装 Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci --no-audit --no-fund
+
+      - name: 类型检查
+        run: npx tsc --noEmit
+
+      # --reporter=default 让失败用例在 Actions 日志里直接可读
+      - name: 单元测试
+        run: npx vitest run --reporter=default
+
+      # 词库与文章的数据契约。单独一步，失败时能一眼看出是数据问题而不是代码问题
+      - name: 校验词库与文章数据
+        run: node scripts/verify-data.mjs

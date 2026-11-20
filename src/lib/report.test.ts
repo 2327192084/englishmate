@@ -72,6 +72,7 @@ const emptyData: ReportData = {
   longestStreak: 0,
   generatedAt: T0,
   bankTop: [],
+  learnedWords: 0,
 };
 
 describe('学习报告 SVG', () => {
@@ -153,5 +154,23 @@ describe('学习报告 SVG', () => {
     const svg = renderReportFromRaw(many, []);
     expect(svg).not.toContain('NaN');
     expect(svg).toContain('最近 30 天');
+  });
+
+  it('掌握率用学过的总词数作分母，不是「已掌握+错词」', () => {
+    // 场景：学过 100 词，其中 40 已掌握、0 个错词
+    // 错误实现会算出 40/(40+0)=100%；正确应为 40/100=40%
+    const words = Array.from({ length: 100 }, (_, i) => userWord('w' + i, { mastered: i < 40 }));
+    const data: ReportData = {
+      ...emptyData,
+      overview: { ...emptyData.overview, masteredCount: 40, wrongCount: 0 },
+      learnedWords: 100,
+    };
+    const svg = renderReportSvg(data);
+    // 掌握进度处应是 40%（注意：正确率那块空数据时也是 100%，所以
+    // 只验证"存在 40%"和底部文案，不全局否定 100%）
+    expect(svg).toContain('40%');
+    expect(svg).toContain('学过 100');
+    expect(svg).toContain('已掌握 40');
+    void words;
   });
 });

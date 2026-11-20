@@ -25,6 +25,8 @@ export interface ReportData {
   generatedAt: number;
   /** 词库分布（前 5）*/
   bankTop: { bankId: string; learned: number; mastered: number }[];
+  /** 实际学过的词总数（含学习中与已掌握） */
+  learnedWords: number;
 }
 
 /** 汇总生成报告所需的数据 */
@@ -53,6 +55,7 @@ export async function collectReportData(): Promise<ReportData> {
     longestStreak: computeLongestStreak(daily),
     generatedAt: Date.now(),
     bankTop,
+    learnedWords: words.length,
   };
 }
 
@@ -109,10 +112,16 @@ export function renderReportSvg(data: ReportData): string {
       ? `${linePath} L${points[points.length - 1].x.toFixed(1)},${300 + chartH} L${points[0].x.toFixed(1)},${300 + chartH} Z`
       : '';
 
-  // 掌握率
-  const learnedTotal = overview.masteredCount + overview.wrongCount;
+  /**
+   * 掌握率 = 已掌握 / 学过的总数。
+   *
+   * 原实现用 `masteredCount + wrongCount` 当分母，但 wrongCount 只统计**错过的词**，
+   * 不含"学过但没出过错"的词 —— 于是 40 个已掌握 + 0 个错词算出 100%，
+   * 而实际学过的词远不止 40 个。改用真实的已学词数。
+   */
+  const learnedTotal = Math.max(data.learnedWords, overview.masteredCount);
   const masteredPct =
-    learnedTotal > 0 ? Math.round((overview.masteredCount / Math.max(1, learnedTotal)) * 100) : 0;
+    learnedTotal > 0 ? Math.round((overview.masteredCount / learnedTotal) * 100) : 0;
 
   /** 四个核心数字块 */
   const stats = [
@@ -203,7 +212,7 @@ export function renderReportSvg(data: ReportData): string {
   <line x1="${pad}" y1="424" x2="${W - pad}" y2="424" stroke="${C.border}"/>
   <text x="${pad}" y="444" fill="${C.text}" font-size="12" font-weight="500">掌握进度</text>
   <text x="${pad + 70}" y="444" fill="${C.correct}" font-size="12" font-family="ui-monospace, monospace">${masteredPct}%</text>
-  <text x="${pad + 110}" y="444" fill="${C.muted}" font-size="10">已掌握 ${overview.masteredCount} · 学习中 ${overview.wrongCount}</text>
+  <text x="${pad + 110}" y="444" fill="${C.muted}" font-size="10">已掌握 ${overview.masteredCount} · 学过 ${learnedTotal}</text>
   ${bankRows}
 
   <!-- 页脚 -->
@@ -307,5 +316,6 @@ export function renderReportFromRaw(
     longestStreak: computeLongestStreak(daily),
     generatedAt: now,
     bankTop: [],
+    learnedWords: words.length,
   });
 }

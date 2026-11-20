@@ -3,10 +3,26 @@
  *
  * 与单词练习的区别：长句逐字符校验体验差，所以这里用「整句提交 + 逐词着色」：
  * 用户输入完整句，回车提交，逐词对比正确/错误。
+ *
+ * 除了内置的 75 篇，用户还可以导入自己的文章（存 IndexedDB，见
+ * `@/data/customArticles`）。自定义文章和内置文章在列表里合并展示，
+ * 点进去走同一个 ArticlePlayer——练习逻辑不需要为自定义内容分叉。
  */
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ARTICLES } from '@/data/articles';
+import {
+  ARTICLE_LEVELS,
+  ArticleImportError,
+  deleteCustomArticle,
+  listCustomArticles,
+  normalizeLevel,
+  parseArticleTextDetailed,
+  readArticleFile,
+  saveCustomArticle,
+  titleFromFilename,
+  type ArticleLevel,
+} from '@/data/customArticles';
 import type { Article } from '@/types';
 import { speak, stopSpeaking } from '@/lib/speech';
 import { tokenizeForCompare } from '@/lib/text';
@@ -19,6 +35,8 @@ import {
   IconArrowRight,
   IconCheck,
   IconRefresh,
+  IconTrash,
+  IconUpload,
   IconVolume,
   IconX,
 } from '@/components/Icons';
@@ -47,9 +65,29 @@ function ArticleList({ onPick }: { onPick: (a: Article) => void }) {
   const [q, setQ] = useState('');
   const [limit, setLimit] = useState(20);
 
+  /** 用户自己导入的文章 */
+  const [customs, setCustoms] = useState<Article[]>([]);
+  const fileRef = useRef<HTMLInputElement>(null);
+  /** 待确认的导入：解析完先给用户过一眼标题 / 难度，确认后才落库 */
+  const [pending, setPending] = useState<PendingImport | null>(null);
+  const [importMsg, setImportMsg] = useState<ImportMessage | null>(null);
+
+  const reloadCustoms = useCallback(async () => {
+    setCustoms(await listCustomArticles());
+  }, []);
+
+  useEffect(() => {
+    void reloadCustoms();
+  }, [reloadCustoms]);
+
+  /** 内置 + 自定义合并，自定义排前面（刚导入的容易找） */
+  const all = useMemo(() => [...customs, ...ARTICLES], [customs]);
+  /** 自定义文章的 id 集合：列表里要打标记 + 给删除按钮 */
+  const customIds = useMemo(() => new Set(customs.map((a) => a.id)), [customs]);
+
   const filtered = useMemo(() => {
     const kw = q.trim().toLowerCase();
-    return ARTICLES.filter((a) => {
+    return all.filter((a) => {
       if (level !== '全部' && a.level !== level) return false;
       if (!kw) return true;
       return (
@@ -58,28 +96,126 @@ function ArticleList({ onPick }: { onPick: (a: Article) => void }) {
         a.author.toLowerCase().includes(kw)
       );
     });
-  }, [level, q]);
+  }, [all, level, q]);
 
   const counts = useMemo(() => {
     const m = new Map<string, number>();
-    for (const a of ARTICLES) m.set(a.level, (m.get(a.level) ?? 0) + 1);
+    for (const a of all) m.set(a.level, (m.get(a.level) ?? 0) + 1);
     return m;
-  }, []);
+  }, [all]);
+
+  /**
+   * 读文件 → 解析 → 进"确认"状态。
+   * 解析在这一步就做掉，失败立刻反馈（尤其是 GBK 乱码），
+   * 用户不会填完标题才被告知文件读不了。
+   */
+  const handleFile = async (file: File) => {
+    setImportMsg(null);
+    setPending(null);
+    try {
+      const { text, encoding } = await readArticleFile(file);
+      const { article, warnings } = parseArticleTextDetailed(text, file.name);
+      if (encoding === 'gbk') {
+        warnings.unshift('检测到 GBK 编码，已自动转成 UTF-8（建议以后存成 UTF-8）。');
+      }
+      setPending({ article, warnings });
+    } catch (e) {
+      setImportMsg({
+        tone: 'error',
+        text:
+          e instanceof ArticleImportError
+            ? e.message
+            : e instanceof Error
+              ? `导入失败：${e.message}`
+              : '导入失败',
+      });
+    }
+  };
+
+  /** 确认保存 */
+  const confirmImport = async (draft: Article) => {
+    try {
+      await saveCustomArticle(draft);
+      await reloadCustoms();
+      setPending(null);
+      setImportMsg({
+        tone: 'ok',
+        text: `已导入「${draft.title}」，共 ${draft.sentences.length} 句。`,
+      });
+    } catch (e) {
+      setImportMsg({
+        tone: 'error',
+        text: e instanceof Error ? `保存失败：${e.message}` : '保存失败',
+      });
+    }
+  };
+
+  const removeArticle = async (a: Article) => {
+    if (!window.confirm(`删除自定义文章「${a.title}」？已练过的记录会保留。`)) return;
+    await deleteCustomArticle(a.id);
+    await reloadCustoms();
+    setImportMsg({ tone: 'ok', text: `已删除「${a.title}」。` });
+  };
 
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8">
       <header className="mb-5">
         <h1 className="text-xl font-semibold text-ink">文章练习</h1>
         <p className="mt-1 text-sm text-muted">
-          共 {ARTICLES.length} 篇 · 逐句跟打或听写，把词汇放进真实语境里记
+          共 {all.length} 篇（{ARTICLES.length} 篇内置
+          {customs.length > 0 ? ` · ${customs.length} 篇自定义` : ''}）·
+          逐句跟打或听写，把词汇放进真实语境里记
         </p>
       </header>
+
+      {/* 导入入口 */}
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <button type="button" onClick={() => fileRef.current?.click()} className="tf-btn text-xs">
+          <IconUpload width={14} height={14} />
+          导入文章
+        </button>
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".txt,.md,.json,.tsv"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) void handleFile(f);
+            e.target.value = '';
+          }}
+        />
+        <span className="text-[11px] text-muted">
+          支持双语对照 .txt / .md、纯英文文本，或带 sentences 的 .json
+        </span>
+      </div>
+
+      {importMsg && (
+        <div
+          className={`mb-3 rounded-lg border px-3 py-2 text-xs ${
+            importMsg.tone === 'ok'
+              ? 'border-accent/40 bg-accent/10 text-accent'
+              : 'border-error/40 bg-error/10 text-error'
+          }`}
+        >
+          {importMsg.text}
+        </div>
+      )}
+
+      {pending && (
+        <ImportConfirm
+          draft={pending.article}
+          warnings={pending.warnings}
+          onCancel={() => setPending(null)}
+          onConfirm={(a) => void confirmImport(a)}
+        />
+      )}
 
       {/* 难度筛选 */}
       <div className="mb-3 flex flex-wrap items-center gap-1.5">
         {LEVELS.map((lv) => {
           const active = level === lv;
-          const n = lv === '全部' ? ARTICLES.length : (counts.get(lv) ?? 0);
+          const n = lv === '全部' ? all.length : (counts.get(lv) ?? 0);
           if (lv !== '全部' && n === 0) return null;
           return (
             <button
@@ -113,31 +249,46 @@ function ArticleList({ onPick }: { onPick: (a: Article) => void }) {
 
       <div className="grid gap-2">
         {filtered.slice(0, limit).map((a) => (
-          <button
+          <div
             key={a.id}
-            type="button"
-            onClick={() => onPick(a)}
-            className="tf-card group flex items-start justify-between gap-3 px-4 py-3 text-left transition-colors hover:border-accent/60"
+            className="tf-card group flex items-start justify-between gap-3 px-4 py-3 transition-colors hover:border-accent/60"
           >
-            <div className="min-w-0">
+            <button type="button" onClick={() => onPick(a)} className="min-w-0 flex-1 text-left">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-sm font-medium text-ink">{a.title}</span>
-                <span className="text-[11px] text-muted">· {a.titleZh}</span>
+                {a.titleZh && <span className="text-[11px] text-muted">· {a.titleZh}</span>}
+                {customIds.has(a.id) && (
+                  <span className="rounded border border-accent/40 bg-accent/10 px-1.5 py-px text-[10px] text-accent">
+                    自定义
+                  </span>
+                )}
               </div>
               <div className="mt-0.5 text-[11px] text-muted">
                 {a.author} · {a.sentences.length} 句
               </div>
               <div className="mt-1 text-[11px] text-muted/60">{a.source}</div>
-            </div>
+            </button>
             <div className="flex shrink-0 items-center gap-1.5">
               <span className="tf-chip">{a.level}</span>
-              <IconArrowRight
-                width={15}
-                height={15}
-                className="text-muted group-hover:text-accent"
-              />
+              {customIds.has(a.id) ? (
+                <button
+                  type="button"
+                  onClick={() => void removeArticle(a)}
+                  className="rounded p-1 text-muted hover:text-error"
+                  aria-label={`删除 ${a.title}`}
+                  title="删除这篇自定义文章"
+                >
+                  <IconTrash width={14} height={14} />
+                </button>
+              ) : (
+                <IconArrowRight
+                  width={15}
+                  height={15}
+                  className="text-muted group-hover:text-accent"
+                />
+              )}
             </div>
-          </button>
+          </div>
         ))}
       </div>
 
@@ -161,6 +312,139 @@ function ArticleList({ onPick }: { onPick: (a: Article) => void }) {
         <span className="mt-1 block text-muted/70">
           发音使用系统语音（{settings.accent === 'en-US' ? '美音' : '英音'}），可在设置里切换。
         </span>
+      </div>
+    </div>
+  );
+}
+
+/** 一条导入反馈 */
+interface ImportMessage {
+  tone: 'ok' | 'error';
+  text: string;
+}
+
+/** 解析完成、等用户确认的草稿 */
+interface PendingImport {
+  article: Article;
+  warnings: string[];
+}
+
+/**
+ * 导入确认表单：让用户改标题 / 难度，并预览前几句。
+ * 文件名推断出来的标题、难度只是默认值，用户可以改。
+ */
+function ImportConfirm({
+  draft,
+  warnings,
+  onCancel,
+  onConfirm,
+}: {
+  draft: Article;
+  warnings: string[];
+  onCancel: () => void;
+  onConfirm: (a: Article) => void;
+}) {
+  const [title, setTitle] = useState(draft.title);
+  const [titleZh, setTitleZh] = useState(draft.titleZh);
+  const [level, setLevel] = useState<ArticleLevel>(normalizeLevel(draft.level));
+
+  /** 标题被清空时退回文件名推断值，避免存出无名文章 */
+  const finalTitle = title.trim() || titleFromFilename(draft.source);
+
+  return (
+    <div className="tf-card mb-3 px-4 py-4">
+      <div className="mb-2 flex items-center justify-between">
+        <span className="text-sm font-medium text-ink">确认导入</span>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="rounded p-1 text-muted hover:text-ink"
+          aria-label="取消导入"
+        >
+          <IconX width={14} height={14} />
+        </button>
+      </div>
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        <label className="grid gap-1">
+          <span className="text-[11px] text-muted">英文标题</span>
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="tf-input text-sm"
+            placeholder="文章标题"
+          />
+        </label>
+        <label className="grid gap-1">
+          <span className="text-[11px] text-muted">中文标题（可留空）</span>
+          <input
+            value={titleZh}
+            onChange={(e) => setTitleZh(e.target.value)}
+            className="tf-input text-sm"
+            placeholder="中文标题"
+          />
+        </label>
+      </div>
+
+      <div className="mt-2 grid gap-1">
+        <span className="text-[11px] text-muted">难度</span>
+        <div className="flex flex-wrap gap-1.5">
+          {ARTICLE_LEVELS.map((lv) => (
+            <button
+              key={lv}
+              type="button"
+              onClick={() => setLevel(lv)}
+              className={`rounded-full border px-2.5 py-1 text-[11px] transition-colors ${
+                level === lv
+                  ? 'border-accent bg-accent/10 font-medium text-accent'
+                  : 'border-line text-muted hover:text-ink'
+              }`}
+            >
+              {lv}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-3 rounded-lg border border-line bg-surface2/50 px-3 py-2">
+        <div className="text-[11px] text-muted">共 {draft.sentences.length} 句 · 预览前 3 句</div>
+        <div className="mt-1 grid gap-1">
+          {draft.sentences.slice(0, 3).map((s, i) => (
+            <div key={i} className="text-[11px] leading-relaxed">
+              <div className="tf-mono text-ink">{s.en}</div>
+              {s.zh && <div className="text-muted">{s.zh}</div>}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {warnings.length > 0 && (
+        <ul className="mt-2 grid gap-0.5 text-[11px] text-amber-400">
+          {warnings.map((w, i) => (
+            <li key={i}>· {w}</li>
+          ))}
+        </ul>
+      )}
+
+      <div className="mt-3 flex justify-end gap-2">
+        <button type="button" onClick={onCancel} className="tf-btn text-xs">
+          取消
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            onConfirm({
+              ...draft,
+              title: finalTitle,
+              titleZh: titleZh.trim(),
+              level,
+            })
+          }
+          className="tf-btn tf-btn-primary text-xs"
+        >
+          <IconCheck width={14} height={14} />
+          保存到我的文章
+        </button>
       </div>
     </div>
   );
@@ -348,7 +632,7 @@ function ArticlePlayer({ article, onExit }: { article: Article; onExit: () => vo
           <p className="text-sm text-muted">（听写模式：听发音，凭记忆写出整句）</p>
         )}
 
-        {showZh && (
+        {showZh && sentence.zh && (
           <p className="mt-2 border-t border-line pt-2 text-xs leading-relaxed text-muted">
             {sentence.zh}
           </p>
