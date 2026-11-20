@@ -16,12 +16,32 @@ type Tab = 'banks' | 'wrong' | 'favorite' | 'mastered';
 
 export default function WordsPage() {
   const [tab, setTab] = useState<Tab>('banks');
+  /**
+   * 内置词库数量。
+   *
+   * 原来这里硬编码 `内置 {8} 个词库`，词库扩到 16 个后文案就一直错着——
+   * 写死数字必然随数据变化而失真。改为从 index.json 动态读，
+   * 未加载完成时显示为空（不显示错误的数字比显示错误数字好）。
+   */
+  const [builtinCount, setBuiltinCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    void loadBankIndex().then((idx) => {
+      if (alive) setBuiltinCount(idx.banks.length);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-8">
       <header className="mb-5">
         <h1 className="text-xl font-semibold text-ink">词库</h1>
-        <p className="mt-1 text-sm text-muted">内置 {8} 个词库，也可导入自己的词表</p>
+        <p className="mt-1 text-sm text-muted">
+          {builtinCount === null ? '加载中…' : `内置 ${builtinCount} 个词库`}，也可导入自己的词表
+        </p>
       </header>
 
       <div className="mb-5">
