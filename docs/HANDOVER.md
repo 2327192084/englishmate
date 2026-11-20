@@ -8,25 +8,27 @@
 
 ## 一、当前状态（一句话）
 
-**功能完整的开源英语打字学习应用**，Web + Windows 桌面版，278 个测试全绿，tsc 零报错，数据校验通过。已推送 GitHub。
+**功能完整的开源英语打字学习应用**，Web + Windows 桌面版，346 个测试全绿，tsc 零报错，数据校验通过。
 
 | 指标 | 数值 |
 |---|---|
 | 代码规模 | 约 11,000 行 TS/TSX + 6,000 行构建脚本 |
-| 测试 | 278 个，14 个文件，全绿 |
+| 测试 | 346 个，18 个文件，全绿 |
 | 词库 | 16 个 / 55,560 词条 |
 | 文章 | 75 篇 / 490 句 |
 | 例句 | 57,257 条中英对照（覆盖 58.2% 词条） |
 | 词关系 | 14,959 词（词形变化 + 形近易混） |
+| 文章点词释义 | 1,449 词条 / 554 变体（294KB，覆盖 98.4% 文章 token） |
+| 页面 | 8 个（练习 / 词库 / 复习 / 文章 / 句子 / 数据 / 成就 / 设置） |
 | 产物 | JS 533KB（gzip 176KB）+ CSS 25KB |
 
 ---
 
 ## 二、立刻要做的两件事
 
-### 1. 推送 8 个未推送的提交
+### 1. 推送未推送的提交
 
-本地比远端领先 8 个提交：
+本地比远端领先的提交先看清再推（2026-11-21 推过一批，仍未推成功）：
 
 ```bash
 cd E:\EnglishMate
@@ -59,14 +61,18 @@ E:\EnglishMate\
 │   │   ├── timer.ts        抗休眠计时（累计活跃时长）
 │   │   ├── flow.ts         练习流程引擎（分组循环）
 │   │   ├── text.ts         文本归一化（全角/弯引号 → 可打字形式）
+│   │   ├── sentenceDiff.ts 整句逐词对比（句子练习用）
+│   │   ├── keys.ts         快捷键绑定/归一/判定
 │   │   ├── report.ts       学习报告 SVG 生成
 │   │   ├── speech.ts       语音合成封装
 │   │   └── sound.ts        Web Audio 按键音合成
 │   ├── data/
 │   │   ├── wordbanks.ts    词库按需加载
 │   │   ├── wordGraph.ts    词关系加载（word-graph.json）
+│   │   ├── articleGlossary.ts 文章点词释义表加载
 │   │   ├── customArticles.ts 用户导入文章（解析+存储）
 │   │   ├── round.ts        出题队列（收藏→到期→错词→新词→兜底）
+│   │   ├── sentences.ts    例句抽取（错词本/收藏/按词库）
 │   │   ├── articles.ts     文章（import JSON 产物）
 │   │   └── achievements.ts 14 个成就定义
 │   ├── db/index.ts     Dexie 六张表 + 导入导出
@@ -75,9 +81,9 @@ E:\EnglishMate\
 │   │   └── achievements.ts 成就判定与解锁
 │   ├── store/          Zustand（settings / practice）
 │   ├── components/     Layout / TypingArea / WordDetail / WordFamilyHint
-│   └── pages/          7 个页面
+│   └── pages/          8 个页面
 ├── public/
-│   ├── dicts/          16 个词库 + index.json + word-graph.json
+│   ├── dicts/          16 个词库 + index.json + word-graph.json + article-glossary.json
 │   └── articles/       index.json（75 篇内联）
 ├── electron/           main.cjs / preload.cjs / smoke.cjs
 ├── scripts/            数据流水线（见下）
@@ -99,7 +105,7 @@ E:\EnglishMate\
 
 ```bash
 npx tsc --noEmit          # 类型检查（0 错误才算过）
-npx vitest run            # 278 个测试
+npx vitest run            # 346 个测试
 node scripts/verify-data.mjs   # 数据契约（16 库 / 75 篇）
 ```
 
@@ -117,6 +123,7 @@ node scripts/verify-data.mjs   # 数据契约（16 库 / 75 篇）
 | `scripts/build-rich-dicts.mjs` | 补词性释义 + 例句 | 几分钟 |
 | `scripts/build-word-graph.mjs` | 挖词形变化 + 形近词 | 约 1 分钟 |
 | `scripts/build-articles.mjs` | 生成文章语料 | 依赖 `data/articles-work/`（已进仓库） |
+| `scripts/build-article-glossary.mjs` | 生成文章点词释义表 `article-glossary.json` | 几秒（需先用完上面几个脚本） |
 
 **缓存都在 `.tmp/`**（已 gitignore），重跑不必重新下载：
 - `.tmp/rich-cache/ecdict.csv` — 63MB，ECDICT 完整数据
@@ -176,6 +183,9 @@ node scripts/verify-data.mjs   # 数据契约（16 库 / 75 篇）
 | 16 个词库 + 自定义导入 | 55,560 词条 |
 | 75 篇文章 + 自定义文章导入 | 三种格式解析 + GBK 检测 |
 | 词形变化/形近词 | 14,959 词，练习界面提示 + 详情面板 |
+| 文章点词联动 | 阅读时点句中单词查释义（`article-glossary.json`，覆盖 98.4% token） |
+| 句子练习 | `/sentences`，错词本/收藏/按词库三来源，整句输入 + 逐词着色 |
+| 自定义快捷键 | 四个动作可改键，设置页录制式录入，提示文案同步 |
 | 学习报告导出 | SVG / PDF |
 | 成就系统 | 14 个，已接通 |
 | 深浅主题 / PWA / 桌面版 | 完成 |
@@ -186,12 +196,13 @@ node scripts/verify-data.mjs   # 数据契约（16 库 / 75 篇）
 
 ### A 档 · 数据现成，成本低
 
+> ✅ 2026-11-21 已完成：**句子库练习**（`/sentences`）、**文章点词联动**（`article-glossary.json` + `WordDetail`）、
+> **自定义快捷键**（`Settings.shortcuts` + 设置页录制式改键）。以下保留尚未完成的项。
+
 | 功能 | 说明 | 预估 |
 |---|---|---|
-| **句子库练习** | 已有 53,882 条中英例句，做成「整句打字」练习 | 2 小时 |
-| **文章点词联动** | 图谱已有，文章阅读时点词看词族/形近 | 1 小时 |
-| **键盘热力图** | 记录哪个字母易打错，给出针对性洞察 | 2 小时 |
-| **错词按类型分组** | 拼写错/混淆/遗忘分开练 | 2 小时 |
+| **键盘热力图** | 记录哪个字母易打错，给出针对性洞察。⚠️ 需先补「按字符的错误统计」数据链路（见 `docs/unimplemented-features.md` B 档） | 2 小时+ |
+| **错词按类型分组** | 拼写错/混淆/遗忘分开练。同样缺错误类型字段 | 2 小时+ |
 
 ### B 档 · 需要新数据
 
@@ -245,8 +256,12 @@ AI 功能（要 API Key 或自训）、云同步（要后端）、排行榜（�
 | 计时用累计活跃时长，不用 `Date.now()` 差值 | 休眠后 WPM 会被稀释到 0 |
 | 打错不前进光标（严格模式） | 防止错误肌肉记忆 |
 | 输入法组字期间忽略所有按键 | 否则拼音字母被当答题 |
-| Tab 键 = 重听发音（不是跳过） | 跳过与 Space 重复 |
+| Tab 键 = 重听发音（不是跳过） | 跳过与 Space 重复；四个键位已做成可配置，默认值保持这一行为 |
 | 练习方式合并成一个选择器 | 原来"模式"和"流程"概念重叠 |
 | 词形提示跟打默认展开、默写/听写默认折叠 | 后两者目标是从记忆提取，摊开等于送答案 |
 | 词关系独立文件不塞进词库 | 否则 16 个词库文件体积翻倍且重复 |
+| 文章点词用独立 glossory 文件，不按词加载整库 | 点一个词不该下载 1.3MB 的高考词库；独立文件 gzip 约 120KB |
+| 文章可点词用 span[role=button] 不用 button | 几十个 button 会污染 Tab 焦点漫游，用户按 Tab 是想跳输入框 |
+| 快捷键判定集中在 lib/keys.ts | 脏配置（两动作抢一键）只能在一处收敛，避免行为不可预测 |
+| 改键时新键已被占用就交换而非拒绝 | 用户改键的常见意图就是两键对调 |
 | 报告用 SVG 自绘不引 jsPDF | 省 200KB，矢量不糊 |

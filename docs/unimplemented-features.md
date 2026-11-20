@@ -6,6 +6,17 @@
 
 ---
 
+## 〇、2026-11-21 当日完成（原 A / B 档条目）
+
+| 功能 | 结论 |
+| --- | --- |
+| **文章点词联动** | ✅ 已完成。新增 `scripts/build-article-glossary.mjs` → `public/dicts/article-glossary.json`（1,449 词条 / 554 变体 / 294KB），`src/data/articleGlossary.ts` 负责加载与词形回退，`ArticlesPage` 的目标句按词可点并打开 `WordDetail`。文章 token 覆盖 98.4% |
+| **句子库练习** | ✅ 已完成。`src/lib/sentenceDiff.ts`（整句逐词对比）、`src/data/sentences.ts`（错词本 / 收藏 / 按词库三来源取句）、`src/pages/SentencesPage.tsx`（一轮 10 句，Enter 提交后逐词着色），路由 `/sentences` 已接线 |
+| **自定义快捷键** | ✅ 已完成。`src/lib/keys.ts` 集中判定键位，`Settings.shortcuts` 存四个动作的键名，设置页有录制式改键 UI，页脚提示与练习页小提示都跟着设置变 |
+| **放开 tem8 截断** | ✅ 已完成。`build-more-dicts.mjs` 删掉 `limit: 8000`，tem8 全量 11,858 词（词库总数 55,560） |
+
+---
+
 ## 一、文档与代码不符的历史问题（已全部修复）
 
 这类最要紧——文档会误导使用者。以下问题均已在本轮修掉，保留记录以便追溯。
@@ -27,7 +38,7 @@
 
 ## 二、设置里有开关但代码不读的（假开关）
 
-已核查 `Settings` 接口的全部 12 个字段，**目前没有假开关**：
+已核查 `Settings` 接口的全部 13 个字段，**目前没有假开关**：
 
 | 设置项 | 是否被业务逻辑读取 | 证据 |
 | --- | --- | --- |
@@ -39,6 +50,7 @@
 | `strictCorrection` | ✅ | 影响 `typeChar` 行为（曾经是假开关，已修） |
 | `roundSize` | ✅ | `buildRound({ limit })` |
 | `flowPreset` / `groupSize` | ✅ | `lib/flow.ts` |
+| `shortcuts` | ✅ | `lib/keys.ts` 的 `matchShortcut()` 读它，`TypingArea` 与练习页提示都用它 |
 
 ---
 
@@ -48,10 +60,9 @@
 
 | 功能 | 现状与真正的障碍 | 成本 |
 | --- | --- | --- |
-| **文章点词联动** | `WordDetail` 组件与 `word-graph.json` 都已存在，但 `ArticlesPage.tsx` 没有点词入口，阅读时不可查词 | 1 小时 |
-| **句子库练习** | 53,882 对中英例句（覆盖 30,385 个词条，58.8%）已内联在词库里，但只作为「详情面板的展示内容」，没有整句打字练习入口 | 2 小时 |
 | **文章扩到 800 句** | 目前 75 篇 / 490 句。素材池还有约 100 篇已切好句但未翻译的寓言。**这是人力问题不是代码问题** | 待人工翻译 |
-| **放开 tem8 截断** | `scripts/build-more-dicts.mjs` 里 `tem8` 有 `limit: 8000`（源文件 12,197 条，全量约 2.5MB）。删掉这一行即可放开 | 5 分钟 |
+
+> 原 A 档的「文章点词联动」「句子库练习」「放开 tem8 截断」已于 2026-11-21 完成，见文首第〇节。
 
 ### B 档 · 需要先补数据结构
 
@@ -59,7 +70,8 @@
 | --- | --- | --- |
 | **键盘热力图** | ⚠️ 不是「加个图表组件」那么简单。目前**完全没有按字符的错误统计**：`UserWord` 只有 `mistakes` 总计数；`TypingState.lastWrongChar` 只用于当场 UI 提示，**从不落库**；`PracticeSession` 只有 `keystrokes` / `correctKeystrokes` 总数。要做需打通 `lib/typing.ts` → `services/learning.ts` → 新 Dexie 表（含 v3 迁移）→ 统计页图表，且 `src/lib` 改动要保持零 React 依赖 | 2 小时+ |
 | **错词按类型分组** | 同上，没有任何「拼写错 / 混淆 / 遗忘」的类型字段，无法区分。需要先定义错误分类并在作答时记录，才谈得上分组练习 | 2 小时+ |
-| **自定义快捷键** | 快捷键写死在 `src/components/TypingArea.tsx`（Tab 重听、Backspace 退格、Escape 退出），`Settings` 里没有对应字段 | 半天 |
+
+> 原 B 档的「自定义快捷键」已于 2026-11-21 完成（`src/lib/keys.ts` + `Settings.shortcuts`）。
 
 ### C 档 · 成本高或不建议
 
@@ -113,6 +125,6 @@ node -e "const fs=require('fs'),p=require('path');const idx=JSON.parse(fs.readFi
 # 是否有按字符的错误统计（当前应为空）
 grep -rn "keystrokeStat\|perKey\|charErrors" src/ --include=*.ts --include=*.tsx
 
-# 快捷键是否写死（当前应为空，说明没有可配置实现）
-grep -rn "shortcut\|keybinding" src/ --include=*.ts --include=*.tsx
+# 快捷键是否已可配置（应能看到 Settings.shortcuts 与 lib/keys.ts）
+grep -rn "matchShortcut\|DEFAULT_SHORTCUTS" src/ --include=*.ts --include=*.tsx | grep -v test
 ```
