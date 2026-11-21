@@ -8,12 +8,12 @@
 
 ## 一、当前状态（一句话）
 
-**功能完整的开源英语打字学习应用**，Web + Windows 桌面版，381 个测试全绿，tsc 零报错，数据校验通过。
+**功能完整的开源英语打字学习应用**，Web + Windows 桌面版，382 个测试全绿，tsc 零报错，数据校验通过。
 
 | 指标 | 数值 |
 |---|---|
 | 代码规模 | 约 11,200 行 TS/TSX（另有 5,200 行测试）+ 6,700 行构建脚本 |
-| 测试 | 381 个，20 个文件，全绿 |
+| 测试 | 382 个，20 个文件，全绿 |
 | 词库 | 16 个 / 55,560 词条 |
 | 文章 | 75 篇 / 490 句 |
 | 例句 | 57,257 条中英对照（覆盖 58.2% 词条） |
@@ -37,12 +37,24 @@ git push
 
 ### 2. 桌面版需要重新同步（如果继续改代码）
 
+只替换 `resources/app/dist`，**不要动 `main.cjs` / `preload.cjs`**：
+
 ```bash
+cd /e/EnglishMate
 npm run build:desktop
-rm -rf "/c/Users/ASUS/AppData/Local/Programs/TypeFlow/resources/app/dist"
-cp -r dist "/c/Users/ASUS/AppData/Local/Programs/TypeFlow/resources/app/dist"
+INST="$LOCALAPPDATA/Programs/TypeFlow/resources/app"
+cp -r "$INST/dist" ".tmp/desktop-backup/$(date +%Y%m%d-%H%M%S)"   # 先备份
+rm -rf "$INST/dist" && cp -r dist "$INST/dist"
+cp -r dist "release/TypeFlow/resources/app/dist"                   # 同步待分发包
+node electron/verify-desktop.cjs                                   # 拉起真窗口验证
 ```
 
+`node electron/verify-desktop.cjs [exe目录]`（等同 `npm run verify:desktop`）会真的启动 `TypeFlow.exe --no-sandbox`，检查页面渲染、origin = `app://typeflow`、preload 生效且 Node 已隔离、旧 IndexedDB 的 settings 记录还在、`dicts/article-glossary.json` 能 fetch 到、导航里有 `/sentences`、首屏与刷新全程无控制台错误，并截图到 `.tmp/desktop-shots/`。
+（`electron/smoke.cjs` 测的是**仓库版** main/preload，origin 断言是 `app://englishmate`，用它测装的那份会得到假失败。）
+
+> ⚠️ **不要用仓库的 `electron/main.cjs` 覆盖装的那份**：仓库版 `APP_HOST='englishmate'`、preload 挂 `window.englishmate`，而装的那份是 `app://typeflow` + `window.typeflow`。换掉会改变 IndexedDB 的 origin（`app_typeflow_0` → `app_englishmate_0`），旧学习进度当场不可见。
+> `src/lib/pwa.ts` 只检测 `window.englishmate?.isDesktop`，在 TypeFlow 里恒为 false——但 SW 注册还有 `protocol.startsWith('http')` 兜底，桌面端不会误注册，所以目前没有实际影响；改名时必须一起处理。
+>
 > ⚠️ 注意：安装目录还叫 `TypeFlow`，程序名也叫 `TypeFlow.exe`。
 > 项目已改名 EnglishMate，但安装目录没改（改目录会丢失用户数据路径）。
 > 如果要统一，需要同时迁移 `%LOCALAPPDATA%\TypeFlow` 数据目录。
@@ -105,7 +117,7 @@ E:\EnglishMate\
 
 ```bash
 npx tsc --noEmit          # 类型检查（0 错误才算过）
-npx vitest run            # 381 个测试
+npx vitest run            # 382 个测试
 node scripts/verify-data.mjs   # 数据契约（16 库 / 75 篇）
 ```
 

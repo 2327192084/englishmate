@@ -19,6 +19,7 @@
     "electron:dev": "vite",
     "electron:run": "electron electron/main.cjs",
     "smoke:desktop": "electron electron/smoke.cjs --user-data-dir=.tmp/udd",
+    "verify:desktop": "node electron/verify-desktop.cjs",
     "dist:win": "npm run build:desktop && electron-builder --win --config electron-builder.config.cjs",
     "build:desktop": "node scripts/build-desktop.mjs",
     "dicts:rich": "node scripts/build-rich-dicts.mjs"
