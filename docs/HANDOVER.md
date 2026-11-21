@@ -164,6 +164,11 @@ done
 - **⚠️ 会有整条 `github.com:443` 都连不上的时段（不是换 IP 能解决的）**：2026-11-21 13:50 前后约 5 分钟，上面列的所有 IP 全部 `code=000` 超时，`curl -sv` 显示 TLS 握手能完成、到数据阶段 `recv returned error 56`；同一时刻 `api.github.com`（200）、`registry.npmjs.org`、`codeload.github.com`（301）都正常，`20.205.243.166` 的 TCP 443 能连上但握手后即断。**5 分钟后再测，四个 IP 又全部 200——是间歇性故障，不是永久封锁。**
   - **判断方法**：`curl -sS -o /dev/null -w "%{http_code}\n" --resolve github.com:443:140.82.113.4 --max-time 10 https://github.com/`。返回 `000` 就是整条链路暂时不通，**别再挨个换 IP 了**，隔几分钟重试一次即可。
   - 本地提交不会丢，`git rev-list --count origin/main..HEAD` 记着欠几个；实在推不上去就先攒着，别为了推送去改写历史。
+  - **2026-11-21 14:26–14:35 又遇到一次，多了两条可用的判断线索**：
+    1. **分清 TCP 层和 TLS 层**：`/dev/tcp/<ip>/443` 全部 `TCP OK`，但 `curl https://github.com/` 全部 `000` —— 说明端口通、TLS 被 RST。这时换 IP 无意义。
+    2. **用 80 端口做对照**：`curl --resolve github.com:80:<ip> http://github.com/` 返回 **301**（正常），而同一 IP 的 443 返回 000 —— 进一步确认是 TLS 层被掐，不是整条网络断。用 `curl -L` 跟随那个 301（它会跳回 https）反而可能拿到 **200**，说明握手时好时坏。
+    3. **恢复很快**：这次持续约 9 分钟，恢复后三个 IP 同时变回 200。所以策略就是**隔几十秒探一次，一探到 200 立刻 push**，不要一失败就去改命令或换方案。
+    4. `ssh.github.com:443` 与 `github.com:22` 两次都通（TCP 层），但 `~/.ssh/` 无密钥，SSH 通道暂时用不了——真要长期解决可以配 SSH key 绕开 443 的 TLS 干扰。
 - **`timeout` 包一层有用**：坏 IP 的表现是卡住而不是立刻失败。外层套 `timeout 90`，失败就换下一个 IP 重试。
 - 诊断命令：`timeout 6 bash -c "cat < /dev/null > /dev/tcp/140.82.112.4/443"`；`curl -sI --resolve github.com:443:140.82.112.4 https://github.com` 看 code。
 - `api.github.com` 一直可用（未认证每小时 60 次配额，`build-more-dicts.mjs` 要用）；`github.com:22` 端口通但 `~/.ssh/` 里**没有密钥**，SSH 推送不可用。
