@@ -1,67 +1,61 @@
 # 交接文档 · EnglishMate
 
-> 生成日期：2026-11-20
-> 目的：让新会话能直接接手，不用重新摸索
+> 更新日期：2026-11-21（上一版是 2026-11-20，本版按当天实际状态重写）
+> 读者：接手的新会话 / 新模型，**没有任何上下文**。读完这一份就能开工，不必重新摸索。
 > 仓库：<https://github.com/2327192084/englishmate>（MIT）
+> 仓库根目录：`E:\EnglishMate`（bash 里是 `/e/EnglishMate`）
+
+---
+
+## 零、先看这三行
+
+1. **状态**：功能完整、三条验证全绿、工作区干净、本地与远程同步（HEAD = `35748db`，0 个未推送提交）。
+2. **可以做**：没有必须做的活儿。想继续开发看「九、还没做的」。
+3. **最容易浪费时间的三个坑**：推 GitHub（五.1）、改源码的方式（五.2）、桌面版 origin 不能换（五.3）。**动代码前先扫一眼第五节。**
 
 ---
 
 ## 一、当前状态（一句话）
 
-**功能完整的开源英语打字学习应用**，Web + Windows 桌面版，382 个测试全绿，tsc 零报错，数据校验通过。
+**功能完整的开源英语打字学习应用**，Web + Windows 桌面版，382 个测试全绿，tsc 零报错，数据契约校验通过。
 
 | 指标 | 数值 |
 |---|---|
-| 代码规模 | 约 11,200 行 TS/TSX（另有 5,200 行测试）+ 6,700 行构建脚本 |
-| 测试 | 382 个，20 个文件，全绿 |
-| 词库 | 16 个 / 55,560 词条 |
-| 文章 | 75 篇 / 490 句 |
-| 例句 | 57,257 条中英对照（覆盖 58.2% 词条） |
-| 词关系 | 14,959 词（词形变化 + 形近易混） |
-| 文章点词释义 | 1,449 词条 / 554 变体（294KB，覆盖 98.4% 文章 token） |
+| 代码规模 | `src/` 16,436 行（其中非测试 11,219 / 测试 5,217）；`scripts/` 6,754 行 |
+| 测试 | **382 个，20 个文件，全绿**（串行跑，约 2.5 分钟） |
+| 词库 | 16 个 / 55,560 词条（`public/dicts/`，约 16MB） |
+| 文章 | 75 篇 / 490 句（`public/articles/index.json`） |
+| 例句 | 57,257 条中英对照，覆盖 32,312 / 55,560 = 58.2% 词条 |
+| 词关系 | 14,959 词（词形变化 + 形近易混，`word-graph.json`） |
+| 文章点词释义 | 1,449 词条 / 554 变体（`article-glossary.json`，294KB raw / 120KB gzip，覆盖 98.4% 文章 token） |
 | 页面 | 8 个（练习 / 词库 / 复习 / 文章 / 句子 / 数据 / 成就 / 设置） |
-| 产物 | JS 533KB（gzip 176KB）+ CSS 25KB |
+| 前端产物 | JS 554KB（gzip 182KB）+ CSS 26KB |
+| 提交 | 共 42 个；远程 HEAD = 本地 HEAD = `35748db` |
+| 环境 | Node v24.20.0 / npm 11.19.0 / git 2.56.0.windows.2 |
 
 ---
 
-## 二、立刻要做的两件事
+## 二、这次交接前刚做完什么（2026-11-21）
 
-### 1. 推送未推送的提交
+当天完成四件功能 + 桌面版更新，详见 `docs/work-report-2026-11-21.md`。摘要：
 
-本地比远端领先的提交先看清再推（2026-11-21 推过一批，仍未推成功）：
+| 事项 | 落点 |
+|---|---|
+| tem8 词库放开 8000 条截断 | `scripts/build-more-dicts.mjs`；`tem8.json` 11,858 词 / 2.87MB |
+| 文章译稿进仓库 | `data/articles-work/`（8 文件 132KB），`build-articles.mjs` 的 `WORK` 指向它 |
+| 文章点词查释义 | `src/data/articleGlossary.ts` + `scripts/build-article-glossary.mjs` + `ArticlePlayer` 里 `ClickableSentence` |
+| 句子库练习 | `src/pages/SentencesPage.tsx` + `src/data/sentences.ts` + `src/lib/sentenceDiff.ts`，路由 `/sentences` |
+| 自定义快捷键 | `src/lib/keys.ts` + `Settings.shortcuts`，设置页录制式改键 |
+| 错词按类型分组 | `src/lib/mistakeKind.ts` + `UserWord.mistakeKinds`，错词本可按类型筛选 |
+| 桌面版更新 + 真窗口验证 | `electron/verify-desktop.cjs`（`npm run verify:desktop`） |
 
-```bash
-cd E:\EnglishMate
-git push
-```
+另外修掉 12 个真实缺陷（含一个「断言永远为真」的假测试、一个隔天必挂的 `--check`、一个既有的 flaky 测试），清单在 `docs/work-report-2026-11-21.md` 第三节。
 
-### 2. 桌面版需要重新同步（如果继续改代码）
-
-只替换 `resources/app/dist`，**不要动 `main.cjs` / `preload.cjs`**：
-
-```bash
-cd /e/EnglishMate
-npm run build:desktop
-INST="$LOCALAPPDATA/Programs/TypeFlow/resources/app"
-cp -r "$INST/dist" ".tmp/desktop-backup/$(date +%Y%m%d-%H%M%S)"   # 先备份
-rm -rf "$INST/dist" && cp -r dist "$INST/dist"
-cp -r dist "release/TypeFlow/resources/app/dist"                   # 同步待分发包
-node electron/verify-desktop.cjs                                   # 拉起真窗口验证
-```
-
-`node electron/verify-desktop.cjs [exe目录]`（等同 `npm run verify:desktop`）会真的启动 `TypeFlow.exe --no-sandbox`，检查页面渲染、origin = `app://typeflow`、preload 生效且 Node 已隔离、旧 IndexedDB 的 settings 记录还在、`dicts/article-glossary.json` 能 fetch 到、导航里有 `/sentences`、首屏与刷新全程无控制台错误，并截图到 `.tmp/desktop-shots/`。
-（`electron/smoke.cjs` 测的是**仓库版** main/preload，origin 断言是 `app://englishmate`，用它测装的那份会得到假失败。）
-
-> ⚠️ **不要用仓库的 `electron/main.cjs` 覆盖装的那份**：仓库版 `APP_HOST='englishmate'`、preload 挂 `window.englishmate`，而装的那份是 `app://typeflow` + `window.typeflow`。换掉会改变 IndexedDB 的 origin（`app_typeflow_0` → `app_englishmate_0`），旧学习进度当场不可见。
-> `src/lib/pwa.ts` 只检测 `window.englishmate?.isDesktop`，在 TypeFlow 里恒为 false——但 SW 注册还有 `protocol.startsWith('http')` 兜底，桌面端不会误注册，所以目前没有实际影响；改名时必须一起处理。
->
-> ⚠️ 注意：安装目录还叫 `TypeFlow`，程序名也叫 `TypeFlow.exe`。
-> 项目已改名 EnglishMate，但安装目录没改（改目录会丢失用户数据路径）。
-> 如果要统一，需要同时迁移 `%LOCALAPPDATA%\TypeFlow` 数据目录。
+**桌面版已经装好并验证过**：`%LOCALAPPDATA%\Programs\TypeFlow` 与 `release/TypeFlow` 都已载入新 dist，各跑通 7 项真窗口验证，旧学习进度（1 词 / 1 会话 / 1 成就）仍可见。
 
 ---
 
-## 三、项目结构（新会话必读）
+## 三、项目结构
 
 ```
 E:\EnglishMate\
@@ -73,113 +67,174 @@ E:\EnglishMate\
 │   │   ├── timer.ts        抗休眠计时（累计活跃时长）
 │   │   ├── flow.ts         练习流程引擎（分组循环）
 │   │   ├── text.ts         文本归一化（全角/弯引号 → 可打字形式）
-│   │   ├── sentenceDiff.ts 整句逐词对比（句子练习用）
-│   │   ├── keys.ts         快捷键绑定/归一/判定
+│   │   ├── sentenceDiff.ts 整句逐词对比
+│   │   ├── keys.ts         快捷键绑定 / 归一 / 判定
+│   │   ├── mistakeKind.ts  错误分类（顺序/邻键/形近/想不起来）
+│   │   ├── pwa.ts          Service Worker 注册（只认 window.englishmate）
 │   │   ├── report.ts       学习报告 SVG 生成
 │   │   ├── speech.ts       语音合成封装
 │   │   └── sound.ts        Web Audio 按键音合成
 │   ├── data/
-│   │   ├── wordbanks.ts    词库按需加载
-│   │   ├── wordGraph.ts    词关系加载（word-graph.json）
+│   │   ├── wordbanks.ts       词库按需加载（含 custom: 前缀走 IndexedDB）
+│   │   ├── wordGraph.ts       词关系加载
 │   │   ├── articleGlossary.ts 文章点词释义表加载
-│   │   ├── customArticles.ts 用户导入文章（解析+存储）
-│   │   ├── round.ts        出题队列（收藏→到期→错词→新词→兜底）
-│   │   ├── sentences.ts    例句抽取（错词本/收藏/按词库）
-│   │   ├── articles.ts     文章（import JSON 产物）
-│   │   └── achievements.ts 14 个成就定义
-│   ├── db/index.ts     Dexie 六张表 + 导入导出
+│   │   ├── customArticles.ts  用户导入文章（解析 + 存储）
+│   │   ├── round.ts           出题队列（收藏→到期→错词→新词→兜底）
+│   │   ├── sentences.ts       例句抽取（错词本 / 收藏 / 按词库）
+│   │   ├── articles.ts        文章（import JSON 产物）
+│   │   └── achievements.ts    14 个成就定义
+│   ├── db/index.ts     Dexie 七张表 + 导入导出 + 设置读写
 │   ├── services/
-│   │   ├── learning.ts     唯一写入口（作答→FSRS→会话）
+│   │   ├── learning.ts     唯一写入口（作答 → FSRS → 会话）
 │   │   └── achievements.ts 成就判定与解锁
 │   ├── store/          Zustand（settings / practice）
-│   ├── components/     Layout / TypingArea / WordDetail / WordFamilyHint
-│   └── pages/          8 个页面
+│   ├── components/     Layout / TypingArea / WordDetail / WordFamilyHint / ui / Icons
+│   └── pages/          8 个页面（+ PracticeFlow / SentencesPage 两个渲染测试）
 ├── public/
 │   ├── dicts/          16 个词库 + index.json + word-graph.json + article-glossary.json
 │   └── articles/       index.json（75 篇内联）
-├── electron/           main.cjs / preload.cjs / smoke.cjs
-├── scripts/            数据流水线（见下）
-└── docs/               各文档
+├── data/articles-work/ 文章译稿源数据（8 文件，必须留在仓库里）
+├── electron/           main.cjs / preload.cjs / smoke.cjs / verify-desktop.cjs / EnglishMate.bat
+├── scripts/            数据流水线（见七）
+├── docs/               各文档（本文件是最重要的入口）
+├── .tmp/               下载缓存与一次性脚本（gitignore，删了不影响构建）
+└── release/            桌面可运行目录（gitignore，含 215MB exe）
 ```
 
-### 分层纪律（重要）
+### 分层纪律（重要，别破坏）
 
 | 目录 | 允许 | 禁止 |
 |---|---|---|
-| `src/lib/` | 纯 TS 函数 | **任何 React 依赖** |
+| `src/lib/` | 纯 TS 函数（可 `import type` from `@/types`） | **任何 React 依赖** |
 | `src/data/` | 数据、纯策略 | 直接操作数据库 |
 | `src/services/` | 数据库读写 | UI 状态 |
 | `src/components/` | 展示与交互 | 业务规则 |
 
 ---
 
-## 四、验证命令（改动后必跑）
+## 四、验证命令（改动后必跑，三条全绿才算完成）
 
 ```bash
-npx tsc --noEmit          # 类型检查（0 错误才算过）
-npx vitest run            # 382 个测试
-node scripts/verify-data.mjs   # 数据契约（16 库 / 75 篇）
+cd /e/EnglishMate
+npx tsc --noEmit               # 类型检查，0 错误
+npx vitest run                 # 382 个测试
+node scripts/verify-data.mjs   # 数据契约（16 库 / 75 篇 / glossary）
 ```
 
-三项全绿才算完成。**注意**：`fileParallelism: false` 已配置，测试串行跑避免 fake-indexeddb 互踩。
+- `fileParallelism: false` 已配置，测试**串行**跑（渲染测试共用 fake-indexeddb 与全局 store，并行会互踩）。全量约 2.5 分钟，别以为挂了。
+- 单跑一个文件快得多：`npx vitest run src/lib/keys.test.ts`；单跑一个用例：`-t "用例名"`。
+- 看结果最省 token 的方式：`npx vitest run 2>&1 | grep -E "Test Files|Tests |FAIL"`。
+- 改了桌面相关再补：`npm run verify:desktop`（见五.3）。
+- CI 在 `.github/workflows/verify.yml`，只跑上面三条，**不含 prettier 检查**。
 
 ---
 
-## 五、数据流水线
+## 五、本机环境陷阱（最容易浪费时间的部分）
+
+### 1. 推送到 GitHub —— 这台机器有一半概率失败，别用默认命令
+
+默认 `git push` 会随机报这两种错，**都不是凭据问题，也不是仓库问题**：
+
+| 报错 | 真实原因 |
+|---|---|
+| `Recv failure: Connection was reset` | GitHub 边缘 IP 被 TLS 重置 |
+| `Failed to connect to github.com:443 after 21xxx ms` | 本机 DNS（`2400:3200::1` 阿里 IPv6）对 github.com 无响应 |
+
+**能用的命令（`140.82.112.4` 实测最快；`.3` 系列全部不通）**：
+
+```bash
+cd /e/EnglishMate
+GCM_INTERACTIVE=never timeout 100 \
+  git -c credential.helper= \
+      -c credential.helper=/ucrt64/bin/git-credential-manager.exe \
+      -c http.curloptResolve=github.com:443:140.82.112.4 \
+      -c http.postBuffer=524288000 \
+      push origin main
+```
+
+要点，逐条都是踩出来的：
+
+- **`-c credential.helper=` 必须先在前面写一次清空的**。`git -c credential.helper=X` 是**追加**不是替换，全局的 `helper-selector` 会一起跑，然后在无 tty 环境里挂死报 `bash: line 1: /dev/tty: No such device or address`。
+- 凭据在 Windows 凭据管理器里（用户 `2327192084`，GitHub PAT），`git-credential-manager.exe get` 能取出来；`GCM_INTERACTIVE=never` 必须设。
+- **`curloptResolve` 要带 `.4` 系列 IP**：`140.82.112.4` / `140.82.113.4` / `140.82.114.4` / `140.82.121.3` / `140.82.121.4`（`curl --resolve github.com:443:<ip>` 全部 200）。`140.82.112.3` 连不上；`.113.3` / `.114.3` / `.116.3` / `20.205.243.166` TCP 通但 TLS 被重置。
+- **`timeout` 包一层有用**：坏 IP 的表现是卡住而不是立刻失败。外层套 `timeout 100`，失败就换下一个 IP 重试。
+- 诊断命令：`timeout 6 bash -c "cat < /dev/null > /dev/tcp/140.82.112.4/443"`；`curl -sI --resolve github.com:443:140.82.112.4 https://github.com` 看 code。
+- `api.github.com` 一直可用（未认证每小时 60 次配额，`build-more-dicts.mjs` 要用）；`github.com:22` 端口通但 `~/.ssh/` 里**没有密钥**，SSH 推送不可用。
+- 推送后确认：`git log origin/main..HEAD | wc -l` 应为 0。
+
+### 2. 改源码只能用 Edit / Write 工具
+
+**不要**用 `sed -i`、`python -c`、超长 `node -e` 拼字符串改源码。曾在 bash 里用 python 正则改 TS，`\s` `\(` 被 shell 吃掉，正则静默写坏，很难发现。
+
+- 复杂一点的测量/批处理脚本，写成 `.tmp/xxx.mjs` 文件再跑，不要塞进命令行。
+- `edit` 之前必须先 `read` 过那个文件（否则报 `file has not been read`）。
+- `edit` 的 `old_string` 要确认覆盖范围：曾改函数首行时把函数体三行一起匹配删掉，留下悬空的 `aria-checked`。
+
+### 3. 桌面版：只换 dist，**绝对不要**换 main.cjs / preload.cjs
+
+桌面版还叫 `TypeFlow`（改名是已划出范围的事）：
+
+```bash
+cd /e/EnglishMate
+npm run build:desktop                    # ENGLISHMATE_DESKTOP=1 → vite base './'
+INST="$LOCALAPPDATA/Programs/TypeFlow/resources/app"
+cp -r "$INST/dist" ".tmp/desktop-backup/$(date +%Y%m%d-%H%M%S)"   # 先备份
+rm -rf "$INST/dist" && cp -r dist "$INST/dist"
+cp -r dist "release/TypeFlow/resources/app/dist"                   # 同步待分发包
+npm run verify:desktop                                             # 拉起真窗口，7 项断言
+```
+
+**为什么不能换 main/preload**：装的那份是 `app://typeflow` + `window.typeflow`，仓库版是 `app://englishmate` + `window.englishmate`。换掉会改变 IndexedDB 的 origin（`app_typeflow_0` → `app_englishmate_0`），**用户学习进度当场不可见**（数据还在磁盘上，但库名不一样了）。
+
+- `npm run verify:desktop` 默认验证 `%LOCALAPPDATA%\Programs\TypeFlow`，也可 `node electron/verify-desktop.cjs release/TypeFlow`。7 项：页面渲染 / `origin === 'app://typeflow'` / preload 生效且 Node 隔离 / IndexedDB 四表条数 / `article-glossary.json` 可 fetch / 导航含 `/sentences` / 首屏+刷新无 console error。截图在 `.tmp/desktop-shots/`。
+- **不要用 `electron/smoke.cjs` 验证装的那份**：它断言 `app://englishmate` + `window.englishmate`，测 TypeFlow 会假失败。
+- `src/lib/pwa.ts` 只认 `window.englishmate?.isDesktop`，在 TypeFlow 里恒为 false——但 SW 注册还有 `protocol.startsWith('http')` 兜底，桌面端不会误注册，**目前无实际影响**；真改名时必须一起处理。
+- `%APPDATA%\TypeFlow` 与 `%LOCALAPPDATA%\TypeFlow` 对 Electron 进程返回 **EPERM**（bash/PowerShell 能写，Chromium 进程不能），所以 `resolveUserDataDir()` 四级回退：`LOCALAPPDATA` → `APPDATA` → exe 同级 `data/` → tmp。**后果：装的那份数据在 `%LOCALAPPDATA%\TypeFlow`，而 `release/TypeFlow` 跑起来会落到它自己的 `data/` 便携目录，两份 profile 不互通——这是既有环境行为，不是 bug。**
+- 读主进程路径别用 `npx electron xxx.cjs`（无窗口主进程会挂住不退），用 playwright `_electron.launch` + `app.evaluate(({app}) => app.getPath(...))`。
+
+### 4. 测试相关
+
+- 渲染测试（`.test.tsx`）走 jsdom（`environmentMatchGlobs`），其余走 node。
+- 改设置必须**写进 IndexedDB**：App 挂载时会从库里覆盖 store。`PracticeFlow.test.tsx` 里有 4 处 `db.settings.put({...})`，**给 `Settings` 加字段会让这 4 处全部类型报错**，记得一起补。
+- 点按钮前先确认它没 `disabled`：曾有一个 flaky 测试，按钮渲染出来就带「开始」文字但 `bankId` 还是空串所以 disabled，`fireEvent.click` 打在 disabled 按钮上毫无反应，干等 5 秒超时。现在辅助函数里加了 `expect(btn).not.toBeDisabled()`。
+- `App.test.tsx` **没有全局 cleanup**，上一个用例的 DOM 会留在 body 上，断言用 `getAllByText(...).length > 0` 而不是 `getByText`。
+
+### 5. prettier / 行尾
+
+- 配置在 `.prettierrc.json`（单引号、无分号结尾、printWidth 100、LF）。改完自己动的文件可以 `npx prettier --write <file>`。
+- **不要对 `docs/HANDOVER.md` 跑 prettier**：它会重排整篇表格（179 行假改动）。`README.md` / `docs/dict-catalog.md` / `docs/unimplemented-features.md` 在 HEAD 上本来就不是 prettier-clean，属既有状态，别顺手格式化。
+- `core.autocrlf=true`，所以 `git status` 偶尔出现「只改了行尾」的假改动，`git diff` 看过内容后再决定 `git add` 还是 `git checkout --`。
+
+### 6. 网络可达性
+
+| 域名 | 状态 |
+|---|---|
+| `api.github.com` | ✅ 可用，**未认证每小时 60 次** |
+| `registry.npmjs.org` | ✅ 可用 |
+| `downloads.tatoeba.org` | ✅ 可用，约 60KB/s，**支持 `curl -C -`** |
+| `kaikki.org` | ✅ 可用，单页 200-600KB，**9.5 秒/次** |
+| `gutenberg.pglaf.org` | ✅ 可用（正站 `www.gutenberg.org` 已 503） |
+| `github.com`（git push） | ⚠️ 一半概率失败，见五.1 |
+| `raw.githubusercontent.com` / `cdn.jsdelivr.net` / huggingface | ❌ 被阻断 |
+
+---
+
+## 六、数据流水线
 
 | 脚本 | 作用 | 耗时 |
 |---|---|---|
 | `scripts/build-dicts.mjs` | 从 Qwerty Learner 拉词表 | 几分钟 |
-| `scripts/build-more-dicts.mjs` | 扩充到 16 个词库 | 几分钟 |
+| `scripts/build-more-dicts.mjs` | 扩充到 16 个词库（支持 `--offline --only=<id>`） | 几分钟 |
 | `scripts/build-sentences.mjs` | Tatoeba 离线 join 出例句 | **1 分钟**（扫 204 万句） |
-| `scripts/build-rich-dicts.mjs` | 补词性释义 + 例句 | 几分钟 |
+| `scripts/build-rich-dicts.mjs` | 补词性释义 + 例句 + 音标（支持 `--offline --only=`） | 几分钟 |
 | `scripts/build-word-graph.mjs` | 挖词形变化 + 形近词 | 约 1 分钟 |
-| `scripts/build-articles.mjs` | 生成文章语料 | 依赖 `data/articles-work/`（已进仓库） |
-| `scripts/build-article-glossary.mjs` | 生成文章点词释义表 `article-glossary.json` | 几秒（需先用完上面几个脚本） |
+| `scripts/build-articles.mjs` | 生成文章语料（支持 `--check`） | 秒级 |
+| `scripts/build-article-glossary.mjs` | 生成点词释义表（支持 `--check`） | 几秒 |
+| `scripts/verify-data.mjs` | 校验全部产物 | 几秒 |
 
-**缓存都在 `.tmp/`**（已 gitignore），重跑不必重新下载：
-- `.tmp/rich-cache/ecdict.csv` — 63MB，ECDICT 完整数据
-- `.tmp/rich-cache/eng_sentences.tsv` 等 — Tatoeba 导出包
-- `.tmp/dicts.json` — Qwerty Learner 380 个词库的 sha 列表
-
-> ✅ 文章译稿已移入仓库 `data/articles-work/`（classics.json + zh-batch-01..07.json，共 132KB），
-> 别人 clone 后可以直接跑 `build-articles.mjs`。`.tmp/articles-work/` 里剩下的 16MB
-> 是试验脚本与中间产物，不需要进仓库；`.tmp` 被清空不影响文章构建。
-
----
-
-## 六、踩过的坑（务必知道）
-
-### 网络环境（本机限制）
-
-| 域名 | 状态 |
-|---|---|
-| `api.github.com` | ✅ 可用，但**每小时 60 次**未认证配额 |
-| `registry.npmjs.org` | ✅ 可用 |
-| `downloads.tatoeba.org` | ✅ 可用，约 60KB/s，**支持 `curl -C -` 断点续传** |
-| `kaikki.org` | ✅ 可用，单页 200-600KB，**9.5 秒/次** |
-| `gutenberg.pglaf.org` | ✅ 可用（正站 `www.gutenberg.org` 已 503） |
-| `raw.githubusercontent.com` | ❌ **被阻断** |
-| `cdn.jsdelivr.net` | ❌ 被阻断 |
-| huggingface | ❌ 被阻断 |
-
-### Electron 桌面版
-
-1. **`file://` 下 IndexedDB 不可用**（不透明源），必须用自定义协议 `app://typeflow/`
-2. **`%APPDATA%\Electron` 对本机 Electron 进程返回 EPERM**（PowerShell/Node 能写），
-   所以 userData 要四级回退：`LOCALAPPDATA` → `APPDATA` → exe 同级 → tmp
-3. NSIS 安装包打包依赖远程工具链，**反复超时**，当前用可运行目录替代
-4. 启动器和 openLearner 一样需要 `--no-sandbox`（本机 Chromium 沙箱初始化失败）
-
-### 开发中反复踩到的
-
-- **Shell 转义破坏正则**：在 bash 里用 python/node 内联改含 `\s` `\(` 的正则会静默写坏。
-  **改代码请用 Edit/Write 工具，不要用 sed/python -c 拼字符串。**
-- **React Hook 顺序**：Hook 必须在任何提前 `return` 之前。曾把 `useState` 写在校验 return 之后，
-  真机点开面板直接 React error #310 白屏。
-- **Tailwind 透明度**：颜色必须用 `rgb(var(--x) / <alpha-value>)` 声明，
-  用 `var(--x)` 会导致 `bg-accent/10` 这类类名**被静默丢弃**（样式不生效但不报错）。
-- **测试设置污染**：渲染测试里改设置必须写进 IndexedDB，App 挂载时会从库覆盖 store。
+- **缓存都在 `.tmp/`**（gitignore，删了要重新下载）：`rich-cache/ecdict.csv` 63MB、`rich-cache/eng_sentences.tsv`、`dicts.json`（380 库 sha 列表）、`blobs/*.json`（词表 blob 缓存，`--offline` 靠它）。
+- 文章译稿**在仓库里**：`data/articles-work/`（`classics.json` + `zh-batch-01..07.json`，共 132KB）。别人 clone 后可直接 `node scripts/build-articles.mjs`。`.tmp/articles-work/` 里剩的 16MB 是试验脚本与中间产物，**不需要进仓库**。
+- 两个 `--check` 都只比内容、不比 `generatedAt`（否则隔天跑必挂——这是当天修掉的真实 bug）。
 
 ---
 
@@ -187,63 +242,60 @@ node scripts/verify-data.mjs   # 数据契约（16 库 / 75 篇）
 
 | 模块 | 状态 |
 |---|---|
-| 四种练习方式 | 跟打/听写/默写/辨认 |
-| 分组循环流程 | 7 词一组，跟打→默写→听写 |
+| 四种练习方式 | 跟打 / 听写 / 默写 / 辨认 |
+| 分组循环流程 | 7 词一组，跟打 → 默写 → 听写 |
 | FSRS 间隔重复 | 完整实现 |
 | 抗休眠计时 | 空闲暂停 + 休眠不计时 |
-| 错词本/收藏/已掌握 | 收藏已真正参与调度；错词按四类错误来源分类，可按类型筛选 |
+| 错词本 / 收藏 / 已掌握 | 收藏已真正参与调度；错词按四类错误来源分类，可按类型筛选 |
 | 16 个词库 + 自定义导入 | 55,560 词条 |
 | 75 篇文章 + 自定义文章导入 | 三种格式解析 + GBK 检测 |
-| 词形变化/形近词 | 14,959 词，练习界面提示 + 详情面板 |
-| 文章点词联动 | 阅读时点句中单词查释义（`article-glossary.json`，覆盖 98.4% token） |
-| 句子练习 | `/sentences`，错词本/收藏/按词库三来源，整句输入 + 逐词着色 |
+| 词形变化 / 形近词 | 14,959 词，练习界面提示 + 详情面板 |
+| 文章点词联动 | 阅读时点句中单词查释义（覆盖 98.4% token，未命中的不可点） |
+| 句子练习 | `/sentences`，三来源，整句输入 + 逐词着色 |
 | 自定义快捷键 | 四个动作可改键，设置页录制式录入，提示文案同步 |
-| 错词按类型分组 | 四类错误（顺序/邻键/形近/想不起来）在作答时采集，错词本可按类型筛选 |
+| 错词按类型分组 | 四类错误在作答时采集，错词本可按类型筛选 |
 | 学习报告导出 | SVG / PDF |
 | 成就系统 | 14 个，已接通 |
 | 深浅主题 / PWA / 桌面版 | 完成 |
 
 ---
 
-## 八、明确的空缺（下一步候选）
+## 八、还没做的（下一步候选）
 
 ### A 档 · 数据现成，成本低
 
-> ✅ 2026-11-21 已完成：**句子库练习**（`/sentences`）、**文章点词联动**（`article-glossary.json` + `WordDetail`）、
-> **自定义快捷键**（`Settings.shortcuts` + 设置页录制式改键）、**错词按类型分组**（`lib/mistakeKind.ts` + 错词本筛选）。
-> 以下保留尚未完成的项。
+| 功能 | 说明 |
+|---|---|
+| 文章扩到 800 句 | 现在 75 篇 / 490 句。素材池还有约 100 篇已切好句但**未翻译**的寓言——纯人力，不是代码问题 |
 
-| 功能 | 说明 | 预估 |
-|---|---|---|
-| **键盘热力图** | 记录哪个字母易打错，给出针对性洞察。⚠️ 需先补「按字符的错误统计」数据链路（见 `docs/unimplemented-features.md` B 档） | 2 小时+ |
-
-### B 档 · 需要新数据
+### B 档 · 需要先补数据结构
 
 | 功能 | 障碍（已实测） |
 |---|---|
-| **近义词** | kaikki 可达、质量好，但**全量 49.6 小时**，且义项级会抓错（adapt→proportion）。建议只抓高频 3000 词（约 8 小时） |
-| 英美双音标 | ipa-dict 的 en_UK 上游是 GPL-3.0，只能用 en_US |
-| 文章扩到 800 句 | 素材池还有约 100 篇待人工译 |
+| **键盘热力图** | ⚠️ 不是「加个图表组件」。完全没有按字符的错误统计：`UserWord` 只有 `mistakes` 总数；`TypingState.lastWrongChar` 只用于当场 UI 提示、**从不落库**；`PracticeSession` 只有 `keystrokes`/`correctKeystrokes` 总数。要做需打通 `lib/typing.ts` → `services/learning.ts` → 新 Dexie 表（**v3 迁移**，且要同步 `clearAllData`/`exportAllData`/`importAllData` 三处）→ 统计页图表，`src/lib` 改动要保持零 React 依赖。注意它要统计**所有**键（含从没打错过的键），所以不能像错词分类那样塞进 `UserWord` 可选字段 |
 
-### C 档 · 成本高，不建议
+### C 档 · 成本高或不建议
 
-AI 功能（要 API Key 或自训）、云同步（要后端）、排行榜（要后端）、i18n（当前用户全中文）
+| 功能 | 说明 |
+|---|---|
+| 近义词 | kaikki.org 可达、质量好，但全量抓取实测约 49.6 小时，且义项级会抓错（adapt→proportion）。只抓高频 3000 词约 8 小时 |
+| 英美双音标 | ⚠️ 许可证红线：ipa-dict 的 `en_UK` 上游是 GPL-3.0，**只能用 en_US** |
+| 例句覆盖率 59% → 更高 | GRE 30% / SAT 30% / linux 20% / medical 24% 是 Tatoeba 语料的真实上限，冷僻词与命令名在 7.8 万对语料里本就罕见。不是代码问题 |
+| Windows 安装包（NSIS） | 依赖远程工具链，本机反复超时。当前用可运行目录替代，可用性一致 |
+| i18n | 无 `src/i18n`，界面全中文，当前用户群全中文，收益低 |
+| AI 功能 / 云同步 / 排行榜 / 插件 / 发音评测 | README 路线图 P1/P2 规划，均未开始。云同步与排行榜需要后端，AI 需要 API Key |
+| 桌面版改名 TypeFlow → EnglishMate | 必须同时迁移数据目录 `%LOCALAPPDATA%\TypeFlow`（含 IndexedDB），否则丢学习进度。**用户已明确把这项划出范围** |
+
+### 已知的小缺陷（都不影响功能，顺手可修）
+
+1. `BUILTIN_BANK_IDS` 与 `FALLBACK_BANKS`（`src/data/wordbanks.ts`）只硬编码 **8 个**词库，实际有 16 个。走 `loadBankIndex()` fetch 成功时无影响，fetch 失败退化时才露出。
+2. `clearAllData` / `exportAllData` / `importAllData`（`src/db/index.ts`）**都没覆盖 `customArticles`**（`clearAllData` 还没清 `settings`）。用户导入的自定义文章不参与导出/导入/清空。
+3. `verify.yml` 注释里提到的 `docs/dict-contribution.md` **不存在**。
+4. `src/lib/pwa.ts` 只认 `window.englishmate`，桌面 TypeFlow 里恒 false（有 `protocol.startsWith('http')` 兜底，无实际影响）。
 
 ---
 
-## 九、待办事项
-
-1. ~~**`.tmp/articles-work/` 的译稿应移入仓库**~~ ✅ 2026-11-21 已完成
-   译稿已迁到 `data/articles-work/`（8 个文件，132KB），`build-articles.mjs` 的 `WORK` 常量已指向新路径，
-   `node scripts/build-articles.mjs --check` 通过（75 篇 / 490 句）。别人 clone 后可直接构建文章。
-
-2. **桌面版安装目录名未跟随改名**
-   程序还叫 `TypeFlow.exe`，装在 `%LOCALAPPDATA%\Programs\TypeFlow`。
-   改名需同时迁移数据目录 `%LOCALAPPDATA%\TypeFlow`（含 IndexedDB，用户学习进度在这里）。
-
----
-
-## 十、许可与署名（合规要求）
+## 九、许可与署名（合规要求，别动）
 
 | 数据 | 来源 | 许可 |
 |---|---|---|
@@ -262,19 +314,38 @@ AI 功能（要 API Key 或自训）、云同步（要后端）、排行榜（�
 
 ---
 
-## 十一、关键设计决策（避免被"优化"掉）
+## 十、关键设计决策（避免被"优化"掉）
 
 | 决策 | 原因 |
 |---|---|
 | 计时用累计活跃时长，不用 `Date.now()` 差值 | 休眠后 WPM 会被稀释到 0 |
 | 打错不前进光标（严格模式） | 防止错误肌肉记忆 |
 | 输入法组字期间忽略所有按键 | 否则拼音字母被当答题 |
-| Tab 键 = 重听发音（不是跳过） | 跳过与 Space 重复；四个键位已做成可配置，默认值保持这一行为 |
+| Tab 键 = 重听发音（不是跳过） | 跳过与 Space 重复；四个键位已可配置，默认值保持这一行为 |
 | 练习方式合并成一个选择器 | 原来"模式"和"流程"概念重叠 |
 | 词形提示跟打默认展开、默写/听写默认折叠 | 后两者目标是从记忆提取，摊开等于送答案 |
 | 词关系独立文件不塞进词库 | 否则 16 个词库文件体积翻倍且重复 |
-| 文章点词用独立 glossory 文件，不按词加载整库 | 点一个词不该下载 1.3MB 的高考词库；独立文件 gzip 约 120KB |
-| 文章可点词用 span[role=button] 不用 button | 几十个 button 会污染 Tab 焦点漫游，用户按 Tab 是想跳输入框 |
-| 快捷键判定集中在 lib/keys.ts | 脏配置（两动作抢一键）只能在一处收敛，避免行为不可预测 |
-| 改键时新键已被占用就交换而非拒绝 | 用户改键的常见意图就是两键对调 |
+| 文章点词用独立 glossary 文件，不按词加载整库 | 点一个词不该下载 1.3MB 的高考词库；独立文件 gzip 约 120KB |
+| 文章可点词用 `span[role=button]` 不用 `button` | 几十个 button 会污染 Tab 焦点漫游，用户按 Tab 是想跳输入框 |
+| 快捷键判定集中在 `lib/keys.ts` | 脏配置（两动作抢一键）只能在一处收敛 |
+| 改键时新键已被占用就**交换**而非拒绝 | 用户改键的常见意图就是两键对调 |
+| 错词分类做成 `UserWord.mistakeKinds` 可选字段，不建新表 | 分类是稀疏的；省一次 v3 迁移 + 三处导入导出同步 |
+| 没采集到错误分类时存 `undefined` 而不是全零 | 全零会被读成「从没错过这类错」，是假数据 |
 | 报告用 SVG 自绘不引 jsPDF | 省 200KB，矢量不糊 |
+| 句子练习长度上限 100，文章校验上限 140，**故意不同** | 实测例句最长 80 字符（100 一条都筛不掉，是安全网）；文章有 67 篇含 >100 字符句子（放宽到 140 就是把长句塞进整句输入）。别去统一 |
+| 桌面版只换 dist，不改 main/preload | 改 origin 会让旧 IndexedDB 学习进度不可见 |
+
+---
+
+## 十一、其他文档索引
+
+| 文件 | 内容 |
+|---|---|
+| `docs/work-report-2026-11-21.md` | 当天工作报告：完成项、12 个真实缺陷、关键决策、诚实的缺口 |
+| `docs/unimplemented-features.md` | 未做功能的**证据级**盘点（附可重跑的核实命令） |
+| `docs/dict-catalog.md` | 16 个词库的体积、覆盖、重叠率、如何新增词库 |
+| `docs/article-sources.md` | 75 篇文章的来源、译稿流程、复现步骤 |
+| `docs/dictionary-sources.md` | 词典数据源的调研（含许可证分析） |
+| `docs/push-to-github.md` | 建仓库的流程（凭据部分已过时，推送看本文件五.1） |
+| `README.md` | 对外的功能说明与快速开始 |
+| `CONTRIBUTING.md` | 贡献流程 |
