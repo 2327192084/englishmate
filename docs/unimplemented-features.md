@@ -69,13 +69,13 @@
 
 | 功能 | 现状与真正的障碍 | 成本 |
 | --- | --- | --- |
-| **键盘热力图** | ⚠️ 不是「加个图表组件」那么简单。目前**完全没有按字符的错误统计**：`UserWord` 只有 `mistakes` 总计数；`TypingState.lastWrongChar` 只用于当场 UI 提示，**从不落库**；`PracticeSession` 只有 `keystrokes` / `correctKeystrokes` 总数。要做需打通 `lib/typing.ts` → `services/learning.ts` → 新 Dexie 表（含 v3 迁移）→ 统计页图表，且 `src/lib` 改动要保持零 React 依赖 | 2 小时+ |
+| ~~键盘热力图~~ | **已移出待办（用户于 2026-11-21 明确排除）**。技术上它仍需要：`UserWord` 只有 `mistakes` 总计数；`TypingState.lastWrongChar` 只用于当场 UI 提示、从不落库；`PracticeSession` 只有 `keystrokes` / `correctKeystrokes` 总数。真要做需打通 `lib/typing.ts` → `services/learning.ts` → 新 Dexie 表（v3 迁移 + 三处导入导出同步）→ 统计页图表。保留这条技术笔记只为将来若要重启时不必重新调研，**不再作为待办候选** | 已排除 |
 
 > 原 B 档的「自定义快捷键」与「错词按类型分组」均已于 2026-11-21 完成。
 > 错词分组没有新建 Dexie 表：分类是**稀疏**的（只关心「这个词在哪类错上栽过」），
 > 做成 `UserWord` 上的一个可选字段就够，省掉一次 v3 迁移和一张需要跟着删改同步的表。
 > 键盘热力图不一样——它要统计**所有**键（包括从没打错过的键）的击键分布，
-> 那是另一个维度的数据，没法塞进词条记录里。
+> 那是另一个维度的数据，没法塞进词条记录里。**该功能已按用户要求移出待办。**
 
 ### C 档 · 成本高或不建议
 

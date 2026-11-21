@@ -211,6 +211,64 @@ describe('SentencesPage · 窄式精听', () => {
     expect(again).not.toBeDisabled();
     fireEvent.click(again);
   });
+
+  /**
+   * 「按文章」是精听独有的来源：一篇文章就是一个天然的窄式批次。
+   * 它不该出现在完形/整句模式下——那两种要的是跨文章的练习量。
+   */
+  it('精听模式提供「按文章」来源，且默认选中一篇', async () => {
+    // 必须在设置页断言：startListenRound 会点「开始」离开这一页
+    render(
+      <MemoryRouter>
+        <SentencesPage />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByText('窄式精听'));
+    expect(screen.getByText('按文章')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('按文章'));
+    const select = screen.getByLabelText('选择文章') as HTMLSelectElement;
+    expect(select.value.length).toBeGreaterThan(0);
+  });
+
+  it('按文章听：批次标题会显示出来', async () => {
+    render(
+      <MemoryRouter>
+        <SentencesPage />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByText('按词库'));
+    fireEvent.click(screen.getByText('窄式精听'));
+    fireEvent.click(screen.getByText('按文章'));
+    fireEvent.click(screen.getByText('开始'));
+    await waitFor(() => expect(screen.getByText(/轮 · /)).toBeInTheDocument());
+    // 标题来自真实文章语料，形如《xxx》
+    expect(screen.getByText(/《.+》/)).toBeInTheDocument();
+  });
+
+  it('完形模式不提供「按文章」（一篇只有 4–10 句，凑不满一轮）', async () => {
+    render(
+      <MemoryRouter>
+        <SentencesPage />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByText('完形填空'));
+    expect(screen.queryByText('按文章')).not.toBeInTheDocument();
+  });
+
+  it('从精听切到完形时，来源自动从「按文章」退回词库', async () => {
+    render(
+      <MemoryRouter>
+        <SentencesPage />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByText('窄式精听'));
+    fireEvent.click(screen.getByText('按文章'));
+    // 切回完形：article 已不是合法来源
+    fireEvent.click(screen.getByText('完形填空'));
+    expect(screen.queryByText('按文章')).not.toBeInTheDocument();
+    // 来源区仍有被选中的项，不是空白
+    expect(screen.getByText('按词库')).toBeInTheDocument();
+  });
 });
 
 describe('SentencesPage（原有用例）', () => {

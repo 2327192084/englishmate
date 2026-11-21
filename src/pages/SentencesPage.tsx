@@ -19,6 +19,7 @@ import type { KeyboardEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { WordbankMeta } from '@/types';
 import { loadBankIndex } from '@/data/wordbanks';
+import { getNarrowBatch, listNarrowBatches, type NarrowBatch } from '@/data/narrowSources';
 import { sentencesForBank, sentencesForUserWords, type SentenceItem } from '@/data/sentences';
 import { buildCloze, judgeAnswer, type AnswerVerdict, type ClozeItem } from '@/lib/cloze';
 import {
@@ -44,7 +45,15 @@ import {
   IconVolume,
 } from '@/components/Icons';
 
-type Source = 'wrong' | 'favorite' | 'bank';
+/**
+ * 取句来源。
+ *
+ * `article` 只在精听模式下出现：一篇文章本身就是一个天然的窄式批次
+ * （同作者、同主题、同语域），用它听三轮才是真正的「窄式」。
+ * 完形/整句输入不提供这个来源——它们要的是跨文章的练习量，
+ * 一篇文章只有 4–10 句，凑不满一轮。
+ */
+type Source = 'wrong' | 'favorite' | 'bank' | 'article';
 
 /** 作答形态：整句输入 / 完形挖空 / 窄式精听 */
 export type AnswerMode = 'full' | 'cloze' | 'listen';
@@ -82,16 +91,31 @@ const EMPTY_HINT: Record<Source, { title: string; hint: string }> = {
     title: '这个词库暂时没有可用例句',
     hint: '例句库里不是每个词都有例句，换一个词库或改练错词本试试。',
   },
+  article: {
+    title: '这篇文章没有可用句子',
+    hint: '文章语料是构建期生成的，选中一篇有内容的文章再试。',
+  },
 };
 
 export default function SentencesPage() {
   const [source, setSource] = useState<Source>('wrong');
   const [bankId, setBankId] = useState('cet4');
+  const [articleId, setArticleId] = useState('');
   const [answerMode, setAnswerMode] = useState<AnswerMode>('full');
   const [banks, setBanks] = useState<WordbankMeta[]>([]);
   const [loading, setLoading] = useState(false);
   /** null = 还在选择来源；数组（可能为空）= 已经点过开始 */
   const [items, setItems] = useState<SentenceItem[] | null>(null);
+  /**
+   * 当前这一批的标题（来自文章时有值）。结算页要显示「听完了《葛底斯堡演说》」，
+   * 只说「听完了」用户不知道刚听的是什么。
+   */
+  const [batchTitle, setBatchTitle] = useState('');
+  /**
+   * 窄式批次列表。只在精听模式下用得到，所以不放到全局 store：
+   * 它是一次性的选择列表，没有跨页共享的需求。
+   */
+  const [batches] = useState(() => listNarrowBatches());
   /**
    * 第几轮。用来给播放器换一个实例：虽然 `start()` 会先经过 loading 骨架、
    * 播放器本来就会卸载重挂，但这层因果太隐晦，谁把骨架去掉就会踩坑；
@@ -117,10 +141,27 @@ export default function SentencesPage() {
   const start = useCallback(async () => {
     setLoading(true);
     try {
+      /**
+       * 按文章听：直接用该文章的句子，不经过例句库。
+       *
+       * 这是「窄式」的正确形态——同一篇里的句子是同作者、同主题、同语域，
+       * 词汇与句式会自然复现。此前按词汇相似度聚类被实测否掉了
+       * （真同主题文本平均只共享 0.11–0.36 个内容词，聚不出主题），
+       * 详见 src/data/narrowSources.ts 文件头。
+       */
+      if (source === 'article') {
+        const batch = getNarrowBatch(articleId);
+        setItems(batch ? batch.items : []);
+        setBatchTitle(batch ? batch.titleZh || batch.title : '');
+        setRound((r) => r + 1);
+        return;
+      }
+
       const list =
         source === 'bank'
           ? await sentencesForBank(bankId, ROUND_SIZE)
           : await sentencesForUserWords(source, ROUND_SIZE);
+      setBatchTitle('');
       /**
        * 完形模式要预先筛一遍：不是每句都能挖空（目标词可能不在句里、
        * 或重复出现会泄露答案）。筛完再截到一轮的量，否则用户会
@@ -148,7 +189,7 @@ export default function SentencesPage() {
     } finally {
       setLoading(false);
     }
-  }, [source, bankId, answerMode]);
+  }, [source, bankId, articleId, answerMode]);
 
   // 换来源就回到选择页，避免"来源已经改了但还在做上一组"的错位
   const changeSource = (s: Source) => {
@@ -160,7 +201,25 @@ export default function SentencesPage() {
   const changeAnswerMode = (m: AnswerMode) => {
     setAnswerMode(m);
     setItems(null);
+    /**
+     * 「按文章」只存在于精听模式。切到完形/整句时如果还停在 article，
+     * 来源按钮会指向一个不在选项里的值——Segmented 上没有对应项，
+     * 界面表现为「来源区空了但开始按钮还在」。
+     */
+    if (m !== 'listen' && source === 'article') setSource('bank');
   };
+
+  /**
+   * 首次进入精听时默认选中第一篇文章。
+   *
+   * 不设默认值的话下拉框显示的是空字符串，用户点「开始」会拿到空批次，
+   * 看到一个「这篇文章没有可用句子」的空状态——那会让人以为功能坏了。
+   */
+  useEffect(() => {
+    if (articleId) return;
+    const first = batches[0];
+    if (first) setArticleId(first.id);
+  }, [articleId, batches]);
 
   if (loading) {
     return (
@@ -179,9 +238,12 @@ export default function SentencesPage() {
         source={source}
         bankId={bankId}
         banks={banks}
+        articleId={articleId}
+        batches={batches}
         answerMode={answerMode}
         onSource={changeSource}
         onBank={setBankId}
+        onArticle={setArticleId}
         onAnswerMode={changeAnswerMode}
         onStart={() => void start()}
       />
@@ -218,6 +280,7 @@ export default function SentencesPage() {
     <NarrowListenPlayer
       key={round}
       items={items}
+      batchTitle={batchTitle}
       onExit={() => setItems(null)}
       onAgain={() => void start()}
     />
@@ -237,21 +300,41 @@ function SetupView({
   source,
   bankId,
   banks,
+  articleId,
+  batches,
   answerMode,
   onSource,
   onBank,
+  onArticle,
   onAnswerMode,
   onStart,
 }: {
   source: Source;
   bankId: string;
   banks: WordbankMeta[];
+  articleId: string;
+  batches: NarrowBatch[];
   answerMode: AnswerMode;
   onSource: (s: Source) => void;
   onBank: (id: string) => void;
+  onArticle: (id: string) => void;
   onAnswerMode: (m: AnswerMode) => void;
   onStart: () => void;
 }) {
+  /**
+   * 「按文章」只在精听模式下提供。
+   *
+   * 完形/整句输入要的是跨文章的练习量，而一篇文章只有 4–10 句，
+   * 凑不满一轮 10 题；精听则相反，它要的正是「同一篇反复听」。
+   */
+  const sourceOptions = useMemo(
+    () =>
+      answerMode === 'listen'
+        ? [...SOURCE_OPTIONS, { value: 'article' as const, label: '按文章' }]
+        : SOURCE_OPTIONS,
+    [answerMode],
+  );
+
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-8">
       <h1 className="text-lg font-semibold text-ink">句子练习</h1>
@@ -269,7 +352,7 @@ function SetupView({
 
       <div className="tf-card mt-3 px-4 py-4">
         <div className="mb-2 text-[11px] font-medium text-muted">来源</div>
-        <Segmented<Source> value={source} onChange={onSource} options={SOURCE_OPTIONS} />
+        <Segmented<Source> value={source} onChange={onSource} options={sourceOptions} />
 
         {source === 'bank' && (
           <div className="mt-3">
@@ -289,9 +372,32 @@ function SetupView({
           </div>
         )}
 
+        {source === 'article' && (
+          <div className="mt-3">
+            <div className="mb-1.5 text-[11px] font-medium text-muted">文章</div>
+            <select
+              value={articleId}
+              onChange={(e) => onArticle(e.target.value)}
+              className="tf-input text-sm"
+              aria-label="选择文章"
+            >
+              {batches.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.titleZh || b.title}（{b.items.length} 句{b.level ? ` · ${b.level}` : ''}）
+                </option>
+              ))}
+            </select>
+            <p className="mt-2 text-[11px] leading-relaxed text-muted">
+              一篇文章就是一个天然的窄式批次：同一作者、同一主题， 词汇和句式会在这一批里反复出现。
+            </p>
+          </div>
+        )}
+
         <div className="mt-4 flex items-center justify-between gap-3">
           <span className="text-[11px] text-muted">
-            一轮 {ROUND_SIZE} 句，只取 100 字符以内的句子
+            {source === 'article'
+              ? '整篇听完三轮'
+              : `一轮 ${ROUND_SIZE} 句，只取 100 字符以内的句子`}
           </span>
           <button type="button" onClick={onStart} className="tf-btn tf-btn-primary text-xs">
             开始
@@ -723,10 +829,13 @@ function SentencePlayer({
  */
 function NarrowListenPlayer({
   items,
+  batchTitle,
   onExit,
   onAgain,
 }: {
   items: SentenceItem[];
+  /** 这一批的标题（来自文章时有值），结算页要显示听的是什么 */
+  batchTitle?: string;
   onExit: () => void;
   onAgain: () => void;
 }) {
@@ -812,7 +921,9 @@ function NarrowListenPlayer({
         <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-correct/15 text-correct">
           <IconCheck width={24} height={24} />
         </div>
-        <h1 className="text-lg font-semibold text-ink">这一批听完了</h1>
+        <h1 className="text-lg font-semibold text-ink">
+          {batchTitle ? `《${batchTitle}》听完了` : '这一批听完了'}
+        </h1>
         <p className="mt-1 text-sm text-muted">
           {sentenceCount} 句 × {passCount} 轮，共播放 {totalListens} 次
         </p>
@@ -847,6 +958,10 @@ function NarrowListenPlayer({
           第 {pos.pass + 1}/{passCount} 轮 · {plan?.label}
         </span>
       </div>
+
+      {batchTitle && (
+        <div className="mb-2 text-center text-[11px] text-muted">《{batchTitle}》</div>
+      )}
 
       <Progress value={progressPercent(pos, sentenceCount, passCount)} />
       <div className="mt-1 flex items-center justify-between text-[11px] text-muted">
