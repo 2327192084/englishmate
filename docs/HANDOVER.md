@@ -146,7 +146,12 @@ node scripts/verify-data.mjs   # 数据契约（16 库 / 75 篇 / glossary）
 cd /e/EnglishMate
 for ip in 140.82.113.4 140.82.112.4 140.82.114.4 140.82.121.4; do
   echo "--- try $ip"
-  GCM_INTERACTIVE=never timeout 90     git -c credential.helper=       -c credential.helper=/ucrt64/bin/git-credential-manager.exe       -c http.curloptResolve=github.com:443:$ip       -c http.postBuffer=524288000       push origin main 2>&1 | tail -3
+  GCM_INTERACTIVE=never timeout 90 \
+    git -c credential.helper= \
+      -c credential.helper=/ucrt64/bin/git-credential-manager.exe \
+      -c http.curloptResolve=github.com:443:$ip \
+      -c http.postBuffer=524288000 \
+      push origin main 2>&1 | tail -3
   [ "$(git rev-list --count origin/main..HEAD)" = "0" ] && break
 done
 ```
@@ -156,6 +161,9 @@ done
 - **`-c credential.helper=` 必须先在前面写一次清空的**。`git -c credential.helper=X` 是**追加**不是替换，全局的 `helper-selector` 会一起跑，然后在无 tty 环境里挂死报 `bash: line 1: /dev/tty: No such device or address`。
 - 凭据在 Windows 凭据管理器里（用户 `2327192084`，GitHub PAT），`git-credential-manager.exe get` 能取出来；`GCM_INTERACTIVE=never` 必须设。
 - **`curloptResolve` 要带 `.4` 系列 IP**：`140.82.112.4` / `140.82.113.4` / `140.82.114.4` / `140.82.121.3` / `140.82.121.4`（`curl --resolve github.com:443:<ip>` 全部 200）。`140.82.112.3` 连不上；`.113.3` / `.114.3` / `.116.3` / `20.205.243.166` TCP 通但 TLS 被重置。**注意可用性会变**：2026-11-21 当天 `140.82.112.4` 一次成功，几小时后同样命令报 `Recv failure`，`140.82.113.4` 立刻成功——所以不要只试一个 IP。
+- **⚠️ 会有整条 `github.com:443` 都连不上的时段（不是换 IP 能解决的）**：2026-11-21 13:50 前后约 5 分钟，上面列的所有 IP 全部 `code=000` 超时，`curl -sv` 显示 TLS 握手能完成、到数据阶段 `recv returned error 56`；同一时刻 `api.github.com`（200）、`registry.npmjs.org`、`codeload.github.com`（301）都正常，`20.205.243.166` 的 TCP 443 能连上但握手后即断。**5 分钟后再测，四个 IP 又全部 200——是间歇性故障，不是永久封锁。**
+  - **判断方法**：`curl -sS -o /dev/null -w "%{http_code}\n" --resolve github.com:443:140.82.113.4 --max-time 10 https://github.com/`。返回 `000` 就是整条链路暂时不通，**别再挨个换 IP 了**，隔几分钟重试一次即可。
+  - 本地提交不会丢，`git rev-list --count origin/main..HEAD` 记着欠几个；实在推不上去就先攒着，别为了推送去改写历史。
 - **`timeout` 包一层有用**：坏 IP 的表现是卡住而不是立刻失败。外层套 `timeout 90`，失败就换下一个 IP 重试。
 - 诊断命令：`timeout 6 bash -c "cat < /dev/null > /dev/tcp/140.82.112.4/443"`；`curl -sI --resolve github.com:443:140.82.112.4 https://github.com` 看 code。
 - `api.github.com` 一直可用（未认证每小时 60 次配额，`build-more-dicts.mjs` 要用）；`github.com:22` 端口通但 `~/.ssh/` 里**没有密钥**，SSH 推送不可用。
