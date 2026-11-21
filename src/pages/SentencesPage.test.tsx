@@ -189,7 +189,8 @@ describe('SentencesPage · 窄式精听', () => {
 
   it('显示轮次与句号进度', async () => {
     await startListenRound();
-    expect(screen.getByText(/第 1\/3 轮/)).toBeInTheDocument();
+    // 四轮梯度：盲听 → 中文 → 英文 → 中英对照
+    expect(screen.getByText(/第 1\/4 轮/)).toBeInTheDocument();
     expect(screen.getByText(/第 1\/2 句/)).toBeInTheDocument();
   });
 
@@ -199,10 +200,27 @@ describe('SentencesPage · 窄式精听', () => {
     fireEvent.click(screen.getByText('下一句'));
     await waitFor(() => expect(screen.getByText(/第 2\/2 句/)).toBeInTheDocument());
     fireEvent.click(screen.getByText('下一轮'));
-    await waitFor(() => expect(screen.getByText(/第 2\/3 轮/)).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText(/第 2\/4 轮/)).toBeInTheDocument());
     expect(screen.getByText(/看中文/)).toBeInTheDocument();
     // 第二轮的提示是中文译文，不再是盲听占位
     expect(screen.queryByText('先只听，不看文字')).not.toBeInTheDocument();
+  });
+
+  it('第四轮是中英对照，英文与中文同时出现', async () => {
+    await startListenRound();
+    /**
+     * 快进到第 4 轮：测试数据 2 句，所以每轮要点两次
+     * （第一句后按钮是「下一句」，第二句后是「下一轮」）。
+     * 按实际文案点，不要假设按钮名固定。
+     */
+    for (let i = 0; i < 6; i += 1) {
+      fireEvent.click(screen.getByText(/^(下一句|下一轮)$/));
+    }
+    await waitFor(() => expect(screen.getByText(/第 4\/4 轮/)).toBeInTheDocument());
+    expect(screen.getByText(/中英对照/)).toBeInTheDocument();
+    // 两层都要在：英文原文与中文译文
+    expect(screen.getByText(/I ate an apple|The banana is ripe/)).toBeInTheDocument();
+    expect(screen.getByText(/我吃了一个苹果|香蕉熟了/)).toBeInTheDocument();
   });
 
   it('有「再听一遍」按钮且可点', async () => {
@@ -337,5 +355,77 @@ describe('SentencesPage（原有用例）', () => {
     fireEvent.click(screen.getByText('错词本'));
     fireEvent.click(screen.getByText('开始'));
     await waitFor(() => expect(screen.getByText(/错词本还是空的/)).toBeInTheDocument());
+  });
+});
+
+describe('SentencesPage · 精听考核', () => {
+  /** 听完全部 4 轮（测试数据 2 句 × 4 轮 = 8 次点击） */
+  async function finishListening() {
+    render(
+      <MemoryRouter>
+        <SentencesPage />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByText('按词库'));
+    fireEvent.click(screen.getByText('窄式精听'));
+    fireEvent.click(screen.getByText('开始'));
+    await waitFor(() => expect(screen.getByText(/轮 · /)).toBeInTheDocument());
+    for (let i = 0; i < 8; i += 1) {
+      const btn = screen.queryByText(/^(下一句|下一轮)$/);
+      if (!btn) break;
+      fireEvent.click(btn);
+    }
+    await waitFor(() => expect(screen.getByText(/听完了/)).toBeInTheDocument());
+  }
+
+  it('听完后提供两种考核方式', async () => {
+    await finishListening();
+    expect(screen.getByText('要不要考一下？')).toBeInTheDocument();
+    expect(screen.getByText('写英文原文')).toBeInTheDocument();
+    expect(screen.getByText('写中文翻译')).toBeInTheDocument();
+  });
+
+  it('英文考核：答对时给「完全正确」', async () => {
+    await finishListening();
+    fireEvent.click(screen.getByText('写英文原文'));
+    await waitFor(() => expect(screen.getByLabelText('考核作答')).toBeInTheDocument());
+
+    // 两句测试句之一，答对任意一句都能验证判定链路
+    const input = screen.getByLabelText('考核作答');
+    fireEvent.change(input, { target: { value: 'I ate an apple' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    await waitFor(() => expect(screen.getByText('原文')).toBeInTheDocument());
+    // 英文模式必须给出客观判定（对或错都行，但不能没有）
+    expect(screen.getByText(/完全正确|处不一致/)).toBeInTheDocument();
+  });
+
+  it('中文考核：给参考译文与自评提示，不给「正确率」', async () => {
+    await finishListening();
+    fireEvent.click(screen.getByText('写中文翻译'));
+    await waitFor(() => expect(screen.getByLabelText('考核作答')).toBeInTheDocument());
+
+    const input = screen.getByLabelText('考核作答');
+    fireEvent.change(input, { target: { value: '我吃了一个苹果' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+
+    await waitFor(() => expect(screen.getByText('参考译文')).toBeInTheDocument());
+    // 关键：中文模式必须明说判不了，而不是硬给一个对错
+    expect(screen.getByText(/由你自己判断/)).toBeInTheDocument();
+    expect(screen.queryByText('完全正确')).not.toBeInTheDocument();
+    expect(screen.queryByText(/处不一致/)).not.toBeInTheDocument();
+  });
+
+  it('考核可以跳过，不阻塞听完的人', async () => {
+    await finishListening();
+    fireEvent.click(screen.getByText('写英文原文'));
+    await waitFor(() => expect(screen.getByText('跳过考核')).toBeInTheDocument());
+    fireEvent.click(screen.getByText('跳过考核'));
+    await waitFor(() => expect(screen.getByText(/听完了/)).toBeInTheDocument());
+  });
+
+  it('「再来一批」仍然可用（考核入口不挡住主流程）', async () => {
+    await finishListening();
+    expect(screen.getByText('再来一批')).toBeInTheDocument();
+    expect(screen.getByText('换来源')).toBeInTheDocument();
   });
 });

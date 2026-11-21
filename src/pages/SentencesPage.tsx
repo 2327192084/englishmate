@@ -29,11 +29,17 @@ import { sentencesForBank, sentencesForUserWords, type SentenceItem } from '@/da
 import { buildCloze, judgeAnswer, type AnswerVerdict, type ClozeItem } from '@/lib/cloze';
 import {
   buildPassPlan,
+  buildQuizOrder,
   advance,
   countListens,
+  gradeQuiz,
   progressPercent,
+  quizProgress,
   visibleText,
+  QUIZ_META,
   type ListenPosition,
+  type QuizKind,
+  type QuizOutcome,
 } from '@/lib/narrowListen';
 import { diffSentence, joinSentence, mistakeCount } from '@/lib/sentenceDiff';
 import { speak, stopSpeaking } from '@/lib/speech';
@@ -294,6 +300,17 @@ export default function SentencesPage() {
       batchTitle={batchTitle}
       onExit={() => setItems(null)}
       onAgain={() => void start()}
+      onQuizDone={() => {
+        /**
+         * 考核成绩目前**只回到结算页**，不落库。
+         *
+         * 原因：英文听写可以客观判分，中文翻译不能——把两种不同可信度的
+         * 结果混进同一个 session 记录，会让统计页的"正确率"变成假数字。
+         * 要做的话应当拆成两个 bankId，并明确标注中文那部分只是"完成数"。
+         * 这件事留给后续版本，不在本次改动里顺手塞进去。
+         */
+        setItems(null);
+      }}
     />
   ) : (
     <SentencePlayer
@@ -844,12 +861,15 @@ function NarrowListenPlayer({
   batchTitle,
   onExit,
   onAgain,
+  onQuizDone,
 }: {
   items: SentenceItem[];
   /** 这一批的标题（来自文章时有值），结算页要显示听的是什么 */
   batchTitle?: string;
   onExit: () => void;
   onAgain: () => void;
+  /** 考核结束：带上成绩交给父组件（父组件负责落库与展示） */
+  onQuizDone: (results: QuizResult[], kind: QuizKind) => void;
 }) {
   const settings = useSettings((s) => s.settings);
   const [passes] = useState(() => buildPassPlan());
@@ -857,6 +877,12 @@ function NarrowListenPlayer({
   const [listens, setListens] = useState<Record<string, number>>({});
   const [startedAt] = useState(Date.now());
   const savedRef = useRef(false);
+  /**
+   * 考核状态：null = 还没开始考。
+   * 单独一份状态而不是并进 pos：考核的推进方式与听完全不同
+   * （打乱顺序、每题要作答、作答有判定），硬并进同一个状态机会互相污染。
+   */
+  const [quizKind, setQuizKind] = useState<QuizKind | null>(null);
 
   const sentenceCount = items.length;
   const passCount = passes.length;
@@ -864,8 +890,20 @@ function NarrowListenPlayer({
 
   const item = !finished ? items[pos.index] : undefined;
   const plan = passes[Math.min(pos.pass, passCount - 1)];
-  const shown = plan && item ? visibleText(plan.cue, item.en, item.zh) : null;
+  /**
+   * 这一轮要显示的两层文字。返回结构而不是单值：
+   * 新增的「中英对照」轮必须同时给出两边，单值做不到。
+   */
+  const shown = plan && item ? visibleText(plan.cue, item.en, item.zh) : { en: null, zh: null };
 
+  /**
+   * ⚠️ 考核分支的 return 必须放在**所有 hooks 之后**。
+   *
+   * 这里踩过一个真实的 React 规则坑：最初这个 early return 写在
+   * useCallback / useEffect 之前，进入考核时这些 hooks 不再执行，
+   * React 立刻报「Rendered fewer hooks than expected」并整页崩掉。
+   * 渲染测试抓到了它——生产里就是一进考核就白屏。
+   */
   const play = useCallback(() => {
     if (!item) return;
     speak(item.en, { accent: settings.accent, rate: settings.speechRate });
@@ -926,23 +964,69 @@ function NarrowListenPlayer({
     );
   }
 
+  /**
+   * 听完全部轮次后进入考核。
+   *
+   * 放在这里而不是独立页面：它必须紧跟精听，
+   * 隔一段时间再考就变成「回忆」，考不出刚听完的状态。
+   * 位置在**所有 hooks 之后**，原因见上面 useCallback 处的注释。
+   */
+  if (finished && quizKind) {
+    return (
+      <ListenQuiz
+        items={items}
+        kind={quizKind}
+        batchTitle={batchTitle}
+        onDone={(results) => onQuizDone(results, quizKind)}
+        onExit={() => setQuizKind(null)}
+      />
+    );
+  }
+
   if (finished) {
     const totalListens = Object.values(listens).reduce((a, b) => a + b, 0);
     return (
-      <div className="mx-auto w-full max-w-2xl px-4 py-10 text-center">
-        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-correct/15 text-correct">
-          <IconCheck width={24} height={24} />
+      <div className="mx-auto w-full max-w-2xl px-4 py-10">
+        <div className="text-center">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-correct/15 text-correct">
+            <IconCheck width={24} height={24} />
+          </div>
+          <h1 className="text-lg font-semibold text-ink">
+            {batchTitle ? `《${batchTitle}》听完了` : '这一批听完了'}
+          </h1>
+          <p className="mt-1 text-sm text-muted">
+            {sentenceCount} 句 × {passCount} 轮，共播放 {totalListens} 次
+          </p>
+          <p className="mt-2 text-[11px] leading-relaxed text-muted">
+            精听的价值在「同一批材料反复听」，不在于听了多少不同的句子。
+          </p>
         </div>
-        <h1 className="text-lg font-semibold text-ink">
-          {batchTitle ? `《${batchTitle}》听完了` : '这一批听完了'}
-        </h1>
-        <p className="mt-1 text-sm text-muted">
-          {sentenceCount} 句 × {passCount} 轮，共播放 {totalListens} 次
-        </p>
-        <p className="mt-2 text-[11px] leading-relaxed text-muted">
-          精听的价值在「同一批材料反复听」，不在于听了多少不同的句子。
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
+
+        {/*
+          考核入口放在这里：刚听完全部 4 轮是唯一「有资格考」的时刻。
+          允许跳过——考核是可选的巩固环节，不该成为听下去的门槛。
+        */}
+        <div className="tf-card mt-6 px-4 py-4">
+          <div className="mb-2 text-[11px] font-medium text-muted">要不要考一下？</div>
+          <p className="mb-3 text-[11px] leading-relaxed text-muted">
+            听和听懂是两件事。考一遍能看出到底是「熟悉了声音」还是「真听懂了意思」。
+          </p>
+          <div className="flex flex-col gap-2">
+            {(['en', 'zh'] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setQuizKind(k)}
+                className="tf-btn justify-start text-left text-xs"
+              >
+                <span className="font-medium">{QUIZ_META[k].label}</span>
+                <span className="ml-2 text-muted">{QUIZ_META[k].hint}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
           <button type="button" onClick={onAgain} className="tf-btn tf-btn-primary text-xs">
             <IconRefresh width={14} height={14} />
             再来一批
@@ -989,17 +1073,35 @@ function NarrowListenPlayer({
       </div>
 
       <div className="tf-card mt-4 px-5 py-10 text-center">
-        {shown === null ? (
+        {shown.en === null && shown.zh === null ? (
           <>
             <p className="text-sm text-muted">先只听，不看文字</p>
             <p className="mt-1 text-[11px] text-muted/70">听不懂是正常的，这一轮只让耳朵熟悉它</p>
           </>
         ) : (
-          <p
-            className={`text-base leading-relaxed ${plan?.cue === 'en' ? 'tf-mono' : ''} text-ink`}
-          >
-            {shown || '（这一句没有内容）'}
-          </p>
+          <div className="space-y-3">
+            {/*
+              中英对照轮两层都显示，且英文在上、中文在下：
+              中文提示的是"意思是这个"，用户要先读英文再对照，
+              顺序反了会先被中文带走、不再看英文形态。
+            */}
+            {shown.en !== null && (
+              <p className="tf-mono text-base leading-relaxed text-ink">
+                {shown.en || '（这一句没有内容）'}
+              </p>
+            )}
+            {shown.zh !== null && (
+              <p
+                className={
+                  shown.en !== null
+                    ? 'border-t border-line pt-3 text-sm leading-relaxed text-muted'
+                    : 'text-base leading-relaxed text-ink'
+                }
+              >
+                {shown.zh || '（这一句没有译文）'}
+              </p>
+            )}
+          </div>
         )}
 
         <button
@@ -1020,6 +1122,259 @@ function NarrowListenPlayer({
           {pos.index + 1 >= sentenceCount ? '下一轮' : '下一句'}
           <IconArrowRight width={14} height={14} />
         </button>
+      </div>
+    </div>
+  );
+}
+
+/** 一题的考核结果，供父组件落库与结算展示 */
+interface QuizResult {
+  /** 对应的批次内句子下标 */
+  index: number;
+  kind: QuizKind;
+  answer: string;
+  outcome: QuizOutcome;
+}
+
+/**
+ * 精听考核：逐句播放，用户写下英文原文或中文意思。
+ *
+ * ── 两种作答的可判定程度根本不同（这是本组件的核心设计）──────────────────
+ *  - **写英文**：可客观判分，复用 diffSentence 的既有口径，
+ *    对错、错几个词都能准确给出。
+ *  - **写中文**：**不可判分**。翻译有信达雅，同一个句子十个译者十个说法。
+ *    这里只给参考译文与一个字符重合度作参考，对错交给用户自评。
+ *
+ * 这是刻意的诚实，不是偷懒：用字符串相似度假装能判翻译，
+ * 会持续把「意思对但说法不同」的正确答案判错，比不判更糟。
+ * 将来接入 AI 判分时，只需把 gradeQuiz 的 zh 分支换成 auto，本组件无需改动
+ * （它已经在用 QuizOutcome 这个可辨识联合）。
+ */
+function ListenQuiz({
+  items,
+  kind,
+  batchTitle,
+  onDone,
+  onExit,
+}: {
+  items: SentenceItem[];
+  kind: QuizKind;
+  batchTitle?: string;
+  onDone: (results: QuizResult[]) => void;
+  onExit: () => void;
+}) {
+  const settings = useSettings((s) => s.settings);
+  /**
+   * 考核顺序在挂载时固定一次。
+   *
+   * 按听的时候的顺序考，用户会靠「上一句是哪个」的记忆来猜，考不出听懂没有。
+   * 用 useState 的惰性初始化锁定：每次 render 重新洗牌会让题目乱跳。
+   */
+  const [order] = useState(() => buildQuizOrder(items.length));
+  const [cursor, setCursor] = useState(0);
+  const [answer, setAnswer] = useState('');
+  const [results, setResults] = useState<QuizResult[]>([]);
+  const [revealed, setRevealed] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const total = order.length;
+  const itemIndex = order[cursor];
+  const item = itemIndex !== undefined ? items[itemIndex] : undefined;
+  const done = cursor >= total;
+
+  const outcome = useMemo(
+    () => (revealed && item ? gradeQuiz(kind, answer, item) : null),
+    [revealed, item, kind, answer],
+  );
+
+  /** 每题自动播一次：考核考的是"听"，不播就成了默写题 */
+  useEffect(() => {
+    if (!item) return;
+    speak(item.en, { accent: settings.accent, rate: settings.speechRate });
+    return () => stopSpeaking();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cursor, item?.en]);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [cursor, revealed]);
+
+  const submit = () => {
+    if (revealed || !item || !answer.trim()) return;
+    setRevealed(true);
+    setResults((r) => [
+      ...r,
+      { index: itemIndex!, kind, answer, outcome: gradeQuiz(kind, answer, item) },
+    ]);
+  };
+
+  const next = () => {
+    setRevealed(false);
+    setAnswer('');
+    setCursor((c) => c + 1);
+  };
+
+  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    if (revealed) next();
+    else submit();
+  };
+
+  if (total === 0) {
+    return (
+      <div className="mx-auto w-full max-w-2xl px-4 py-10">
+        <EmptyState
+          icon={<IconBook width={28} height={28} />}
+          title="没有可考的句子"
+          hint="这一批是空的。"
+          action={
+            <button type="button" onClick={onExit} className="tf-btn text-xs">
+              返回
+            </button>
+          }
+        />
+      </div>
+    );
+  }
+
+  /** 结算：英文模式给准确率；中文模式只给完成数，不编一个"正确率" */
+  if (done) {
+    const auto = results.filter((r) => r.outcome.kind === 'auto');
+    const correct = auto.filter((r) => r.outcome.kind === 'auto' && r.outcome.correct).length;
+    return (
+      <div className="mx-auto w-full max-w-2xl px-4 py-10 text-center">
+        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-correct/15 text-correct">
+          <IconCheck width={24} height={24} />
+        </div>
+        <h1 className="text-lg font-semibold text-ink">考核完成</h1>
+        {kind === 'en' ? (
+          <p className="mt-1 text-sm text-muted">
+            听写正确 {correct} / {results.length} 句
+          </p>
+        ) : (
+          <>
+            <p className="mt-1 text-sm text-muted">已对照完 {results.length} 句</p>
+            <p className="mx-auto mt-2 max-w-md text-[11px] leading-relaxed text-muted">
+              翻译没有唯一答案，所以这里不给「正确率」——那会是个假数字。 你自己知道哪几句听懂了。
+            </p>
+          </>
+        )}
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => onDone(results)}
+            className="tf-btn tf-btn-primary text-xs"
+          >
+            完成
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const meta = QUIZ_META[kind];
+  return (
+    <div className="mx-auto w-full max-w-2xl px-4 py-6">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <button
+          type="button"
+          onClick={onExit}
+          className="flex items-center gap-1 text-xs text-muted hover:text-ink"
+        >
+          <IconArrowLeft width={14} height={14} />
+          跳过考核
+        </button>
+        <span className="text-[11px] text-muted">{meta.label}</span>
+      </div>
+
+      <Progress value={quizProgress(cursor, total)} />
+      <div className="mt-1 flex items-center justify-between text-[11px] text-muted">
+        <span>
+          第 {cursor + 1}/{total} 题
+        </span>
+        {batchTitle && <span>《{batchTitle}》</span>}
+      </div>
+
+      <div className="tf-card mt-4 px-5 py-8 text-center">
+        <p className="text-sm text-muted">
+          听这一句，然后写下{kind === 'en' ? '英文原文' : '它的意思'}
+        </p>
+        <button
+          type="button"
+          onClick={() =>
+            item && speak(item.en, { accent: settings.accent, rate: settings.speechRate })
+          }
+          className="tf-btn tf-btn-primary mx-auto mt-4 text-xs"
+          aria-label="再听一遍"
+        >
+          <IconVolume width={14} height={14} />
+          再听一遍
+        </button>
+      </div>
+
+      <div className="tf-card mt-3 px-4 py-3">
+        <input
+          ref={inputRef}
+          value={answer}
+          onChange={(e) => {
+            if (revealed) return;
+            setAnswer(e.target.value);
+          }}
+          onKeyDown={onKeyDown}
+          readOnly={revealed}
+          spellCheck={false}
+          autoCapitalize="off"
+          autoCorrect="off"
+          placeholder={meta.placeholder}
+          className="tf-input tf-mono text-sm"
+          aria-label="考核作答"
+        />
+      </div>
+
+      {/*
+        答题后揭晓。英文与中文的处理刻意不同：
+        英文给逐词判定，中文给参考译文 + 自评提示（不假装能判分）。
+      */}
+      {revealed && outcome && item && (
+        <div className="tf-card mt-3 px-4 py-3">
+          <div className="mb-1 text-[11px] font-medium text-muted">原文</div>
+          <p className="tf-mono text-sm leading-relaxed text-ink">{item.en}</p>
+
+          {kind === 'en' && outcome.kind === 'auto' ? (
+            <p className={`mt-2 text-[11px] ${outcome.correct ? 'text-correct' : 'text-error'}`}>
+              {outcome.correct ? '完全正确' : `${outcome.mistakes} 处不一致`}
+            </p>
+          ) : (
+            <>
+              <div className="mt-3 border-t border-line pt-2">
+                <div className="mb-1 text-[11px] font-medium text-muted">参考译文</div>
+                <p className="text-sm leading-relaxed text-ink">{item.zh || '（这句没有译文）'}</p>
+              </div>
+              {outcome.kind === 'manual' && (
+                <p className="mt-2 text-[11px] leading-relaxed text-muted">{outcome.note}</p>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      <div className="mt-4 flex items-center justify-end">
+        {revealed ? (
+          <button type="button" onClick={next} className="tf-btn tf-btn-primary text-xs">
+            {cursor + 1 >= total ? '看结果' : '下一题'}
+            <IconArrowRight width={14} height={14} />
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={submit}
+            disabled={!answer.trim()}
+            className="tf-btn tf-btn-primary text-xs"
+          >
+            提交
+          </button>
+        )}
       </div>
     </div>
   );
