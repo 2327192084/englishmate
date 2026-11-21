@@ -235,11 +235,18 @@ function main() {
 
   if (check) {
     const existing = readFileSync(OUT, 'utf8');
-    if (existing !== json) {
+    // 只比内容，不比 generatedAt：那是「哪天生成的」，不是「内容对不对」。
+    // 把它算进比较的话，隔天再跑 --check 必然失败——本地和 CI 会天天喊脏。
+    const strip = (s) => {
+      const o = JSON.parse(s);
+      delete o.generatedAt;
+      return JSON.stringify(o);
+    };
+    if (strip(existing) !== strip(json)) {
       log('✗ 产物不是最新，请重跑 node scripts/build-article-glossary.mjs');
       process.exit(1);
     }
-    log('✓ 产物已是最新');
+    log('✓ 产物已是最新（内容一致，generatedAt 不计）');
     return;
   }
 
