@@ -51,6 +51,12 @@ const LEVELS = new Set(['CET-4', 'CET-6', '考研', '雅思']);
 /**
  * 单句英文长度上限，与 src/lib/text.test.ts 保持一致（140）。
  * 曾出现 verify 用 120、测试用 140 的两套标准，导致同一批数据一边过一边挂。
+ *
+ * 但这里的 140 **只管文章**，不要拿它去"统一" `src/data/sentences.ts` 里
+ * 句子练习的 100：两者校验的是不同数据、对应不同交互。实测 75 篇文章中有
+ * 67 篇含超过 100 字符的句子，把练习放宽到 140 会把这些长句塞进整句输入；
+ * 反过来把这里收到 100，这 67 篇会当场挂掉。词库例句本身最长仅 80 字符，
+ * 所以练习侧的 100 目前一条都筛不掉，只是给将来换数据源留的安全网。
  */
 const MAX_EN = 140;
 
@@ -310,7 +316,10 @@ async function checkGlossary(articleCount) {
     return;
   }
 
-  if (typeof glossary?.generatedAt !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(glossary.generatedAt)) {
+  if (
+    typeof glossary?.generatedAt !== 'string' ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(glossary.generatedAt)
+  ) {
     fail('glossary', '缺 generatedAt 或格式不是 YYYY-MM-DD');
   }
   const entries = glossary?.entries ?? {};
@@ -368,7 +377,8 @@ async function checkGlossary(articleCount) {
     if (form === base || !entries[base]) badVariant++;
     if (form !== form.toLowerCase()) badVariant++;
   }
-  if (badVariant) fail('glossary', `${badVariant} 条 variants 非法（指向不存在的词条或大小写不对）`);
+  if (badVariant)
+    fail('glossary', `${badVariant} 条 variants 非法（指向不存在的词条或大小写不对）`);
 
   // 文章里出现的词必须绝大多数能查到（产物过期会让新文章点不开词）
   let tokens = 0;

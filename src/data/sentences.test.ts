@@ -29,7 +29,8 @@ function entry(w: string, sentences?: { en: string; zh: string }[]): WordEntry {
 }
 
 /** 从真实词库里取一句含 U+2019（弯撇号）的句子，供归一化用例使用 */
-const CURLY_APOS_SENTENCE = "It\u2019s a communication medium, not a substance or specific activity.";
+const CURLY_APOS_SENTENCE =
+  'It\u2019s a communication medium, not a substance or specific activity.';
 
 describe('diffSentence', () => {
   it('整句完全一致时全部 ok', () => {
@@ -123,7 +124,11 @@ describe('sentencesFromWords', () => {
   const emptySentences = entry('empty', []);
 
   it('只取有例句的词条', async () => {
-    const out = await sentencesFromWords([withoutSentences, emptySentences, withSentences], 'cet4', 10);
+    const out = await sentencesFromWords(
+      [withoutSentences, emptySentences, withSentences],
+      'cet4',
+      10,
+    );
     expect(out).toHaveLength(1);
     expect(out[0].word).toBe('apple');
     expect(out[0].bankId).toBe('cet4');
@@ -155,6 +160,27 @@ describe('sentencesFromWords', () => {
     const long = 'word '.repeat(30).trim();
     const out = await sentencesFromWords([entry('long', [{ en: long, zh: 'x' }])], 'cet4', 10);
     expect(out).toEqual([]);
+  });
+
+  /**
+   * 阈值钉在 100 这个边界上，而不是只测「很长的被丢」。
+   *
+   * 这样做是因为 100 跟 `scripts/verify-data.mjs` 里文章的 140 是两条不同的线
+   * （那 140 只为拦文章，实测 75 篇里 67 篇含超过 100 字符的句子）。
+   * 只测 149 字符的话，谁把上限悄悄改成 140 这个用例照样绿；
+   * 钉住 100 恰好过、101 恰好不过，改动才会当场暴露。
+   */
+  it('长度阈值正好是 100：100 字符保留、101 字符丢弃', async () => {
+    const just100 = 'a'.repeat(100);
+    const just101 = 'a'.repeat(101);
+    const kept = await sentencesFromWords([entry('ok', [{ en: just100, zh: '刚好' }])], 'cet4', 10);
+    expect(kept).toHaveLength(1);
+    const dropped = await sentencesFromWords(
+      [entry('no', [{ en: just101, zh: '多一个' }])],
+      'cet4',
+      10,
+    );
+    expect(dropped).toEqual([]);
   });
 
   it('limit 生效', async () => {

@@ -7,6 +7,12 @@
  *
  * 为什么限长 100 字符：句子练习是"整句输入"，句子太长打字成本过高，
  * 用户会在中途就想放弃；长句属于文章练习的场景。
+ *
+ * 这个 100 和 `scripts/verify-data.mjs` 里文章的 140 是**故意不同**的两套标准，
+ * 别为了"统一"把它改成 140：两者管的是不同数据。实测 16 个词库共 57257 条
+ * 例句，最长 80 字符（中位数 40、p99 78），所以 100 当前一条都筛不掉，
+ * 它是给未来换数据源留的安全网；而 75 篇文章里有 67 篇含超过 100 字符的句子，
+ * 若把练习放宽到 140，等于把这些长句放进整句输入，正是要避免的体验。
  */
 import type { WordEntry } from '@/types';
 import { db } from '@/db';
@@ -119,9 +125,7 @@ export async function sentencesForUserWords(
     return [];
   }
 
-  const wanted = rows.filter((r) =>
-    kind === 'wrong' ? r.mistakes > 0 : r.favorite === true,
-  );
+  const wanted = rows.filter((r) => (kind === 'wrong' ? r.mistakes > 0 : r.favorite === true));
   if (wanted.length === 0) return [];
 
   // bankId -> 该词库里要取的词（保留原词形，方便按 key 匹配）
