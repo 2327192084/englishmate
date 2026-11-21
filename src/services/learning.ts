@@ -14,6 +14,7 @@ import type {
   WordAttempt,
   WordEntry,
   SerializedCard,
+  MistakeCounts,
 } from '@/types';
 import { createCard, schedule, type Rating } from '@/lib/fsrs';
 import { computeAccuracy, computeWpm } from '@/lib/stats';
@@ -50,9 +51,11 @@ export async function recordAttempt(params: {
   bankId: string;
   correct: boolean;
   mistakes: number;
+  /** 本次错误的分类明细；没采集到就传 undefined（不是全零） */
+  mistakeKinds?: MistakeCounts;
   now?: number;
 }): Promise<UserWord> {
-  const { entry, bankId, correct, mistakes } = params;
+  const { entry, bankId, correct, mistakes, mistakeKinds } = params;
   const now = params.now ?? Date.now();
   const id = wordKey(bankId, entry.w);
 
@@ -77,12 +80,29 @@ export async function recordAttempt(params: {
   const rating = deriveRating(correct, mistakes, base.card);
   const card = schedule(base.card, rating, now);
 
+  /**
+   * 错误分类是累加而不是覆盖：错词本要回答的是「这个词历史上我在哪类错上栽得多」，
+   * 单次作答的分类没有单独价值。
+   *
+   * 没传分类时（辨认模式、或老版本调用方）保留原值不动——
+   * 写全零会被误读成「这个词从没错过这类错」，而实际是「没采集」。
+   */
+  const mergedKinds: MistakeCounts | undefined = mistakeKinds
+    ? {
+        order: (base.mistakeKinds?.order ?? 0) + mistakeKinds.order,
+        adjacent: (base.mistakeKinds?.adjacent ?? 0) + mistakeKinds.adjacent,
+        similar: (base.mistakeKinds?.similar ?? 0) + mistakeKinds.similar,
+        unrelated: (base.mistakeKinds?.unrelated ?? 0) + mistakeKinds.unrelated,
+      }
+    : base.mistakeKinds;
+
   const next: UserWord = {
     ...base,
     // 释义/音标可能因为词库更新而变化，每次作答顺手刷新快照
     trans: entry.t || base.trans,
     phonetic: entry.p ?? base.phonetic,
     mistakes: base.mistakes + Math.max(mistakes, correct ? 0 : 1),
+    ...(mergedKinds ? { mistakeKinds: mergedKinds } : {}),
     corrects: base.corrects + (correct ? 1 : 0),
     // 答对且卡片进入较长间隔时自动取消「已掌握」以外的标记不做处理
     card,

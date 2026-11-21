@@ -6,7 +6,7 @@
  * 并且每次按键都会更新，useState 提升到页面级会引发整页重渲染。
  */
 import { create } from 'zustand';
-import type { PracticeMode, WordEntry, WordAttempt } from '@/types';
+import type { MistakeCounts, PracticeMode, WordEntry, WordAttempt } from '@/types';
 import {
   initTyping,
   typeChar,
@@ -17,6 +17,7 @@ import {
   normalizeChar,
   isNonLatinChar,
 } from '@/lib/typing';
+import { addMistakeKind, classifyMistake, emptyMistakeCounts } from '@/lib/mistakeKind';
 import { computeWpm } from '@/lib/stats';
 import type { PlannedItem } from '@/lib/flow';
 import {
@@ -43,6 +44,14 @@ interface PracticeState {
   typing: TypingState;
   /** 当前词的错误数（每次进入新词归零） */
   wordMistakes: number;
+  /**
+   * 当前词的错误分类明细。
+   *
+   * 为什么在 store 里而不是在 lib/typing.ts：分类需要「期望字符 + 实际字符」，
+   * 而 TypingState 只留了 lastWrongChar（下一次按键就被覆盖）。
+   * 在 input 里趁两个值都还在时算完，引擎本身保持纯粹的字符校验职责。
+   */
+  wordMistakeKinds: MistakeCounts;
   /** 当前词的开始时间 */
   wordStartedAt: number;
   /** 本轮起点时间 */
@@ -113,6 +122,7 @@ export const usePractice = create<PracticeState>((set, get) => ({
   index: 0,
   typing: emptyTyping,
   wordMistakes: 0,
+  wordMistakeKinds: emptyMistakeCounts(),
   wordStartedAt: 0,
   roundStartedAt: 0,
   timer: createTimer(),
@@ -140,6 +150,7 @@ export const usePractice = create<PracticeState>((set, get) => ({
       index: 0,
       typing: initTyping(first?.w ?? ''),
       wordMistakes: 0,
+      wordMistakeKinds: emptyMistakeCounts(),
       wordStartedAt: now,
       roundStartedAt: now,
       timer: startTimer(createTimer(now), now),
@@ -151,7 +162,7 @@ export const usePractice = create<PracticeState>((set, get) => ({
   },
 
   input: (ch, strict = true) => {
-    const { phase, typing, wordMistakes } = get();
+    const { phase, typing, wordMistakes, wordMistakeKinds } = get();
     if (phase !== 'running') return;
 
     /**
@@ -174,10 +185,30 @@ export const usePractice = create<PracticeState>((set, get) => ({
     const clean = normalizeChar(ch);
     const next = typeChar(typing, clean, nowTs, strict);
     if (next === typing) return;
+
+    const isNewError = next.errors > typing.errors;
+    /**
+     * 分类必须在这里算：lastWrongChar 只活到下一次按键，
+     * 而期望字符一旦在非严格模式里推进了光标就再也拿不回来。
+     * 用出错前的光标位置读目标串，typed / rest 才是用户眼里的上下文。
+     */
+    const kinds = isNewError
+      ? addMistakeKind(
+          wordMistakeKinds,
+          classifyMistake(
+            typing.target[typing.cursor],
+            next.lastWrongChar ?? clean,
+            typing.target.slice(0, typing.cursor),
+            typing.target.slice(typing.cursor + 1),
+          ),
+        )
+      : wordMistakeKinds;
+
     set({
       typing: next,
       timer: revived,
-      wordMistakes: next.errors > typing.errors ? wordMistakes + 1 : wordMistakes,
+      wordMistakes: isNewError ? wordMistakes + 1 : wordMistakes,
+      wordMistakeKinds: kinds,
     });
   },
 
@@ -215,12 +246,19 @@ export const usePractice = create<PracticeState>((set, get) => ({
         ? (choice?.correct ?? false)
         : isComplete(state.typing) && !state.submittedWrong && noUnfixedErrors(state.typing);
     const mistakes = state.mode === 'choice' ? (choice?.mistakes ?? 1) : state.wordMistakes;
+    /**
+     * 辨认模式没有字符输入，分类是空的——这里刻意写 undefined 而不是全零，
+     * 让下游能区分「没采集到」和「采集到了 0 次」。
+     */
+    const mistakeKinds =
+      state.mode === 'choice' || state.wordMistakes === 0 ? undefined : state.wordMistakeKinds;
 
     const log: AttemptLog = {
       entry: cur,
       word: cur.w,
       correct,
       mistakes,
+      ...(mistakeKinds ? { mistakeKinds } : {}),
       ms: Math.max(1, now - state.wordStartedAt),
       bankId: state.bankId,
     };
@@ -237,6 +275,7 @@ export const usePractice = create<PracticeState>((set, get) => ({
         typing: initTyping(''),
         submittedWrong: false,
         wordMistakes: 0,
+        wordMistakeKinds: emptyMistakeCounts(),
         choices: [],
         choicePicked: null,
       });
@@ -253,6 +292,7 @@ export const usePractice = create<PracticeState>((set, get) => ({
       planStepLabel: nextPlanItem ? nextPlanItem.stepLabel : state.planStepLabel,
       typing: initTyping(state.queue[nextIndex].w),
       wordMistakes: 0,
+      wordMistakeKinds: emptyMistakeCounts(),
       wordStartedAt: now,
       submittedWrong: false,
       choices: [],
@@ -290,6 +330,7 @@ export const usePractice = create<PracticeState>((set, get) => ({
       typing: emptyTyping,
       attempts: [],
       wordMistakes: 0,
+      wordMistakeKinds: emptyMistakeCounts(),
       submittedWrong: false,
       choices: [],
       choicePicked: null,

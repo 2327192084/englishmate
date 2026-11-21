@@ -140,6 +140,26 @@ export interface ModeMeta {
 
 /** ---------- 单次练习会话 ---------- */
 
+/**
+ * 错误类型。
+ *
+ * 来源只能是「期望字符 vs 实际按下的字符」这一对——
+ * 打字练习里全部信息就这么多，不做行为分析、不猜用户心理。
+ * 分类优先级：顺序 > 邻键 > 形近 > 其他，见 src/lib/mistakeKind.ts。
+ */
+export type MistakeKind =
+  /** 重复或颠倒：打成了上一个字符，或者抢按了下一个字符 */
+  | 'order'
+  /** 邻键误触：两个键在 QWERTY 上相邻（含斜向） */
+  | 'adjacent'
+  /** 形近混淆：b/d、p/q 这类看起来像的一对 */
+  | 'similar'
+  /** 其他：想不起来怎么拼，按了个不相干的字 */
+  | 'unrelated';
+
+/** 各类错误的累计次数 */
+export type MistakeCounts = Record<MistakeKind, number>;
+
 /** 一次练习中单个词的作答记录 */
 export interface WordAttempt {
   word: string;
@@ -147,6 +167,8 @@ export interface WordAttempt {
   correct: boolean;
   /** 本次错误按键次数 */
   mistakes: number;
+  /** 本次错误的分类明细（辨认模式没有字符输入，所以可能为空） */
+  mistakeKinds?: MistakeCounts;
   /** 作答耗时，毫秒 */
   ms: number;
   /** 该词所属词库 */
@@ -198,6 +220,13 @@ export interface UserWord {
   phonetic?: string;
   /** 累计错误次数（> 0 即视为进错词本） */
   mistakes: number;
+  /**
+   * 累计错误的分类明细。
+   *
+   * 只有新版本记录的这一批作答才会贡献数据，所以是可选的：
+   * 老记录没有这个字段，聚合时按「未分类」处理，不能当成 0 次错误。
+   */
+  mistakeKinds?: MistakeCounts;
   /** 答对次数 */
   corrects: number;
   /** 是否收藏 */

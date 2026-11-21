@@ -6,11 +6,17 @@ import { Link } from 'react-router-dom';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type CustomBank } from '@/db';
 import { listCustomBanks, loadBankIndex, CATEGORY_LABEL, invalidateCache } from '@/data/wordbanks';
-import type { UserWord, WordbankMeta, WordEntry } from '@/types';
+import type { MistakeKind, UserWord, WordbankMeta, WordEntry } from '@/types';
 import { Chip, EmptyState, Segmented, Skeleton } from '@/components/ui';
 import { IconBook, IconStar, IconTrash, IconUpload, IconVolume } from '@/components/Icons';
 import { speak } from '@/lib/speech';
 import { useSettings } from '@/store/settings';
+import {
+  MISTAKE_KINDS,
+  MISTAKE_KIND_LABELS,
+  dominantMistakeKind,
+  hasMistakeData,
+} from '@/lib/mistakeKind';
 
 type Tab = 'banks' | 'wrong' | 'favorite' | 'mastered';
 
@@ -248,6 +254,14 @@ function WordListTab({ tab }: { tab: 'wrong' | 'favorite' | 'mastered' }) {
   const settings = useSettings((s) => s.settings);
   const [q, setQ] = useState('');
   const [limit, setLimit] = useState(100);
+  /**
+   * 错词本的错误类型筛选。
+   *
+   * 只做筛选不做分组列表：错词本还要按错误数排序、还要能搜索，
+   * 一旦按类型拆成多个列表，同一个词出现在几处、点进点出会乱。
+   * 筛一下就能回答用户真正的问题——「我的邻键失误是哪些词」。
+   */
+  const [kind, setKind] = useState<'all' | MistakeKind>('all');
 
   const rows = useLiveQuery(
     async () => {
@@ -265,14 +279,38 @@ function WordListTab({ tab }: { tab: 'wrong' | 'favorite' | 'mastered' }) {
     [],
   );
 
+  /** 错词本里各类错误的总数分布，用于筛选按钮上的计数 */
+  const kindTally = useMemo(() => {
+    const tally = { order: 0, adjacent: 0, similar: 0, unrelated: 0, unclassified: 0 };
+    for (const w of rows ?? []) {
+      if (!hasMistakeData(w.mistakeKinds)) {
+        // 老记录（本功能上线前）没有分类数据，单独计数，不硬塞进某一类
+        if (w.mistakes > 0) tally.unclassified += 1;
+        continue;
+      }
+      tally[dominantMistakeKind(w.mistakeKinds) as MistakeKind] += 1;
+    }
+    return tally;
+  }, [rows]);
+
+  /** 有分类数据的词数（不含旧记录），决定要不要显示筛选条 */
+  const totalClassified = useMemo(
+    () => kindTally.order + kindTally.adjacent + kindTally.similar + kindTally.unrelated,
+    [kindTally],
+  );
+
   const filtered = useMemo(() => {
     const list = rows ?? [];
-    if (!q.trim()) return list;
+    const byKind =
+      tab === 'wrong' && kind !== 'all'
+        ? list.filter((w) => dominantMistakeKind(w.mistakeKinds) === kind)
+        : list;
+    if (!q.trim()) return byKind;
     const lower = q.trim().toLowerCase();
-    return list.filter(
+    return byKind.filter(
       (w) => w.word.toLowerCase().includes(lower) || w.trans.toLowerCase().includes(lower),
     );
-  }, [rows, q]);
+  }, [rows, q, tab, kind]);
 
   if (!rows) return <Skeleton className="h-40" />;
 
@@ -317,8 +355,60 @@ function WordListTab({ tab }: { tab: 'wrong' | 'favorite' | 'mastered' }) {
         <span className="tf-mono text-xs text-muted">{filtered.length} 条</span>
       </div>
 
+      {tab === 'wrong' && totalClassified > 0 && (
+        <div className="mb-3">
+          <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setKind('all')}
+              className={`rounded-full border px-2.5 py-1 text-[11px] transition ${
+                kind === 'all'
+                  ? 'border-accent bg-accent/10 text-accent'
+                  : 'border-line text-muted hover:text-ink'
+              }`}
+            >
+              全部 <span className="tf-mono tabular-nums">{rows.length}</span>
+            </button>
+            {MISTAKE_KINDS.map((k) => {
+              const meta = MISTAKE_KIND_LABELS[k];
+              const n = kindTally[k];
+              return (
+                <button
+                  key={k}
+                  type="button"
+                  title={`${meta.hint}。${meta.advice}`}
+                  onClick={() => setKind(k)}
+                  disabled={n === 0}
+                  className={`rounded-full border px-2.5 py-1 text-[11px] transition ${
+                    kind === k
+                      ? 'border-accent bg-accent/10 text-accent'
+                      : 'border-line text-muted hover:text-ink disabled:cursor-not-allowed disabled:opacity-40'
+                  }`}
+                >
+                  {meta.name} <span className="tf-mono tabular-nums">{n}</span>
+                </button>
+              );
+            })}
+          </div>
+          <p className="text-[11px] leading-relaxed text-muted/80">
+            {kind === 'all'
+              ? `按最主要的错误类型分组，共 ${totalClassified} 个词有分类数据${
+                  kindTally.unclassified > 0
+                    ? `；另有 ${kindTally.unclassified} 个词是旧记录，还没记录错误类型`
+                    : ''
+                }。`
+              : MISTAKE_KIND_LABELS[kind].advice}
+          </p>
+        </div>
+      )}
+
       <div className="overflow-hidden rounded-xl border border-line bg-surface">
         <div className="max-h-[65vh] divide-y divide-line overflow-y-auto">
+          {filtered.length === 0 && (
+            <p className="px-3 py-6 text-center text-[12px] text-muted">
+              这一类里还没有词。换个类型，或者继续练习积累数据。
+            </p>
+          )}
           {filtered.slice(0, limit).map((w) => (
             <WordRow key={w.id} uw={w} accent={settings.accent} />
           ))}
@@ -341,6 +431,18 @@ function WordRow({ uw, accent }: { uw: UserWord; accent: 'en-US' | 'en-GB' }) {
   const toggle = async (field: 'favorite' | 'mastered') => {
     await db.userWords.put({ ...uw, [field]: !uw[field], updatedAt: Date.now() });
   };
+  /**
+   * 错误类型明细，只显示计数大于 0 的类别。
+   * 排序按 MISTAKE_KINDS 固定顺序，不按数量——位置固定才好扫视，
+   * 每行都在动的话反而看不出规律。
+   */
+  const kinds = uw.mistakeKinds
+    ? MISTAKE_KINDS.filter((k) => (uw.mistakeKinds?.[k] ?? 0) > 0).map((k) => ({
+        kind: k,
+        count: uw.mistakeKinds?.[k] ?? 0,
+        meta: MISTAKE_KIND_LABELS[k],
+      }))
+    : [];
   return (
     <div className="flex items-center gap-2 px-3 py-2 hover:bg-surface2/40">
       <div className="min-w-0 flex-1">
@@ -349,6 +451,20 @@ function WordRow({ uw, accent }: { uw: UserWord; accent: 'en-US' | 'en-GB' }) {
           {uw.phonetic && <span className="tf-mono text-[10px] text-muted/70">{uw.phonetic}</span>}
         </div>
         <div className="truncate text-[11px] text-muted">{uw.trans}</div>
+        {kinds.length > 0 && (
+          <div className="mt-1 flex flex-wrap items-center gap-1">
+            {kinds.map(({ kind, count, meta }) => (
+              <span
+                key={kind}
+                title={`${meta.hint}。${meta.advice}`}
+                className="rounded-full border border-line/70 bg-surface2/60 px-1.5 py-0.5 text-[10px] text-muted"
+              >
+                {meta.name}
+                <span className="tf-mono ml-0.5 tabular-nums">{count}</span>
+              </span>
+            ))}
+          </div>
+        )}
       </div>
       <div className="flex shrink-0 items-center gap-0.5">
         {uw.mistakes > 0 && (

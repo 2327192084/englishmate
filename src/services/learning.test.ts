@@ -114,6 +114,61 @@ describe('记录作答', () => {
     expect(uw?.mistakes).toBe(3);
     expect(uw?.corrects).toBe(1);
   });
+
+  it('错误分类跨次累加，而不是被最后一次覆盖', async () => {
+    await recordAttempt({
+      entry: entry('melon'),
+      bankId: 'cet4',
+      correct: false,
+      mistakes: 2,
+      mistakeKinds: { order: 1, adjacent: 1, similar: 0, unrelated: 0 },
+    });
+    await recordAttempt({
+      entry: entry('melon'),
+      bankId: 'cet4',
+      correct: false,
+      mistakes: 1,
+      mistakeKinds: { order: 0, adjacent: 0, similar: 1, unrelated: 0 },
+    });
+    const uw = await db.userWords.get('cet4:melon');
+    expect(uw?.mistakeKinds).toEqual({ order: 1, adjacent: 1, similar: 1, unrelated: 0 });
+  });
+
+  it('没传分类时保留已有分类，不写成全零', async () => {
+    await recordAttempt({
+      entry: entry('olive'),
+      bankId: 'cet4',
+      correct: false,
+      mistakes: 1,
+      mistakeKinds: { order: 0, adjacent: 2, similar: 0, unrelated: 0 },
+    });
+    // 辨认模式之类的作答没有字符级分类
+    await recordAttempt({ entry: entry('olive'), bankId: 'cet4', correct: false, mistakes: 1 });
+    const uw = await db.userWords.get('cet4:olive');
+    expect(uw?.mistakeKinds?.adjacent).toBe(2);
+  });
+
+  it('老记录（没有 mistakeKinds 字段）也能正常累加分类', async () => {
+    // 模拟本功能上线前写下的记录：先手工塞一条不带分类的
+    const legacy = await recordAttempt({
+      entry: entry('peach'),
+      bankId: 'cet4',
+      correct: false,
+      mistakes: 1,
+    });
+    expect(legacy.mistakeKinds).toBeUndefined();
+    await recordAttempt({
+      entry: entry('peach'),
+      bankId: 'cet4',
+      correct: false,
+      mistakes: 1,
+      mistakeKinds: { order: 0, adjacent: 0, similar: 0, unrelated: 1 },
+    });
+    const uw = await db.userWords.get('cet4:peach');
+    // 历史误差数保留，分类从 0 起算
+    expect(uw?.mistakes).toBe(2);
+    expect(uw?.mistakeKinds).toEqual({ order: 0, adjacent: 0, similar: 0, unrelated: 1 });
+  });
 });
 
 describe('会话落库', () => {

@@ -198,6 +198,8 @@ export default function PracticePage() {
           bankId: a.bankId,
           correct: a.correct,
           mistakes: a.mistakes,
+          // 辨认模式与「一次没错」的作答没有分类，这里原样传 undefined
+          mistakeKinds: a.mistakeKinds,
           now: p.roundStartedAt + a.ms,
         });
       }
@@ -552,14 +554,14 @@ export default function PracticePage() {
       <div className="mt-8 rounded-xl border border-line bg-surface p-4">
         <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">小提示</div>
         <ul className="space-y-1.5 text-xs leading-relaxed text-muted">
-          <li>
-            · 打错的字符不会前进，必须改对才能继续——这样才能避免把错拼法练成肌肉记忆。
-          </li>
+          <li>· 打错的字符不会前进，必须改对才能继续——这样才能避免把错拼法练成肌肉记忆。</li>
           <li>
             · {formatKeyLabel(settings.shortcuts.next)}{' '}
             键进入下一个词；没打完就按会被记为答错，自动进错词本。
           </li>
-          <li>· {formatKeyLabel(settings.shortcuts.replay)} 键重听当前单词的发音，练听写时不用动鼠标。</li>
+          <li>
+            · {formatKeyLabel(settings.shortcuts.replay)} 键重听当前单词的发音，练听写时不用动鼠标。
+          </li>
           <li>· 每个词的复习间隔由 FSRS 算法安排，答得越稳间隔越长。</li>
         </ul>
       </div>
