@@ -5,12 +5,16 @@
  * 而且一个词打错会让后面每个字符都错位。按词对齐后，错误被定位到具体的词，
  * 用户一眼就知道是哪个词没记住（和 ArticlesPage 的 ArticlePlayer 同一套口径）。
  *
- * 为什么大小写不算错：这是打字练习，不是拼写考试。句首大写、专有名词大写
- * 都不该让用户重打一遍；真正的知识点是词形与语序。
+ * 比较口径（三条，都是踩过真实反馈才定下的）：
+ *  1. **大小写不算错** —— 打字练习不是拼写考试
+ *  2. **词两端标点不算错** —— 漏句号/问号不该让整句标红（用户实际反馈）
+ *  3. **词内撇号不算错** —— don't 打成 dont 是漏打，不是记错词（用户实际反馈）
+ *
+ * 边界见 `text.ts` 的 `spellingOf`：词内部的其他标点（连字符、小数点）保留。
  *
  * 本文件是纯函数，不许引入任何 React / 状态库依赖——它要能脱离界面单测。
  */
-import { normalizeForCompare, tokenizeForCompare } from './text';
+import { compareKey, normalizeForCompare, tokenizeForCompare } from './text';
 
 export type WordDiff = {
   /** 目标句里的这个位置应该是哪个词（已归一化，可直接展示） */
@@ -35,8 +39,13 @@ export function diffSentence(target: string, typed: string): WordDiff[] {
   return targetWords.map((word, i) => {
     const got = typedWords[i];
     if (got === undefined) return { word, state: 'missing' as const };
-    // 两边都已归一化，这里只需忽略大小写
-    if (got.toLowerCase() === word.toLowerCase()) return { word, state: 'ok' as const };
+    /**
+     * 用 compareKey 而不是直接小写比较：
+     * 它额外剥掉两端标点与词内撇号，见文件头三条口径。
+     * 展示用的 `word` / `typed` 保持归一化后的原样（含标点），
+     * 这样用户看到的对照仍是「support.」而不是被抹掉句号的版本。
+     */
+    if (compareKey(got) === compareKey(word)) return { word, state: 'ok' as const };
     return { word, state: 'wrong' as const, typed: got };
   });
 }

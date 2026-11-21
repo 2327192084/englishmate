@@ -30,7 +30,7 @@ import {
   type ArticleGlossary,
 } from '@/data/articleGlossary';
 import { speak, stopSpeaking } from '@/lib/speech';
-import { tokenizeForCompare } from '@/lib/text';
+import { diffSentence } from '@/lib/sentenceDiff';
 import { useSettings } from '@/store/settings';
 import { playKeySound, playFinishSound } from '@/lib/sound';
 import { saveSession } from '@/services/learning';
@@ -544,15 +544,15 @@ function ArticlePlayer({ article, onExit }: { article: Article; onExit: () => vo
 
   const wordDiff = useMemo(() => {
     if (!sentence) return [];
-    // 用归一化后的词做对比：语料里有 … / ’ 这类键盘打不出的印刷字符
-    const target = tokenizeForCompare(sentence.en);
-    const typed = tokenizeForCompare(input);
-    return target.map((w, i) => {
-      const t = typed[i];
-      if (t === undefined) return { word: w, state: 'missing' as const };
-      if (t.toLowerCase() === w.toLowerCase()) return { word: w, state: 'ok' as const };
-      return { word: w, state: 'wrong' as const, typed: t };
-    });
+    /**
+     * 复用 lib 的 diffSentence，而不是在这里再写一份比较逻辑。
+     *
+     * 之前这里是手写的「小写相等就算对」，与句子练习页的口径分叉了：
+     * 那里后来加了「两端标点不算错」「词内撇号不算错」，而这边没有——
+     * 同一套语料在两个页面判定不一致，用户会以为是 bug。
+     * 统一到一处，规则只有一份。
+     */
+    return diffSentence(sentence.en, input);
   }, [sentence, input]);
 
   const mistakeCount = wordDiff.filter((d) => d.state !== 'ok').length;
@@ -816,11 +816,7 @@ function ArticlePlayer({ article, onExit }: { article: Article; onExit: () => vo
       </div>
 
       {/* 点词查释义 */}
-      <WordDetail
-        entry={picked}
-        open={picked !== null}
-        onClose={() => setPicked(null)}
-      />
+      <WordDetail entry={picked} open={picked !== null} onClose={() => setPicked(null)} />
     </div>
   );
 }

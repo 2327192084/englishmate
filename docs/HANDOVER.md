@@ -17,12 +17,12 @@
 
 ## 一、当前状态（一句话）
 
-**功能完整的开源英语打字学习应用**，Web + Windows 桌面版，488 个测试全绿，tsc 零报错，数据契约校验通过。
+**功能完整的开源英语打字学习应用**，Web + Windows 桌面版，494 个测试全绿，tsc 零报错，数据契约校验通过。
 
 | 指标 | 数值 |
 |---|---|
 | 代码规模 | `src/` 16,436 行（其中非测试 11,219 / 测试 5,217）；`scripts/` 6,754 行 |
-| 测试 | **488 个，23 个文件，全绿**（串行跑，约 2.5 分钟） |
+| 测试 | **494 个，23 个文件，全绿**（串行跑，约 2.5 分钟） |
 | 词库 | 16 个 / 55,560 词条（`public/dicts/`，约 16MB） |
 | 文章 | 109 篇 / 800 句（`public/articles/index.json`） |
 | 例句 | 57,257 条中英对照，覆盖 32,312 / 55,560 = 58.2% 词条 |
@@ -120,7 +120,7 @@ E:\EnglishMate\
 ```bash
 cd /e/EnglishMate
 npx tsc --noEmit               # 类型检查，0 错误
-npx vitest run                 # 488 个测试
+npx vitest run                 # 494 个测试
 node scripts/verify-data.mjs   # 数据契约（16 库 / 75 篇 / glossary）
 ```
 
@@ -247,6 +247,7 @@ npm run verify:desktop                                             # 拉起真�
 | `scripts/build-article-glossary.mjs` | 生成点词释义表（支持 `--check`） | 几秒 |
 | `scripts/verify-data.mjs` | 校验全部产物 | 几秒 |
 | `scripts/validate-articles-source.mjs` | **逐字核对英文是否真来自 Gutenberg**（原文缺失会明确报错） | 秒级 |
+| `scripts/convert-sentences-zh-hans.mjs` | 词库例句中文译文统一转简体（`--check` 验证幂等） | 约 10 秒 |
 
 - **缓存都在 `.tmp/`**（gitignore，删了要重新下载）：`rich-cache/ecdict.csv` 63MB、`rich-cache/eng_sentences.tsv`、`dicts.json`（380 库 sha 列表）、`blobs/*.json`（词表 blob 缓存，`--offline` 靠它）。
 - 文章译稿**在仓库里**：`data/articles-work/`（`classics.json` + `zh-batch-01..07.json`，共 132KB）。别人 clone 后可直接 `node scripts/build-articles.mjs`。`.tmp/articles-work/` 里剩的 16MB 是试验脚本与中间产物，**不需要进仓库**。
@@ -320,7 +321,7 @@ npm run verify:desktop                                             # 拉起真�
 |---|---|---|
 | 词表 | Qwerty Learner | MIT |
 | 词性释义 | ECDICT | MIT |
-| 中英例句 | Tatoeba | **CC-BY 2.0 FR（必须署名）** |
+| 中英例句 | Tatoeba | **CC-BY 2.0 FR（必须署名）**；中文译文已统一转简体（见 `scripts/convert-sentences-zh-hans.mjs`） |
 | 文章 | Aesop's Fables (Gutenberg #11339) | 公版 |
 | 词形/形近 | 从 ECDICT 挖掘 | MIT |
 
@@ -345,6 +346,10 @@ npm run verify:desktop                                             # 拉起真�
 | 词形提示跟打默认展开、默写/听写默认折叠 | 后两者目标是从记忆提取，摊开等于送答案 |
 | 词关系独立文件不塞进词库 | 否则 16 个词库文件体积翻倍且重复 |
 | 文章点词用独立 glossary 文件，不按词加载整库 | 点一个词不该下载 1.3MB 的高考词库；独立文件 gzip 约 120KB |
+| **句子对比放宽「两端标点」与「词内撇号」** | 用户反馈：打对 `support` 却被 `support.` 判错、`dont` 被 `don't` 判错。标点不是这个练习考的东西（考词形/搭配/语序），撇号又是最容易漏的字符。边界：**只剥词两端**，词内连字符/小数点仍要打对（`well-known`、`3.14`）；展示用的词保留原标点，标准答案才能照着打。见 `lib/text.ts` 的 `spellingOf` |
+| 文章练习与句子练习**共用** `diffSentence` | 此前 ArticlesPage 手写了一份「小写相等就算对」，与句子页口径分叉：那边加了标点/撇号放行，这边没有，同套语料两个页面判定不一致，用户会当 bug |
+| 中英例句的中文译文**构建期**统一转简体 | Tatoeba 中文语料繁简混杂（实测 25,861/57,257 = 45.2% 含繁体）。运行时转换要带 OpenCC 词典且每次加载多一步；构建期一次转完固化进 `public/dicts/*.json`，后来者 clone 即可用。`opencc-js` 只是构建期工具，**不进 package.json** |
+| 繁简转换必须带 FIXUPS 修正表，且用**幂等性**验证 | OpenCC 把「显著 zhù」一律转成错别字「显着」。修正表处理后第二次跑必须 0 条改动——这是唯一可靠的验收方式。**别用自造繁体字表检测**：繁简同形字（移/短/尾/手/臂/弯/晒）会大量假阳性，我在这上面反复踩坑 |
 | 文章可点词用 `span[role=button]` 不用 `button` | 几十个 button 会污染 Tab 焦点漫游，用户按 Tab 是想跳输入框 |
 | 快捷键判定集中在 `lib/keys.ts` | 脏配置（两动作抢一键）只能在一处收敛 |
 | 改键时新键已被占用就**交换**而非拒绝 | 用户改键的常见意图就是两键对调 |

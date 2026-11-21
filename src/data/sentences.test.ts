@@ -98,6 +98,49 @@ describe('diffSentence', () => {
     const typed = target.replace(/\u2019/g, "'");
     expect(mistakeCount(diffSentence(target, typed))).toBe(0);
   });
+
+  /**
+   * 下面三条是**真实用户反馈**回归用例（2026-11-21）：
+   * 用户把句子逐字打对，却因为没打句末标点被判「1 处不一致」。
+   * 这类误判会让用户怀疑自己的拼写，必须钉死。
+   */
+  it('句末句号没打不算错（用户反馈：support 被 support. 判错）', () => {
+    const target = 'I want to ensure my phone has good customer support.';
+    const typed = 'i want to ensure my phone has good customer support';
+    expect(mistakeCount(diffSentence(target, typed))).toBe(0);
+  });
+
+  it("词内撇号漏打不算错（用户反馈：don't 被 dont 判错）", () => {
+    const target = "You don't want to be an editor?";
+    const typed = 'you dont want to be an editor?';
+    expect(mistakeCount(diffSentence(target, typed))).toBe(0);
+  });
+
+  it('各种句末标点都放过：问号、感叹号、逗号、引号', () => {
+    expect(mistakeCount(diffSentence('Is it ready?', 'Is it ready'))).toBe(0);
+    expect(mistakeCount(diffSentence('Stop now!', 'Stop now'))).toBe(0);
+    expect(mistakeCount(diffSentence('Hello, world.', 'hello world'))).toBe(0);
+    expect(mistakeCount(diffSentence('He said "hi".', 'he said hi'))).toBe(0);
+  });
+
+  it('但拼错仍然要判错——放宽标点不等于放宽拼写', () => {
+    // 这条防止"为了修 bug 把判定整个改松"
+    expect(mistakeCount(diffSentence('I have a dream.', 'I have a drem'))).toBe(1);
+    expect(mistakeCount(diffSentence("You don't know.", 'you do know'))).toBe(1);
+    expect(mistakeCount(diffSentence('support.', 'suport'))).toBe(1);
+  });
+
+  it('词内部的连字符/小数点仍要打对（只放宽两端标点）', () => {
+    // well-known 的连字符、3.14 的小数点在词中间，属于拼写本身
+    expect(mistakeCount(diffSentence('a well-known fact', 'a wellknown fact'))).toBe(1);
+    expect(mistakeCount(diffSentence('pi is 3.14 today', 'pi is 314 today'))).toBe(1);
+  });
+
+  it('展示用的词保留原标点，不被抹掉', () => {
+    // 标准答案必须能照着打：抹掉句号会让用户不知道要打什么
+    const diffs = diffSentence('I have a dream.', 'I have a drem');
+    expect(diffs[diffs.length - 1]!.word).toBe('dream.');
+  });
 });
 
 describe('joinSentence', () => {
