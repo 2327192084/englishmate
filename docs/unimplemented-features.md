@@ -13,6 +13,7 @@
 | **文章点词联动** | ✅ 已完成。新增 `scripts/build-article-glossary.mjs` → `public/dicts/article-glossary.json`（1,449 词条 / 554 变体 / 294KB），`src/data/articleGlossary.ts` 负责加载与词形回退，`ArticlesPage` 的目标句按词可点并打开 `WordDetail`。文章 token 覆盖 98.4% |
 | **句子库练习** | ✅ 已完成。`src/lib/sentenceDiff.ts`（整句逐词对比）、`src/data/sentences.ts`（错词本 / 收藏 / 按词库三来源取句）、`src/pages/SentencesPage.tsx`（一轮 10 句，Enter 提交后逐词着色），路由 `/sentences` 已接线 |
 | **自定义快捷键** | ✅ 已完成。`src/lib/keys.ts` 集中判定键位，`Settings.shortcuts` 存四个动作的键名，设置页有录制式改键 UI，页脚提示与练习页小提示都跟着设置变 |
+| **错词按类型分组** | ✅ 已完成。`src/lib/mistakeKind.ts` 按「期望字符 vs 实际按键」把错误分成顺序错 / 邻键误触 / 形近混淆 / 想不起来四类，`store/practice.ts` 在 `input` 里当场采集，`recordAttempt` 累加进 `UserWord.mistakeKinds`，词库页错词本可按类型筛选、每行显示分类明细 |
 | **放开 tem8 截断** | ✅ 已完成。`build-more-dicts.mjs` 删掉 `limit: 8000`，tem8 全量 11,858 词（词库总数 55,560） |
 
 ---
@@ -69,9 +70,12 @@
 | 功能 | 现状与真正的障碍 | 成本 |
 | --- | --- | --- |
 | **键盘热力图** | ⚠️ 不是「加个图表组件」那么简单。目前**完全没有按字符的错误统计**：`UserWord` 只有 `mistakes` 总计数；`TypingState.lastWrongChar` 只用于当场 UI 提示，**从不落库**；`PracticeSession` 只有 `keystrokes` / `correctKeystrokes` 总数。要做需打通 `lib/typing.ts` → `services/learning.ts` → 新 Dexie 表（含 v3 迁移）→ 统计页图表，且 `src/lib` 改动要保持零 React 依赖 | 2 小时+ |
-| **错词按类型分组** | 同上，没有任何「拼写错 / 混淆 / 遗忘」的类型字段，无法区分。需要先定义错误分类并在作答时记录，才谈得上分组练习 | 2 小时+ |
 
-> 原 B 档的「自定义快捷键」已于 2026-11-21 完成（`src/lib/keys.ts` + `Settings.shortcuts`）。
+> 原 B 档的「自定义快捷键」与「错词按类型分组」均已于 2026-11-21 完成。
+> 错词分组没有新建 Dexie 表：分类是**稀疏**的（只关心「这个词在哪类错上栽过」），
+> 做成 `UserWord` 上的一个可选字段就够，省掉一次 v3 迁移和一张需要跟着删改同步的表。
+> 键盘热力图不一样——它要统计**所有**键（包括从没打错过的键）的击键分布，
+> 那是另一个维度的数据，没法塞进词条记录里。
 
 ### C 档 · 成本高或不建议
 
@@ -124,6 +128,9 @@ node -e "const fs=require('fs'),p=require('path');const idx=JSON.parse(fs.readFi
 
 # 是否有按字符的错误统计（当前应为空）
 grep -rn "keystrokeStat\|perKey\|charErrors" src/ --include=*.ts --include=*.tsx
+
+# 错词分类是否已接线（应能看到采集点与落库）
+grep -rn "classifyMistake\|mistakeKinds" src/ --include=*.ts --include=*.tsx | grep -v test
 
 # 快捷键是否已可配置（应能看到 Settings.shortcuts 与 lib/keys.ts）
 grep -rn "matchShortcut\|DEFAULT_SHORTCUTS" src/ --include=*.ts --include=*.tsx | grep -v test
