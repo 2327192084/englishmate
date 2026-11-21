@@ -17,12 +17,12 @@
 
 ## 一、当前状态（一句话）
 
-**功能完整的开源英语打字学习应用**，Web + Windows 桌面版，382 个测试全绿，tsc 零报错，数据契约校验通过。
+**功能完整的开源英语打字学习应用**，Web + Windows 桌面版，451 个测试全绿，tsc 零报错，数据契约校验通过。
 
 | 指标 | 数值 |
 |---|---|
 | 代码规模 | `src/` 16,436 行（其中非测试 11,219 / 测试 5,217）；`scripts/` 6,754 行 |
-| 测试 | **382 个，20 个文件，全绿**（串行跑，约 2.5 分钟） |
+| 测试 | **451 个，22 个文件，全绿**（串行跑，约 2.5 分钟） |
 | 词库 | 16 个 / 55,560 词条（`public/dicts/`，约 16MB） |
 | 文章 | 75 篇 / 490 句（`public/articles/index.json`） |
 | 例句 | 57,257 条中英对照，覆盖 32,312 / 55,560 = 58.2% 词条 |
@@ -68,6 +68,8 @@ E:\EnglishMate\
 │   │   ├── flow.ts         练习流程引擎（分组循环）
 │   │   ├── text.ts         文本归一化（全角/弯引号 → 可打字形式）
 │   │   ├── sentenceDiff.ts 整句逐词对比
+│   │   ├── cloze.ts        完形挖空（屈折形式匹配 + 三档判定）
+│   │   ├── narrowListen.ts 窄式精听（轮次梯度 + 推进状态机）
 │   │   ├── keys.ts         快捷键绑定 / 归一 / 判定
 │   │   ├── mistakeKind.ts  错误分类（顺序/邻键/形近/想不起来）
 │   │   ├── pwa.ts          Service Worker 注册（只认 window.englishmate）
@@ -117,7 +119,7 @@ E:\EnglishMate\
 ```bash
 cd /e/EnglishMate
 npx tsc --noEmit               # 类型检查，0 错误
-npx vitest run                 # 382 个测试
+npx vitest run                 # 451 个测试
 node scripts/verify-data.mjs   # 数据契约（16 库 / 75 篇 / glossary）
 ```
 
@@ -263,7 +265,7 @@ npm run verify:desktop                                             # 拉起真�
 | 75 篇文章 + 自定义文章导入 | 三种格式解析 + GBK 检测 |
 | 词形变化 / 形近词 | 14,959 词，练习界面提示 + 详情面板 |
 | 文章点词联动 | 阅读时点句中单词查释义（覆盖 98.4% token，未命中的不可点） |
-| 句子练习 | `/sentences`，三来源，整句输入 + 逐词着色 |
+| 句子练习 | `/sentences`，三来源，**三种练法**：整句输入（逐词着色）、完形填空（挖目标词 + 三档判定 + 接入 FSRS）、窄式精听（盲听→中文→英文三轮往复） |
 | 自定义快捷键 | 四个动作可改键，设置页录制式录入，提示文案同步 |
 | 错词按类型分组 | 四类错误在作答时采集，错词本可按类型筛选 |
 | 学习报告导出 | SVG / PDF |
@@ -301,9 +303,12 @@ npm run verify:desktop                                             # 拉起真�
 ### 已知的小缺陷（都不影响功能，顺手可修）
 
 1. `BUILTIN_BANK_IDS` 与 `FALLBACK_BANKS`（`src/data/wordbanks.ts`）只硬编码 **8 个**词库，实际有 16 个。走 `loadBankIndex()` fetch 成功时无影响，fetch 失败退化时才露出。
-2. `clearAllData` / `exportAllData` / `importAllData`（`src/db/index.ts`）**都没覆盖 `customArticles`**（`clearAllData` 还没清 `settings`）。用户导入的自定义文章不参与导出/导入/清空。
+2. ~~`clearAllData` / `exportAllData` / `importAllData` 都没覆盖 `customArticles`~~ **已修（2026-11-21）**。三处都补齐了，并且 `importAllData` 特别处理了向后兼容：旧备份（version 1）没有 `customArticles` 字段时**保留现状**而不是清空——「字段缺失」（旧格式）和「字段为空数组」（用户确实清空过）必须区别对待，否则从旧备份恢复会让用户的自定义文章凭空消失。四条用例在 `services/learning.test.ts` 的「备份与恢复」里。
+   - 注意：`clearAllData` 仍然**不清 `settings`**，这是**有意设计**（函数注释写着「设置保留」）。清了等于把用户的快捷键、口音偏好一起抹掉。别当成漏项去"修"。
 3. `verify.yml` 注释里提到的 `docs/dict-contribution.md` **不存在**。
 4. `src/lib/pwa.ts` 只认 `window.englishmate`，桌面 TypeFlow 里恒 false（有 `protocol.startsWith('http')` 兜底，无实际影响）。
+5. **完形会挖到同形专有名词**（`brown → Ms. Brown`），语义已偏离词条本义。这类占可出题量的 1.35%，仍然能练到正确词形，**决定不改**：加「小写词条大写出现就排除」的规则会把 `"She likes music."` 这种引号后句首大写也误伤，净收益为负。
+6. **窄式精听不记录学习进度**：只落一次 session（`bankId: 'listening'`），不写 `recordAttempt`，所以听完不会改变任何词的 FSRS 到期时间。这是有意的——「听过」不等于「会了」。
 
 ---
 
@@ -345,6 +350,15 @@ npm run verify:desktop                                             # 拉起真�
 | 没采集到错误分类时存 `undefined` 而不是全零 | 全零会被读成「从没错过这类错」，是假数据 |
 | 报告用 SVG 自绘不引 jsPDF | 省 200KB，矢量不糊 |
 | 句子练习长度上限 100，文章校验上限 140，**故意不同** | 实测例句最长 80 字符（100 一条都筛不掉，是安全网）；文章有 67 篇含 >100 字符句子（放宽到 140 就是把长句塞进整句输入）。别去统一 |
+| 完形只挖**一个**空，且目标词重复出现的句子整句弃用 | 挖两个空无法单独判定；目标词在句中重复出现时，挖掉第一个、第二个会把答案直接泄露（实测这类占 0.28%） |
+| 完形**不生成** -er/-est/-ly 这类派生候选 | 实测加比较级只多覆盖 94 句（0.17%），但会让 `fold` 匹配到 `folder`——而 folder 是另一个独立词条，等于考了用户没在学的词。0.17% 换一类挖错词的 bug 不划算 |
+| 完形答成原形但句子要屈折形式，单列 `inflection` 一档 | 用户其实想起了正确的词，只是没变形；混进"错了"里就失去了教学价值 |
+| 完形的 session 用 `bankId: 'cloze'`，不并进 `'sentences'` | 统计按 bankId 分组，两种练法难度不同，混在一起看不出任何东西 |
+| 完形答完写 `recordAttempt`，整句输入不写 | 整句的作答单位是句子，一句可能错三个词无法归因；完形每个空精确对应一个词条，是干净的「会不会用」信号 |
+| 完形答错传 `mistakes: 1`，**不传** `mistakeKinds` | 完形没有按键级输入，编一个分类会污染错词本的四类统计；不传时 recordAttempt 保留原值（既有约定） |
+| 窄式精听**盲听轮不显示词条** | 「来自词条 banana」等于把答案印在屏幕上，会让「只听声音」变成「看着单词听」 |
+| 窄式精听翻页靠用户点，不自动 | Web Speech 没有查时长的 API，无法知道一句何时播完；用 setTimeout 猜时长是错的 |
+| 精听轮次固定 3 轮（盲听→中文→英文），不叫「100 遍」 | 保留 100LS 唯一有机制的部分（字幕梯度），去掉它的营销数字：一次性会话做得完，没有「永远到不了的终点」 |
 | 桌面版只换 dist，不改 main/preload | 改 origin 会让旧 IndexedDB 学习进度不可见 |
 
 ---

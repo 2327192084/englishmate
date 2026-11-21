@@ -25,6 +25,16 @@ export interface SentenceItem {
   /** 这句例句归属的词条（原形，未归一化），用于回链与埋点 */
   word: string;
   bankId: string;
+  /**
+   * 该词条的释义。
+   *
+   * 完形模式要把它写进「错词本」——UserWord 需要 trans 快照，
+   * 没有释义的话错词本里会出现一堆没有中文的空行。
+   * 取不到时是空串而不是 undefined：调用方不必到处判空。
+   */
+  trans: string;
+  /** 音标（可能没有） */
+  phonetic?: string;
 }
 
 /** 超过这个长度就不收：整句输入的体验阈值 */
@@ -82,7 +92,14 @@ export async function sentencesFromWords(
     const s = usable[Math.floor(rng() * usable.length)];
     // usable 非空，这里的兜底只为类型收窄
     if (!s) continue;
-    picked.push({ en: s.en, zh: s.zh, word: entry.w, bankId });
+    picked.push({
+      en: s.en,
+      zh: s.zh,
+      word: entry.w,
+      bankId,
+      trans: typeof entry.t === 'string' ? entry.t : '',
+      ...(entry.p ? { phonetic: entry.p } : {}),
+    });
   }
 
   return shuffleWith(picked, rng).slice(0, limit);

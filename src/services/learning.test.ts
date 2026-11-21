@@ -380,6 +380,107 @@ describe('备份与恢复', () => {
     await expect(importAllData('{"app":"something-else"}')).rejects.toThrow();
     await expect(importAllData('not json')).rejects.toThrow();
   });
+
+  /**
+   * customArticles 曾经三处都没覆盖（clear / export / import），
+   * 表现为：用户导入的文章在「导出→换机器恢复」后凭空消失，且没有任何报错。
+   * 下面三条分别钉住这三处。
+   */
+  it('自定义文章参与导出与导入', async () => {
+    await db.customArticles.put({
+      id: 'art-1',
+      title: 'My Article',
+      titleZh: '我的文章',
+      level: 'CET-4',
+      author: '',
+      sentences: [{ en: 'Hello world.', zh: '你好世界。' }],
+      source: '导入自 test.txt',
+      createdAt: Date.now(),
+    });
+
+    const json = await exportAllData();
+    expect(JSON.parse(json).customArticles).toHaveLength(1);
+
+    await clearAllData();
+    expect(await db.customArticles.count()).toBe(0);
+
+    await importAllData(json);
+    expect(await db.customArticles.count()).toBe(1);
+    expect((await db.customArticles.get('art-1'))?.titleZh).toBe('我的文章');
+  });
+
+  it('清空数据会一并清掉自定义文章', async () => {
+    await db.customArticles.put({
+      id: 'art-2',
+      title: 'T',
+      titleZh: 'T',
+      level: 'CET-4',
+      author: '',
+      sentences: [],
+      source: '',
+      createdAt: Date.now(),
+    });
+    expect(await db.customArticles.count()).toBe(1);
+    await clearAllData();
+    expect(await db.customArticles.count()).toBe(0);
+  });
+
+  /**
+   * 向后兼容：旧备份（version 1）没有 customArticles 字段。
+   * 从旧备份恢复时不能把用户现有的自定义文章清掉——
+   * 「字段缺失」（旧格式，保留现状）和「字段为空数组」（用户确实清空过）
+   * 是两件不同的事，这条用例专门锁住这个区别。
+   */
+  it('从旧格式备份恢复时不会清掉现有的自定义文章', async () => {
+    await db.customArticles.put({
+      id: 'art-3',
+      title: 'Keep me',
+      titleZh: '留着我',
+      level: 'CET-4',
+      author: '',
+      sentences: [],
+      source: '',
+      createdAt: Date.now(),
+    });
+
+    // 模拟 2026-11-21 之前的导出：有 app 标记，但没有 customArticles
+    const legacy = JSON.stringify({
+      app: 'englishmate',
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      userWords: [],
+      sessions: [],
+      settings: [],
+      achievements: [],
+      customBanks: [],
+    });
+    await importAllData(legacy);
+
+    expect(await db.customArticles.count()).toBe(1);
+    expect((await db.customArticles.get('art-3'))?.titleZh).toBe('留着我');
+  });
+
+  it('备份里 customArticles 是空数组时按"用户确实清空"处理', async () => {
+    await db.customArticles.put({
+      id: 'art-4',
+      title: 'Drop me',
+      titleZh: '删掉我',
+      level: 'CET-4',
+      author: '',
+      sentences: [],
+      source: '',
+      createdAt: Date.now(),
+    });
+    const json = JSON.stringify({
+      app: 'englishmate',
+      version: 2,
+      customArticles: [],
+      userWords: [],
+      sessions: [],
+    });
+    await importAllData(json);
+    expect(await db.customArticles.count()).toBe(0);
+  });
 });
 
 describe('FSRS 与记录联动', () => {

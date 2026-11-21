@@ -108,18 +108,22 @@ export async function setMeta(key: string, value: unknown): Promise<void> {
 
 /** 清空全部学习数据（设置保留） */
 export async function clearAllData(): Promise<void> {
+  /**
+   * 表列表用**数组**传，不用可变参数。
+   *
+   * Dexie 的 transaction() 签名是 transaction(mode, table1, table2, ... , scope)，
+   * 最多接 7 个表参数。这里已经有 6 张表，再按位置加一个就超出上限
+   * （编译器报 Expected 3-7 arguments, but got 8），且传数组可读性更好。
+   */
   await db.transaction(
     'rw',
-    db.userWords,
-    db.sessions,
-    db.achievements,
-    db.customBanks,
-    db.meta,
+    [db.userWords, db.sessions, db.achievements, db.customBanks, db.customArticles, db.meta],
     async () => {
       await db.userWords.clear();
       await db.sessions.clear();
       await db.achievements.clear();
       await db.customBanks.clear();
+      await db.customArticles.clear();
       await db.meta.clear();
     },
   );
@@ -127,23 +131,26 @@ export async function clearAllData(): Promise<void> {
 
 /** 导出全部数据为可下载的 JSON */
 export async function exportAllData(): Promise<string> {
-  const [userWords, sessions, settings, achievements, customBanks] = await Promise.all([
-    db.userWords.toArray(),
-    db.sessions.toArray(),
-    db.settings.toArray(),
-    db.achievements.toArray(),
-    db.customBanks.toArray(),
-  ]);
+  const [userWords, sessions, settings, achievements, customBanks, customArticles] =
+    await Promise.all([
+      db.userWords.toArray(),
+      db.sessions.toArray(),
+      db.settings.toArray(),
+      db.achievements.toArray(),
+      db.customBanks.toArray(),
+      db.customArticles.toArray(),
+    ]);
   return JSON.stringify(
     {
       app: 'englishmate',
-      version: 1,
+      version: 2,
       exportedAt: new Date().toISOString(),
       userWords,
       sessions,
       settings,
       achievements,
       customBanks,
+      customArticles,
     },
     null,
     2,
@@ -154,22 +161,20 @@ export async function exportAllData(): Promise<string> {
 export async function importAllData(json: string): Promise<{ words: number; sessions: number }> {
   const data = JSON.parse(json) as {
     app?: string;
+    version?: number;
     userWords?: UserWord[];
     sessions?: PracticeSession[];
     settings?: Settings[];
     achievements?: UnlockedAchievement[];
     customBanks?: CustomBank[];
+    customArticles?: CustomArticle[];
   };
   if (data.app !== 'englishmate') {
     throw new Error('这不是 EnglishMate 导出的数据文件');
   }
   await db.transaction(
     'rw',
-    db.userWords,
-    db.sessions,
-    db.settings,
-    db.achievements,
-    db.customBanks,
+    [db.userWords, db.sessions, db.settings, db.achievements, db.customBanks, db.customArticles],
     async () => {
       await db.userWords.clear();
       await db.sessions.clear();
@@ -177,6 +182,19 @@ export async function importAllData(json: string): Promise<{ words: number; sess
       if (data.sessions?.length) await db.sessions.bulkPut(data.sessions);
       if (data.achievements?.length) await db.achievements.bulkPut(data.achievements);
       if (data.customBanks?.length) await db.customBanks.bulkPut(data.customBanks);
+      /**
+       * customArticles 只在导出文件**确实带了这个字段**时才替换。
+       *
+       * 旧备份（version 1，2026-11-21 之前的导出）没有 customArticles 字段。
+       * 若无条件 clear 再按存在性 bulkPut，从旧备份恢复会让用户
+       * 现有的自定义文章凭空消失——而用户的本意只是恢复学习进度。
+       * 「字段缺失」和「字段存在但为空」必须区别对待：
+       * 前者是旧格式（保留现状），后者是用户确实清空过（跟着清空）。
+       */
+      if (data.customArticles) {
+        await db.customArticles.clear();
+        if (data.customArticles.length) await db.customArticles.bulkPut(data.customArticles);
+      }
       if (data.settings?.length) {
         await db.settings.clear();
         await db.settings.bulkPut(data.settings);

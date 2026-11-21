@@ -19,7 +19,18 @@ const words = [
   { w: 'banana', t: '香蕉', sentences: [{ en: 'The banana is ripe.', zh: '香蕉熟了。' }] },
 ];
 
-beforeEach(() => {
+beforeEach(async () => {
+  /**
+   * 每个用例都从干净的用户词库开始。
+   *
+   * 完形模式会把作答写进 IndexedDB（recordAttempt → 错词本 + FSRS），
+   * 而 fake-indexeddb 在同一个测试文件里是**跨用例共享**的。
+   * 不清的话，前一个用例答错的词会让「错词本为空时给出空状态」这类
+   * 依赖初始状态的用例失败——这不是被测代码的 bug，是测试隔离没做好。
+   */
+  const { db } = await import('@/db');
+  await db.userWords.clear();
+
   vi.stubGlobal('fetch', (url: string) => {
     const u = String(url);
     if (u.includes('index.json')) {
@@ -56,7 +67,153 @@ async function startBankRound() {
   return screen.getByRole('textbox') as HTMLTextAreaElement;
 }
 
-describe('SentencesPage', () => {
+/** 切到完形模式并开始一轮，返回填空输入框 */
+async function startClozeRound() {
+  render(
+    <MemoryRouter>
+      <SentencesPage />
+    </MemoryRouter>,
+  );
+  fireEvent.click(screen.getByText('按词库'));
+  fireEvent.click(screen.getByText('完形填空'));
+  fireEvent.click(screen.getByText('开始'));
+  await waitFor(() => expect(screen.getByText(/第 1\//)).toBeInTheDocument());
+  return screen.getByLabelText('填空答案') as HTMLInputElement;
+}
+
+describe('SentencesPage · 完形模式', () => {
+  it('题面里出现挖空占位符而不是完整句子', async () => {
+    await startClozeRound();
+    // 两句测试句的目标词（apple / banana）都在句中，都能挖
+    const shown = document.querySelector('.tf-card .tf-mono')?.textContent ?? '';
+    expect(shown).toContain('____');
+  });
+
+  it('填对时判定完全正确', async () => {
+    const input = await startClozeRound();
+    /**
+     * 答案不能从题面读——题面里那个词已经被挖掉了（正是要验证的点）。
+     * 改为：先随便填一个错答案拿到「答案」区，读出正确答案，
+     * 再进入下一句用正确答案验证判定逻辑。
+     */
+    const shown = document.querySelector('.tf-card .tf-mono')?.textContent ?? '';
+    const answer = shown.includes('____') && /ripe/.test(shown) ? 'banana' : 'apple';
+    fireEvent.change(input, { target: { value: answer } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    await waitFor(() => expect(screen.getByText('完全正确')).toBeInTheDocument());
+  });
+
+  it('完形模式不显示逐词对照（那是整句模式的东西）', async () => {
+    const input = await startClozeRound();
+    fireEvent.change(input, { target: { value: 'wrongword' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    await waitFor(() => expect(screen.getByText('答案')).toBeInTheDocument());
+    expect(screen.queryByText('逐词对照')).not.toBeInTheDocument();
+  });
+
+  it('答错时给出正确答案与对应词条', async () => {
+    const input = await startClozeRound();
+    fireEvent.change(input, { target: { value: 'zzz' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    await waitFor(() => expect(screen.getByText('答案')).toBeInTheDocument());
+    expect(screen.getByText(/这个词条是/)).toBeInTheDocument();
+  });
+
+  it('切换练法会回到选择页，不接着做上一组的下一句', async () => {
+    await startClozeRound();
+    fireEvent.click(screen.getByText('换来源'));
+    await waitFor(() => expect(screen.getByText('句子练习')).toBeInTheDocument());
+    expect(screen.getByText('整句输入')).toBeInTheDocument();
+  });
+
+  /**
+   * 完形的作答必须落进「用户词库 + FSRS」：否则答错的词不会进错词本、
+   * 也不会提前复习，完形就只是一次性玩具。
+   */
+  it('答错会把该词条写进错词本（FSRS 接入）', async () => {
+    const input = await startClozeRound();
+    fireEvent.change(input, { target: { value: 'zzz' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    await waitFor(() => expect(screen.getByText('答案')).toBeInTheDocument());
+
+    // 落库是异步的，等它写进去
+    await waitFor(async () => {
+      const { db } = await import('@/db');
+      const rows = await db.userWords.toArray();
+      expect(rows.length).toBeGreaterThan(0);
+      // 答错的词必须有 mistakes > 0，否则错词本拿不到它
+      expect(rows.some((r) => r.mistakes > 0)).toBe(true);
+    });
+  });
+
+  it('答对不会把这个词记成错词', async () => {
+    const input = await startClozeRound();
+    const shown = document.querySelector('.tf-card .tf-mono')?.textContent ?? '';
+    const answer = /ripe/.test(shown) ? 'banana' : 'apple';
+    fireEvent.change(input, { target: { value: answer } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    await waitFor(() => expect(screen.getByText('完全正确')).toBeInTheDocument());
+
+    await waitFor(async () => {
+      const { db } = await import('@/db');
+      const rows = await db.userWords.toArray();
+      // 答对也要落库（corrects 计数），但 mistakes 必须是 0
+      const hit = rows.find((r) => r.word === answer);
+      expect(hit).toBeTruthy();
+      expect(hit?.mistakes).toBe(0);
+    });
+  });
+});
+
+describe('SentencesPage · 窄式精听', () => {
+  /** 切到精听并开始一轮 */
+  async function startListenRound() {
+    render(
+      <MemoryRouter>
+        <SentencesPage />
+      </MemoryRouter>,
+    );
+    fireEvent.click(screen.getByText('按词库'));
+    fireEvent.click(screen.getByText('窄式精听'));
+    fireEvent.click(screen.getByText('开始'));
+    // 「第 1/3 轮」和「第 1/2 句」都会命中 /第 1\//，所以用轮次文案定位
+    await waitFor(() => expect(screen.getByText(/轮 · /)).toBeInTheDocument());
+  }
+
+  it('第一轮是盲听，不给任何文字', async () => {
+    await startListenRound();
+    expect(screen.getByText('先只听，不看文字')).toBeInTheDocument();
+    // 也不能把英文原文漏出来
+    expect(screen.queryByText(/apple|banana/)).not.toBeInTheDocument();
+  });
+
+  it('显示轮次与句号进度', async () => {
+    await startListenRound();
+    expect(screen.getByText(/第 1\/3 轮/)).toBeInTheDocument();
+    expect(screen.getByText(/第 1\/2 句/)).toBeInTheDocument();
+  });
+
+  it('本轮最后一句之后进入下一轮并给出中文', async () => {
+    await startListenRound();
+    // 测试数据只有 2 句，点两次即走完第一轮
+    fireEvent.click(screen.getByText('下一句'));
+    await waitFor(() => expect(screen.getByText(/第 2\/2 句/)).toBeInTheDocument());
+    fireEvent.click(screen.getByText('下一轮'));
+    await waitFor(() => expect(screen.getByText(/第 2\/3 轮/)).toBeInTheDocument());
+    expect(screen.getByText(/看中文/)).toBeInTheDocument();
+    // 第二轮的提示是中文译文，不再是盲听占位
+    expect(screen.queryByText('先只听，不看文字')).not.toBeInTheDocument();
+  });
+
+  it('有「再听一遍」按钮且可点', async () => {
+    await startListenRound();
+    const again = screen.getByLabelText('再听一遍');
+    expect(again).not.toBeDisabled();
+    fireEvent.click(again);
+  });
+});
+
+describe('SentencesPage（原有用例）', () => {
   it('取到句子、提交后显示逐词对照与标准答案', async () => {
     const ta = await startBankRound();
 
