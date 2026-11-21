@@ -93,11 +93,12 @@ describe('SentencesPage', () => {
 
   /**
    * 只有 2 个词是带例句的，所以一轮实际只有 2 句，很容易跑到结算页。
-   * 回归点：点「再来一组」后必须重开一轮，不能因为拿到的是"长度相同的数组"
-   * 而让播放器复用它自己的 idx（那样会直接又落回结算页）。
+   * 这里只钉住行为：点「再来一组」必须回到第 1 句。播放器是靠 loading 骨架
+   * 卸载重挂还是靠 key 换代才重置的，属于实现细节，不该进断言——
+   * 那条路以后换成别的方式（比如原地重置 idx）这个用例依然成立。
    */
   it('「再来一组」回到第 1 句而不是卡在结算页', async () => {
-    const ta = await startBankRound();
+    await startBankRound();
 
     for (let i = 0; i < 2; i += 1) {
       const target = document.querySelector('.tf-card .tf-mono')?.textContent ?? '';
@@ -106,7 +107,6 @@ describe('SentencesPage', () => {
       await waitFor(() => expect(screen.getByText('完全正确')).toBeInTheDocument());
       fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' });
     }
-    void ta;
 
     await waitFor(() => expect(screen.getByText(/一次打对/)).toBeInTheDocument());
     fireEvent.click(screen.getByText('再来一组'));

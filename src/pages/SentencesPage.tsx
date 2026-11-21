@@ -68,9 +68,9 @@ export default function SentencesPage() {
   /** null = 还在选择来源；数组（可能为空）= 已经点过开始 */
   const [items, setItems] = useState<SentenceItem[] | null>(null);
   /**
-   * 第几轮。只用来说服 React 换一个 SentencePlayer 实例：
-   * 「再来一组」拿到的仍是数组、长度也一样，不换实例的话播放器内部的
-   * idx 还停在 items.length，会直接又落回结算页。
+   * 第几轮。用来给播放器换一个实例：虽然 `start()` 会先经过 loading 骨架、
+   * 播放器本来就会卸载重挂，但这层因果太隐晦，谁把骨架去掉就会踩坑；
+   * 显式给个 key，让「新一轮必须从第 1 句开始」成为代码里看得见的事实。
    */
   const [round, setRound] = useState(0);
 
@@ -161,6 +161,7 @@ export default function SentencesPage() {
 
   return (
     <SentencePlayer
+      key={round}
       items={items}
       onExit={() => setItems(null)}
       onAgain={() => void start()}

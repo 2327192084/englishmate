@@ -199,6 +199,16 @@ describe('页面挂载', () => {
     expect(screen.getAllByText(/Sonnet/i).length).toBeGreaterThan(0);
   });
 
+  it('句子页能挂载并显示来源选项', async () => {
+    renderAt('/sentences');
+    expect(await screen.findByText('句子练习')).toBeInTheDocument();
+    // 三个来源都要在，否则用户点不进练句子的入口。
+    // 用 getAllByText：本文件没注册全局 cleanup，前一个用例的 DOM 可能还挂在 body 上
+    expect(screen.getAllByText('错词本').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('收藏').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('按词库').length).toBeGreaterThan(0);
+  });
+
   it('未知路由显示兜底页', async () => {
     renderAt('/nope');
     expect(await screen.findByText('页面不存在')).toBeInTheDocument();
