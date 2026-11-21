@@ -17,12 +17,12 @@
 
 ## 一、当前状态（一句话）
 
-**功能完整的开源英语打字学习应用**，Web + Windows 桌面版，520 个测试全绿，tsc 零报错，数据契约校验通过。
+**功能完整的开源英语打字学习应用**，Web + Windows 桌面版，530 个测试全绿，tsc 零报错，数据契约校验通过。
 
 | 指标 | 数值 |
 |---|---|
 | 代码规模 | `src/` 16,436 行（其中非测试 11,219 / 测试 5,217）；`scripts/` 6,754 行 |
-| 测试 | **520 个，23 个文件，全绿**（串行跑，约 2.5 分钟） |
+| 测试 | **530 个，24 个文件，全绿**（串行跑，约 2.5 分钟） |
 | 词库 | 16 个 / 55,560 词条（`public/dicts/`，约 16MB） |
 | 文章 | 109 篇 / 800 句（`public/articles/index.json`） |
 | 例句 | 57,257 条中英对照，覆盖 32,312 / 55,560 = 58.2% 词条 |
@@ -120,7 +120,7 @@ E:\EnglishMate\
 ```bash
 cd /e/EnglishMate
 npx tsc --noEmit               # 类型检查，0 错误
-npx vitest run                 # 520 个测试
+npx vitest run                 # 530 个测试
 node scripts/verify-data.mjs   # 数据契约（16 库 / 75 篇 / glossary）
 ```
 
@@ -200,6 +200,32 @@ npm run verify:desktop                                             # 拉起真�
 ```
 
 **为什么不能换 main/preload**：装的那份是 `app://typeflow` + `window.typeflow`，仓库版是 `app://englishmate` + `window.englishmate`。换掉会改变 IndexedDB 的 origin（`app_typeflow_0` → `app_englishmate_0`），**用户学习进度当场不可见**（数据还在磁盘上，但库名不一样了）。
+
+> ⚠️ **2026-11-21 修订：红线的精确边界是「不许动 origin」，不是「这个文件不许碰」**
+>
+> 修英文发音时必须改 `main.cjs`（主进程要调 System.Speech）和 `preload.cjs`
+> （要暴露 TTS 桥），按旧写法这条线等于禁止修复声音问题。
+>
+> 真正的红线只有三条常量与一个通道名：
+>
+> ```js
+> const SCHEME = 'app';
+> const APP_HOST = 'typeflow';   // ← 改成 englishmate 就会丢进度
+> const APP_ORIGIN = `${SCHEME}://${APP_HOST}`;
+> // 以及 ipcMain.handle('typeflow:xxx') 的通道名前缀
+> ```
+>
+> 允许的改动：新增 IPC handler、新增 preload 方法、新增协议路由。
+> 禁止的改动：`APP_HOST` / `SCHEME` 的值、已有 IPC 通道改名。
+>
+> **移植方法**：不要直接 `cp` 仓库版过去（那是 `app://englishmate`）。
+> 先按名字归一化再比对，确认 origin 是 typeflow 才写。本次用的脚本见
+> `.tmp/port-electron.mjs`（一次性，gitignore）。移植后必须复验：
+> `grep "APP_HOST" 安装版/main.cjs` 应为 `typeflow`，
+> 且 `npm run verify:desktop` 的 origin 断言仍为 `app://typeflow`。
+>
+> 另外：`src/lib/speech.ts` 里**同时认** `window.englishmate` 和 `window.typeflow`，
+> 这是刻意的——只认一个的话，TTS 在装的那份上会静默失效。
 
 - `npm run verify:desktop` 默认验证 `%LOCALAPPDATA%\Programs\TypeFlow`，也可 `node electron/verify-desktop.cjs release/TypeFlow`。7 项：页面渲染 / `origin === 'app://typeflow'` / preload 生效且 Node 隔离 / IndexedDB 四表条数 / `article-glossary.json` 可 fetch / 导航含 `/sentences` / 首屏+刷新无 console error。截图在 `.tmp/desktop-shots/`。
 - **不要用 `electron/smoke.cjs` 验证装的那份**：它断言 `app://englishmate` + `window.englishmate`，测 TypeFlow 会假失败。
@@ -301,6 +327,7 @@ npm run verify:desktop                                             # 拉起真�
 | Windows 安装包（NSIS） | 依赖远程工具链，本机反复超时。当前用可运行目录替代，可用性一致 |
 | i18n | 无 `src/i18n`，界面全中文，当前用户群全中文，收益低 |
 | AI 功能 / 云同步 / 排行榜 / 插件 / 发音评测 | README 路线图 P1/P2 规划，均未开始。云同步与排行榜需要后端，AI 需要 API Key |
+| **在线神经 TTS（音频质量的根本解）** | 用户已确认「TTS 服务和 AI 后端一样先写入待办」。当前用系统 SAPI（Zira），清晰度够但仍是 2013 年的拼接式语音。在线神经语音（Edge TTS / Azure）音质接近真人，能彻底解决长难句的自然度。代价：需联网、可能需 API Key、与「本地优先、离线可用」的定位冲突，且要设计失败降级（断网时回退 SAPI）。**接口已预留**：`gradeQuiz` 用可辨识联合、`speech.ts` 有 `speakViaDesktop` 回落路径，接在线服务时再加一个分支即可 |
 | 桌面版改名 TypeFlow → EnglishMate | 必须同时迁移数据目录 `%LOCALAPPDATA%\TypeFlow`（含 IndexedDB），否则丢学习进度。**用户已明确把这项划出范围** |
 
 ### 已知的小缺陷（都不影响功能，顺手可修）
@@ -374,7 +401,14 @@ npm run verify:desktop                                             # 拉起真�
 | 「按文章」来源只在精听模式出现 | 完形/整句输入要跨文章的练习量，一篇文章只有 4–10 句凑不满一轮；精听要的正是「同一篇反复听」。切换练法时若停在 article 会自动退回 bank，否则来源按钮指向不存在的选项 |
 | 同作者合集**轮流取句**（每篇取 1 句循环），不是逐篇取满 | 逐篇取满的话第 11 句就换篇了，「跨篇复现」根本没发生。轮流取让同一篇的句子在批次里被摊开，复现发生在篇与篇之间——这正是窄式输入想利用的那一层。想读完整一篇时用单篇批次 |
 | 同作者批次只在**超过一篇**时列出 | 单篇作者拼不出「多篇复现」，列出来用户点进去发现和单篇一样。目前只有 Aesop（100 篇）满足，其余 6 位作者各 1 篇 |
-| 桌面版只换 dist，不改 main/preload | 改 origin 会让旧 IndexedDB 学习进度不可见 |
+| 桌面版**只改 origin 不许动**，其余 main/preload 改动需复验 | 改 origin 会让旧 IndexedDB 学习进度不可见；但「整份文件不许碰」会连声音都修不了（见五.3 修订） |
+| 英文发音走**主进程 SAPI**，不依赖浏览器语音列表 | Chromium 只枚举 OneCore 注册表，实测本机那里**一个英文语音都没有**（只有 3 个中文）。系统里有 Zira 但注册在 SAPI5 下，Chromium 看不见。结果旧实现让中文引擎硬读英文 = 用户反馈的「口齿不清」。主进程能调 System.Speech，零依赖、无许可证问题 |
+| 找不到英文语音时**宁可不出声**，也不退到中文引擎 | 那是「口齿不清」的直接来源。浏览器里没英文语音就静默不读，同时设置页给明确提示与安装指引；桌面端则回落 SAPI |
+| SAPI 用**常驻 PowerShell + done 文件**，不靠 stdout 回收 | 每次新起进程有 ~310ms 固定开销，常驻后每次只要 4–36ms。stdout 行匹配在 Electron 里会读到 `ERR bad-line` 把队列错位（合成其实成功了却判失败），改成「一个任务一个 .done 文件、轮询存在即完成」 |
+| 脚本必须写 `.ps1` 用 `-File` 执行，不能用 `-Command -` | `-Command -` 是逐行解析，多行 while 循环会被拆散、`{` 后直接卡死（握手永远等不到 READY） |
+| PowerShell 脚本模板里**不许出现反引号** | 整段在 JS 模板字符串里，反引号会截断字符串。制表符一律用 `[char]9`，说明文字写在模板外面。这个坑踩了两次（一次正文明志，一次把教训写成注释又踩回去） |
+| TTS 音频走 `app://typeflow/__tts__/<file>` 而非 `file://` | 页面 origin 是 `app://typeflow` 且 `webSecurity: true`，`file://` 属跨源会被拦且**不报错**（表现为「点了没声音」）。同源协议顺便服务音频，也避免放宽 webSecurity |
+| 不内置语音模型，也不引入 Piper | Web Speech API 标准就不支持加载自定义语音模型；浏览器内跑神经 TTS 要 WASM + 几十 MB 模型，而 Piper 依赖 espeak-ng（GPL-3.0）会传染本项目的 MIT 许可。系统自带语音是唯一零依赖、离线可用的路径 |
 
 ---
 

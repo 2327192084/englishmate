@@ -15,13 +15,28 @@ import {
 } from '@/lib/keys';
 import { Segmented } from '@/components/ui';
 import { IconDownload, IconRefresh, IconTrash, IconUpload, IconVolume } from '@/components/Icons';
-import { canSpeak, speak } from '@/lib/speech';
+import { canSpeak, isVoiceQualityDegraded, speak } from '@/lib/speech';
 import { playKeySound } from '@/lib/sound';
 
 export default function SettingsPage() {
   const { settings, update } = useSettings();
   const fileRef = useRef<HTMLInputElement>(null);
   const [msg, setMsg] = useState<{ text: string; tone: 'ok' | 'err' } | null>(null);
+  /**
+   * 语音质量是否降级（null = 还在探测）。
+   * 探测要起一次主进程 PowerShell（几百毫秒），所以只在设置页做一次，
+   * 不放进每次朗读的路径。
+   */
+  const [voiceDegraded, setVoiceDegraded] = useState<boolean | null>(null);
+  useEffect(() => {
+    let alive = true;
+    void isVoiceQualityDegraded().then((d) => {
+      if (alive) setVoiceDegraded(d);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
   const counts = useLiveQuery(
     async () => {
       const [w, s] = await Promise.all([db.userWords.count(), db.sessions.count()]);
@@ -178,6 +193,17 @@ export default function SettingsPage() {
             当前浏览器不支持语音合成，发音功能将不可用。建议使用 Chrome / Edge。
           </p>
         )}
+        {voiceDegraded && (
+          <div className="rounded border border-line bg-surface2 px-3 py-2">
+            <p className="text-[11px] leading-relaxed text-muted">
+              <span className="font-medium text-ink">当前环境的英文朗读质量不佳。</span>{' '}
+              系统里没有可用的英文语音包，英文句子只能由中文引擎勉强读出——听起来会口齿不清。
+              <br />
+              Windows 修法：设置 → 时间和语言 → 语言 → 添加语言 → English (United States) →
+              在「语音」一栏勾选安装，装完重启应用即可。
+            </p>
+          </div>
+        )}
       </Section>
 
       {/* 音效 */}
@@ -219,7 +245,11 @@ export default function SettingsPage() {
         hint="只在练习界面生效（网页上的输入框里不受影响）；点按钮后按下想用的键"
       >
         {SHORTCUT_ACTIONS.map((action) => (
-          <Row key={action} label={SHORTCUT_LABELS[action].label} hint={SHORTCUT_LABELS[action].hint}>
+          <Row
+            key={action}
+            label={SHORTCUT_LABELS[action].label}
+            hint={SHORTCUT_LABELS[action].hint}
+          >
             <KeyCapture
               value={settings.shortcuts[action]}
               onPick={(key) => {
