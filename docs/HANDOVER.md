@@ -353,6 +353,9 @@ npm run verify:desktop                                             # 拉起真�
 
 | 文件 | 内容 |
 |---|---|
+| `docs/NEXT-SESSION.md` | **新会话先读这个**：HANDOVER 之后的增量、待用户拍板的三件事、下一步 |
+| `docs/learning-methods-research.md` | B 站视频与评论调研（含可信度边界说明） |
+| `docs/learning-method-plan.md` | 学习模块技术方案（精听 / 100LS / 语块，待拍板） |
 | `docs/work-report-2026-11-21.md` | 当天工作报告：完成项、12 个真实缺陷、关键决策、诚实的缺口 |
 | `docs/unimplemented-features.md` | 未做功能的**证据级**盘点（附可重跑的核实命令） |
 | `docs/dict-catalog.md` | 16 个词库的体积、覆盖、重叠率、如何新增词库 |
