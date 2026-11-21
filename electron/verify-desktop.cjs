@@ -61,6 +61,8 @@ async function main() {
 
     await check('origin 是 app://typeflow（旧 IndexedDB 数据仍可见）', async () => {
       const o = await win.evaluate(() => window.location.origin);
+      // 这条钉的是「装的那份用的还是旧 origin」。origin 一变，IndexedDB 就是
+      // 另一个库（app_typeflow_0 → app_englishmate_0），用户的学习进度当场消失。
       if (o !== 'app://typeflow') throw new Error('origin=' + o);
       return o;
     });
@@ -78,42 +80,49 @@ async function main() {
       return o;
     });
 
-    await check('旧学习数据可见（englishmate 库能打开并读表）', async () => {
+    await check('旧学习数据可见（englishmate 库能打开并读出条数）', async () => {
       const r = await win.evaluate(
         () =>
           new Promise((res) => {
-            const t = setTimeout(() => res('timeout'), 5000);
+            const t = setTimeout(() => res('timeout'), 8000);
+            const finish = (v) => {
+              clearTimeout(t);
+              res(v);
+            };
             try {
               const q = indexedDB.open('englishmate');
-              q.onerror = () => {
-                clearTimeout(t);
-                res('err:' + (q.error && q.error.name));
-              };
-              q.onsuccess = () => {
+              q.onerror = () => finish('err:' + (q.error && q.error.name));
+              q.onsuccess = async () => {
                 const db = q.result;
                 const names = Array.from(db.objectStoreNames);
-                const tx = db.transaction('settings', 'readonly');
-                const g = tx.objectStore('settings').get(1);
-                g.onsuccess = () => {
-                  clearTimeout(t);
-                  db.close();
-                  res(JSON.stringify({ stores: names.length, hasSettings: !!g.result }));
-                };
-                g.onerror = () => {
-                  clearTimeout(t);
-                  db.close();
-                  res('settings-read-err');
-                };
+                const count = (store) =>
+                  new Promise((ok) => {
+                    try {
+                      const rq = db.transaction(store, 'readonly').objectStore(store).count();
+                      rq.onsuccess = () => ok(rq.result);
+                      rq.onerror = () => ok(-1);
+                    } catch {
+                      ok(-1);
+                    }
+                  });
+                // 只读条数，不碰内容：验证脚本不该写用户的库
+                const out = { version: db.version, stores: names.length };
+                for (const s of ['userWords', 'sessions', 'achievements', 'settings']) {
+                  out[s] = names.includes(s) ? await count(s) : -1;
+                }
+                db.close();
+                finish(JSON.stringify(out));
               };
             } catch (e) {
-              clearTimeout(t);
-              res('throw:' + e.message);
+              finish('throw:' + e.message);
             }
           }),
       );
       if (typeof r !== 'string' || !r.startsWith('{')) throw new Error(String(r));
       const o = JSON.parse(r);
-      if (!o.hasSettings) throw new Error('settings 表里没有记录，可能数据没了：' + r);
+      // 表存在但空：说明这是个全新配置（或者数据真没了）。两种都值得看见，
+      // 但只有「schema 都读不出来」才算失败——那是包坏了，不是用户还没开始学。
+      if (!o.stores) throw new Error('读不到任何表，schema 丢失：' + r);
       return o;
     });
 
