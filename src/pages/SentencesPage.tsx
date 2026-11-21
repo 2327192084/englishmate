@@ -19,7 +19,12 @@ import type { KeyboardEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { WordbankMeta } from '@/types';
 import { loadBankIndex } from '@/data/wordbanks';
-import { getNarrowBatch, listNarrowBatches, type NarrowBatch } from '@/data/narrowSources';
+import {
+  getNarrowBatch,
+  listNarrowBatches,
+  listAuthorBatches,
+  type NarrowBatch,
+} from '@/data/narrowSources';
 import { sentencesForBank, sentencesForUserWords, type SentenceItem } from '@/data/sentences';
 import { buildCloze, judgeAnswer, type AnswerVerdict, type ClozeItem } from '@/lib/cloze';
 import {
@@ -114,8 +119,14 @@ export default function SentencesPage() {
   /**
    * 窄式批次列表。只在精听模式下用得到，所以不放到全局 store：
    * 它是一次性的选择列表，没有跨页共享的需求。
+   *
+   * 两类批次混在一个列表里供选择：
+   *  - 单篇（id 是文章 id）
+   *  - 同作者合集（id 以 `author:` 开头）
+   * 用 id 前缀区分而不是分成两个下拉框：对用户来说都是「选一批来听」，
+   * 分两个控件等于让他先理解我们的数据组织方式。
    */
-  const [batches] = useState(() => listNarrowBatches());
+  const [batches] = useState(() => [...listAuthorBatches(), ...listNarrowBatches()]);
   /**
    * 第几轮。用来给播放器换一个实例：虽然 `start()` 会先经过 loading 骨架、
    * 播放器本来就会卸载重挂，但这层因果太隐晦，谁把骨架去掉就会踩坑；
@@ -388,7 +399,8 @@ function SetupView({
               ))}
             </select>
             <p className="mt-2 text-[11px] leading-relaxed text-muted">
-              一篇文章就是一个天然的窄式批次：同一作者、同一主题， 词汇和句式会在这一批里反复出现。
+              「合集」是同一位作者的多篇交替取句，词汇和句式会在篇与篇之间反复出现；
+              单篇则保留完整的上下文。
             </p>
           </div>
         )}

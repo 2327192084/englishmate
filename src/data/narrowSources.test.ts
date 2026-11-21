@@ -8,8 +8,10 @@ import { describe, expect, it } from 'vitest';
 import {
   BATCH_SIZE,
   batchFromArticle,
+  batchFromAuthor,
   batchFromSentences,
   getNarrowBatch,
+  listAuthorBatches,
   listNarrowBatches,
 } from '@/data/narrowSources';
 import type { Article } from '@/types';
@@ -175,5 +177,116 @@ describe('batchFromSentences', () => {
   it('脏输入不会抛错', () => {
     // @ts-expect-error 故意传错类型
     expect(batchFromSentences(null).items).toEqual([]);
+  });
+});
+
+describe('batchFromAuthor', () => {
+  /** 三篇同作者，篇内句子编号便于断言轮流取的顺序 */
+  const sameAuthor: Article[] = [
+    article('p1', ['A1.', 'A2.', 'A3.'], { author: 'Aesop' }),
+    article('p2', ['B1.', 'B2.', 'B3.'], { author: 'Aesop' }),
+    article('p3', ['C1.', 'C2.', 'C3.'], { author: 'Aesop' }),
+  ];
+
+  it('聚合同一作者的多篇', () => {
+    const b = batchFromAuthor('Aesop', sameAuthor);
+    expect(b).not.toBeNull();
+    expect(b!.author).toBe('Aesop');
+    expect(b!.items.length).toBeGreaterThan(0);
+  });
+
+  it('轮流取句，而不是先取完第一篇', () => {
+    // 若逐篇取满，前 3 句会是 A1 A2 A3——那样跨篇复现根本不会发生
+    const b = batchFromAuthor('Aesop', sameAuthor, 6);
+    expect(b!.items.map((i) => i.en)).toEqual(['A1.', 'B1.', 'C1.', 'A2.', 'B2.', 'C2.']);
+  });
+
+  it('某篇较短时不卡住，继续从其它篇取', () => {
+    const mixed: Article[] = [
+      article('short', ['S1.'], { author: 'X' }),
+      article('long', ['L1.', 'L2.', 'L3.'], { author: 'X' }),
+    ];
+    const b = batchFromAuthor('X', mixed, 4);
+    // 第 2 轮 short 没有 S2，应跳过并继续取 L2/L3
+    expect(b!.items.map((i) => i.en)).toEqual(['S1.', 'L1.', 'L2.', 'L3.']);
+  });
+
+  it('句子用的 word 是篇名而不是作者名', () => {
+    // 作者名对每一句都一样，没有定位价值
+    const b = batchFromAuthor('Aesop', sameAuthor);
+    expect(b!.items[0]!.word).toBe('标题 p1');
+    expect(b!.items[1]!.word).toBe('标题 p2');
+  });
+
+  it('作者不存在时返回 null', () => {
+    expect(batchFromAuthor('Nobody', sameAuthor)).toBeNull();
+    expect(batchFromAuthor('', sameAuthor)).toBeNull();
+    // @ts-expect-error 故意传错类型
+    expect(batchFromAuthor(null, sameAuthor)).toBeNull();
+  });
+
+  it('作者只有空句子时返回 null', () => {
+    expect(batchFromAuthor('Y', [article('e', ['', '  '], { author: 'Y' })])).toBeNull();
+  });
+
+  it('难度取出现最多的那一档', () => {
+    const arts: Article[] = [
+      article('a', ['A.'], { author: 'Z', level: 'CET-4' }),
+      article('b', ['B.'], { author: 'Z', level: 'CET-6' }),
+      article('c', ['C.'], { author: 'Z', level: 'CET-6' }),
+    ];
+    expect(batchFromAuthor('Z', arts)!.level).toBe('CET-6');
+  });
+});
+
+describe('listAuthorBatches', () => {
+  it('只列出有多篇的作者（单篇拼不出跨篇复现）', () => {
+    const arts: Article[] = [
+      article('a1', ['A.'], { author: '多产作者' }),
+      article('a2', ['B.'], { author: '多产作者' }),
+      article('b1', ['C.'], { author: '单篇作者' }),
+    ];
+    expect(listAuthorBatches(arts).map((b) => b.author)).toEqual(['多产作者']);
+  });
+
+  it('按篇数从多到少排序', () => {
+    const arts: Article[] = [
+      ...Array.from({ length: 2 }, (_, i) => article(`x${i}`, ['S.'], { author: '两个' })),
+      ...Array.from({ length: 5 }, (_, i) => article(`y${i}`, ['S.'], { author: '五个' })),
+    ];
+    expect(listAuthorBatches(arts).map((b) => b.author)).toEqual(['五个', '两个']);
+  });
+
+  it('空输入返回空数组', () => {
+    expect(listAuthorBatches([])).toEqual([]);
+    // @ts-expect-error 故意传错类型
+    expect(listAuthorBatches(null)).toEqual([]);
+  });
+
+  it('真实语料里能列出 Aesop 合集', () => {
+    const real = listAuthorBatches();
+    expect(real.length).toBeGreaterThan(0);
+    expect(real[0]!.author).toBe('Aesop');
+    expect(real[0]!.items.length).toBe(BATCH_SIZE);
+  });
+});
+
+describe('getNarrowBatch 支持同作者合集', () => {
+  it('author: 前缀会走合集分支', () => {
+    const b = getNarrowBatch('author:Aesop');
+    expect(b).not.toBeNull();
+    expect(b!.author).toBe('Aesop');
+    expect(b!.id).toBe('author:Aesop');
+  });
+
+  it('普通文章 id 仍走单篇分支', () => {
+    const single = getNarrowBatch('gettysburg');
+    expect(single).not.toBeNull();
+    expect(single!.id).toBe('gettysburg');
+  });
+
+  it('author: 后没有名字返回 null', () => {
+    expect(getNarrowBatch('author:')).toBeNull();
+    expect(getNarrowBatch('author:无名氏')).toBeNull();
   });
 });

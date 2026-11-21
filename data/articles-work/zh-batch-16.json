@@ -1,0 +1,57 @@
+[
+  {
+    "id": "aesop-hare-and-the-tortoise",
+    "title": "The Hare and the Tortoise",
+    "titleZh": "龟兔赛跑",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A Hare was one day making fun of a Tortoise for being so slow upon his feet.", "zh": "有一天，一只兔子嘲笑乌龟走路太慢。" },
+      { "en": "\"Wait a bit,\" said the Tortoise; \"I'll run a race with you, and I'll wager that I win.\"", "zh": "「等着瞧吧，」乌龟说，「我跟你赛跑，我还敢打赌我能赢。」" },
+      { "en": "\"Oh, well,\" replied the Hare, who was much amused at the idea, \"let's try and see\" …", "zh": "「哦，好啊，」兔子觉得这主意十分可笑，答道，「那就试试看吧……」" },
+      { "en": "… and it was soon agreed that the fox should set a course for them, and be the judge.", "zh": "……很快便商定由狐狸给他们划定赛道，并当裁判。" },
+      { "en": "When the time came both started off together, but the Hare was soon so far ahead that he thought he might as well have a rest …", "zh": "比赛开始时两个一同出发，可兔子很快就跑得远远领先，觉得不妨歇一歇……" },
+      { "en": "… so down he lay and fell fast asleep.", "zh": "……于是躺下便睡熟了。" },
+      { "en": "Meanwhile the Tortoise kept plodding on, and in time reached the goal.", "zh": "与此同时，乌龟一直艰难而稳步地走，终于到了终点。" },
+      { "en": "At last the Hare woke up with a start, and dashed on at his fastest, but only to find that the Tortoise had already won the race.", "zh": "最后兔子猛地醒来，以最快的速度冲出去，却发现乌龟早已赢了比赛。" },
+      { "en": "Slow and steady wins the race.", "zh": "稳扎稳打，方能取胜。" }
+    ]
+  },
+  {
+    "id": "aesop-soldier-and-his-horse",
+    "title": "The Soldier and His Horse",
+    "titleZh": "士兵与他的马",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A Soldier gave his Horse a plentiful supply of oats in time of war, and tended him with the utmost care …", "zh": "战争时期，一名士兵给他的马充足的燕麦，照料得极为精心……" },
+      { "en": "… for he wished him to be strong to endure the hardships of the field …", "zh": "……因为他希望它强壮得能熬住战场的艰苦……" },
+      { "en": "… and swift to bear his master, when need arose, out of the reach of danger.", "zh": "……并在需要时迅速把主人带离险境。" },
+      { "en": "But when the war was over he employed him on all sorts of drudgery, bestowing but little attention upon him …", "zh": "可战争一结束，他便让马干各种粗活，很少再过问它……" },
+      { "en": "… and giving him, moreover, nothing but chaff to eat.", "zh": "……而且只给它谷壳吃。" },
+      { "en": "The time came when war broke out again, and the Soldier saddled and bridled his Horse, and, having put on his heavy coat of mail, mounted …", "zh": "战事又起的日子到了，士兵给马配上鞍辔，穿上沉重的铠甲，跨上……" },
+      { "en": "… him to ride off and take the field.", "zh": "「……马背，要骑它上阵。" },
+      { "en": "But the poor half-starved beast sank down under his weight, and said to his rider, \"You will have to go into battle on foot this time.", "zh": "可这头饿得半死的可怜牲口在他身下瘫倒了，对骑手说：「这一回你只好步行上阵了。" },
+      { "en": "Thanks to hard work and bad food, you have turned me from a Horse into an ass …", "zh": "多亏重活和劣食，你已把我从一匹马变成了一头驴……」" },
+      { "en": "… and you cannot in a moment turn me back again into a Horse.\"", "zh": "「……而你不能一下子又把我变回马去。」" }
+    ]
+  },
+  {
+    "id": "aesop-oxen-and-the-butchers",
+    "title": "The Oxen and the Butchers",
+    "titleZh": "公牛与屠夫",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "Once upon a time the Oxen determined to be revenged upon the Butchers for the havoc they wrought in their ranks …", "zh": "从前，公牛们决定向屠夫报仇，因为屠夫在它们中间大肆杀戳……" },
+      { "en": "… and plotted to put them to death on a given day.", "zh": "……并密谋在约定的日子把他们弄死。" },
+      { "en": "They were all gathered together discussing how best to carry out the plan …", "zh": "它们聚在一起商议怎样最好地施行这个计划……" },
+      { "en": "… and the more violent of them were engaged in sharpening their horns for the fray …", "zh": "……其中较激烈的一些已在磨角，准备厮杀……" },
+      { "en": "… when an old Ox got up upon his feet and said, \"My brothers, you have good reason, I know, to hate these Butchers, but, at any rate …", "zh": "……这时一头老公牛站起来说：「弟兄们，我知道你们恨这些屠夫有理，可无论如何……」" },
+      { "en": "… they understand their trade and do what they have to do without causing unnecessary pain.", "zh": "「……他们懂本行，该做的事做得干净，不叫人多受无谓的痛苦。" },
+      { "en": "But if we kill them, others, who have no experience, will be set to slaughter us …", "zh": "可我们若杀了他们，派来宰我们的就是些没经验的生手……」" },
+      { "en": "… and will by their bungling inflict great sufferings upon us.", "zh": "「……他们会因笨拙而给我们带来极大的苦楚。" },
+      { "en": "For you may be sure that, even though all the Butchers perish, mankind will never go without their beef.\"", "zh": "你们尽可放心，即便屠夫全死光了，人类也绝不会吃不上牛肉。」" }
+    ]
+  }
+]

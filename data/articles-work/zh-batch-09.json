@@ -1,0 +1,92 @@
+[
+  {
+    "id": "aesop-north-wind-and-sun",
+    "title": "The North Wind and the Sun",
+    "titleZh": "北风与太阳",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A dispute arose between the North Wind and the Sun, each claiming that he was stronger than the other.",
+        "zh": "北风与太阳争执起来，双方都声称自己比对方强。"
+      },
+      {
+        "en": "At last they agreed to try their powers upon a traveller, to see which could soonest strip him of his cloak.",
+        "zh": "最后他们约定在一个行人身上试本事，看谁先让他脱下斗篷。"
+      },
+      {
+        "en": "The North Wind had the first try; and, gathering up all his force for the attack, he came whirling furiously down upon the man …",
+        "zh": "北风先试；他聚起全身力气发起攻势，猛烈地旋转着向那人扑下去……"
+      },
+      {
+        "en": "… and caught up his cloak as though he would wrest it from him by one single effort …",
+        "zh": "……一把揪住他的斗篷，仿佛要一举把它扯下来……"
+      },
+      {
+        "en": "… but the harder he blew, the more closely the man wrapped it round himself.",
+        "zh": "……可他吹得越猛，那人把斗篷裹得越紧。"
+      },
+      {
+        "en": "Then came the turn of the Sun.",
+        "zh": "然后轮到太阳了。"
+      },
+      {
+        "en": "At first he beamed gently upon the traveller, who soon unclasped his cloak and walked on with it hanging loosely about his shoulders …",
+        "zh": "起初他只是温和地照着那行人，那人很快便解开斗篷，任它松松地搭在肩上继续走……"
+      },
+      {
+        "en": "… then he shone forth in his full strength …",
+        "zh": "……接着他放出全部热力……"
+      },
+      {
+        "en": "… and the man, before he had gone many steps, was glad to throw his cloak right off and complete his journey more lightly clad.",
+        "zh": "……那人没走几步，就乐意地把斗篷彻底脱掉，穿着轻便地走完了旅程。"
+      },
+      {
+        "en": "Persuasion is better than force",
+        "zh": "说服胜于强迫。"
+      }
+    ]
+  },
+  {
+    "id": "aesop-mistress-and-servants",
+    "title": "The Mistress and Her Servants",
+    "titleZh": "主妇与仆人",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      {
+        "en": "A Widow, thrifty and industrious, had two servants, whom she kept pretty hard at work.",
+        "zh": "一位勤俭的寡妇有两个仆人，她叫他们干活干得相当辛苦。"
+      },
+      {
+        "en": "They were not allowed to lie long abed in the mornings, but the old lady had them up and doing as soon as the cock crew.",
+        "zh": "早上不许他们赖床太久，公鸡一叫，老太太就让他们起来干活。"
+      },
+      {
+        "en": "They disliked intensely having to get up at such an hour, especially in winter-time …",
+        "zh": "他们极不愿在那个时辰起床，尤其冬天……"
+      },
+      {
+        "en": "… and they thought that if it were not for the cock waking up their Mistress so horribly early, they could sleep longer.",
+        "zh": "……他们想，要不是公鸡那么早把主妇叫醒，自己就能多睡一会儿。"
+      },
+      {
+        "en": "So they caught it and wrung its neck.",
+        "zh": "于是他们抓住公鸡，拧断了它的脖子。"
+      },
+      {
+        "en": "But they weren't prepared for the consequences.",
+        "zh": "可他们没料到后果。"
+      },
+      {
+        "en": "For what happened was that their Mistress, not hearing the cock crow as usual, waked them up earlier than ever …",
+        "zh": "结果主妇听不到公鸡照常打鸣，反而比从前更早把他们叫醒了……"
+      },
+      {
+        "en": "… and set them to work in the middle of the night.",
+        "zh": "……让他们半夜里就起来干活。"
+      }
+    ]
+  }
+]

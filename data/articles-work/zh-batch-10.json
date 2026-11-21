@@ -1,0 +1,57 @@
+[
+  {
+    "id": "aesop-lion-and-the-mouse",
+    "title": "The Lion and the Mouse",
+    "titleZh": "狮子与老鼠",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A Lion asleep in his lair was waked up by a Mouse running over his face.", "zh": "一只狮子在洞穴里睡觉，被一只从脸上跑过的老鼠弄醒了。" },
+      { "en": "Losing his temper he seized it with his paw and was about to kill it.", "zh": "他动了怒，用爪子抓住它，正要弄死它。" },
+      { "en": "The Mouse, terrified, piteously entreated him to spare its life.", "zh": "老鼠吓得要命，可怜巴巴地哀求他饶自己一命。" },
+      { "en": "\"Please let me go,\" it cried, \"and one day I will repay you for your kindness.\"", "zh": "「请放我走吧，」它叫道，「总有一天我会报答您的恩情。」" },
+      { "en": "The idea of so insignificant a creature ever being able to do anything for him amused the Lion so much that he laughed aloud …", "zh": "想到这么一个微不足道的小东西居然能帮上自己的忙，狮子觉得十分可笑，竟笑出声来……" },
+      { "en": "… and good-humouredly let it go.", "zh": "……便好脾气地把它放了。" },
+      { "en": "But the Mouse's chance came, after all.", "zh": "可老鼠的机会终究还是来了。" },
+      { "en": "One day the Lion got entangled in a net which had been spread for game by some hunters …", "zh": "有一天，狮子被几个猎人张设捕猎的网缠住了……" },
+      { "en": "… and the Mouse heard and recognised his roars of anger and ran to the spot.", "zh": "……老鼠听见并认出了他愤怒的吼声，便跑到那里。" },
+      { "en": "Without more ado it set to work to gnaw the ropes with its teeth, and succeeded before long in setting the Lion free.", "zh": "它二话不说就用牙咬那些绳子，没多久便把狮子放开。" },
+      { "en": "\"There!\" said the Mouse, \"you laughed at me when I promised I would repay you: but now you see, even a Mouse can help a Lion.\"", "zh": "「您看！」老鼠说，「我答应报答您的时候，您还笑我；可如今您看到了，就连一只老鼠也能帮上狮子的忙。」" }
+    ]
+  },
+  {
+    "id": "aesop-crow-and-the-pitcher",
+    "title": "The Crow and the Pitcher",
+    "titleZh": "乌鸦与水罐",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A thirsty Crow found a Pitcher with some water in it …", "zh": "一只口渴的乌鸦找到一只水罐，里面有些水……" },
+      { "en": "… but so little was there that, try as she might, she could not reach it with her beak …", "zh": "……可水太少，她怎么试，嘴也够不到……" },
+      { "en": "… and it seemed as though she would die of thirst within sight of the remedy.", "zh": "……眼看解渴的东西就在眼前，她却像是要渴死了。" },
+      { "en": "At last she hit upon a clever plan.", "zh": "最后她想到一个巧办法。" },
+      { "en": "She began dropping pebbles into the Pitcher, and with each pebble the water rose a little higher until at last it reached the brim …", "zh": "她开始往罐里丢小石子，每丢一颗，水就升高一点，直到最后升到罐口……" },
+      { "en": "… and the knowing bird was enabled to quench her thirst.", "zh": "……这只聪明的鸟便得以解了渴。" },
+      { "en": "Necessity is the mother of invention.", "zh": "需要是发明之母。" }
+    ]
+  },
+  {
+    "id": "aesop-hares-and-frogs",
+    "title": "The Hares and the Frogs",
+    "titleZh": "野兔与青蛙",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "The Hares once gathered together and lamented the unhappiness of their lot, exposed as they were to dangers on all sides and lacking the …", "zh": "野兔们曾聚在一起哀叹自己命苦：它们四面受敌，又缺少……" },
+      { "en": "… strength and the courage to hold their own.", "zh": "……保护自己的力气和勇气。" },
+      { "en": "Men, dogs, birds and beasts of prey were all their enemies, and killed and devoured them daily …", "zh": "人、狗、鸟和猛兽都是它们的敌人，天天捕杀吞食它们……" },
+      { "en": "… and sooner than endure such persecution any longer, they one and all determined to end their miserable lives.", "zh": "……它们再不愿忍受这样的迫害，便一致决定结束这悲惨的性命。" },
+      { "en": "Thus resolved and desperate, they rushed in a body towards a neighbouring pool, intending to drown themselves.", "zh": "既下了这样的决心，它们便绝望地成群奔向附近一个水塘，打算投水自尽。" },
+      { "en": "On the bank were sitting a number of Frogs, who …", "zh": "岸上坐着一群青蛙，它们……" },
+      { "en": "… when they heard the noise of the Hares as they ran, with one accord leaped into the water and hid themselves in the depths.", "zh": "……听见野兔奔跑的声响，便一齐跳进水里，躲到深处去了。" },
+      { "en": "Then one of the older Hares who was wiser than the rest cried out to his companions, \"Stop, my friends, take heart …", "zh": "这时，一只比同伴们都聪明的年长野兔向大伙喊道：「停下吧，朋友们，振作起来……」" },
+      { "en": "… don't let us destroy ourselves after all …", "zh": "「……我们终究不必自寻短见……」" },
+      { "en": "… see, here are creatures who are afraid of us, and who must, therefore, be still more timid than ourselves.\"", "zh": "「……看，这里有怕我们的生灵，可见它们必定比我们更胆小。」" }
+    ]
+  }
+]

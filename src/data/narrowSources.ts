@@ -108,11 +108,17 @@ export function listNarrowBatches(
 }
 
 /**
- * 按 id 取一个批次。
- * 找不到返回 null 而不是抛错：URL 里的 id 可能来自旧链接或手改。
+ * 按 id 取一个批次，包含同作者合集。
+ *
+ * id 约定：以 `author:` 开头的是同作者合集（见 batchFromAuthor），
+ * 其余按文章 id 查。只给 batchFromArticle 会取不到合集，
+ * 表现为「选了合集却提示没有可用句子」。
  */
 export function getNarrowBatch(id: string, articles: Article[] = ARTICLES): NarrowBatch | null {
   if (!id) return null;
+  if (id.startsWith('author:')) {
+    return batchFromAuthor(id.slice('author:'.length), articles);
+  }
   const found = articles.find((a) => a && a.id === id);
   return found ? batchFromArticle(found) : null;
 }
@@ -136,4 +142,113 @@ export function batchFromSentences(
     author: '',
     items: Array.isArray(items) ? items.slice(0, BATCH_SIZE) : [],
   };
+}
+
+/**
+ * 把同一作者的**多篇**文章合成一个批次。
+ *
+ * ── 为什么这比单篇更「窄」──────────────────────────────────────────────
+ * 窄式输入的核心是「同一批材料的词汇与句式反复复现」。单篇已经具备
+ * 同主题、同语域；同作者多篇在此基础上再叠加一层：同一个人的用词习惯、
+ * 句长节奏、叙事套路都会重复出现。Aesop 的 69 篇寓言尤其明显——
+ * 结构几乎都是「某动物 + 遇到某事 + 寓意」，读第二篇时前一篇的词汇还在。
+ *
+ * ── 为什么按顺序交替取而不是先取完第一篇 ────────────────────────────────
+ * 若逐篇取满再取下一篇，第 11 句之后就换篇了，「跨篇复现」根本没发生。
+ * 这里改成**轮流取**（每篇取 1 句，循环），让相邻句子来自不同篇，
+ * 而同一篇的句子在批次里被摊开——复现发生在「不同篇之间」，
+ * 这正是同作者批次想利用的那一层。
+ *
+ * 注意：这不改变「每篇内部有上下文」的事实。想读完整一篇时用
+ * batchFromArticle；想跨篇强化词汇复现时用这个。
+ */
+export function batchFromAuthor(
+  author: string,
+  articles: Article[] = ARTICLES,
+  limit = BATCH_SIZE,
+): NarrowBatch | null {
+  if (!author || !Array.isArray(articles)) return null;
+
+  const mine = articles.filter((a) => a && a.author === author);
+  if (mine.length === 0) return null;
+
+  // 每篇先各自取出可用句子，再轮流取，见上面的取舍说明
+  const perArticle = mine
+    .map((a) =>
+      (a.sentences || [])
+        .filter((s) => s && typeof s.en === 'string' && s.en.trim().length > 0)
+        .map((s) => ({ article: a, en: s.en.trim(), zh: typeof s.zh === 'string' ? s.zh : '' })),
+    )
+    .filter((list) => list.length > 0);
+  if (perArticle.length === 0) return null;
+
+  const target = Math.max(1, limit);
+  const picked: { article: Article; en: string; zh: string }[] = [];
+  let round = 0;
+  // 轮流取：第 round 轮从每篇各取第 round 句
+  while (picked.length < target) {
+    let progressed = false;
+    for (const list of perArticle) {
+      if (picked.length >= target) break;
+      const s = list[round];
+      if (!s) continue;
+      picked.push(s);
+      progressed = true;
+    }
+    if (!progressed) break;
+    round++;
+  }
+  if (picked.length === 0) return null;
+
+  const items: SentenceItem[] = picked.map((p) => ({
+    en: p.en,
+    zh: p.zh,
+    /**
+     * 同作者批次里 word 用「篇名」而不是作者名：
+     * 用户听到某句想知道它出自哪一篇，作者名对每一句都一样，没有信息量。
+     */
+    word: p.article.titleZh || p.article.title || p.article.id,
+    bankId: `article:${p.article.id}`,
+    trans: p.article.titleZh || p.article.title || '',
+  }));
+
+  // 难度取这些篇里最常见的那一档，供列表分组用
+  const levelCount = new Map<string, number>();
+  for (const a of mine) {
+    if (a.level) levelCount.set(a.level, (levelCount.get(a.level) ?? 0) + 1);
+  }
+  const level = [...levelCount.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? '';
+
+  return {
+    id: `author:${author}`,
+    title: author,
+    titleZh: `${author}（${mine.length} 篇合集）`,
+    level,
+    author,
+    items,
+  };
+}
+
+/**
+ * 所有「同作者多篇」批次，按篇数从多到少。
+ *
+ * 只有超过一篇的作者才会出现：单篇作者拼不出「多篇复现」，
+ * 列出来只会让用户困惑（点进去发现和单篇一模一样）。
+ */
+export function listAuthorBatches(
+  articles: Article[] = ARTICLES,
+  limit = BATCH_SIZE,
+): NarrowBatch[] {
+  if (!Array.isArray(articles)) return [];
+  const count = new Map<string, number>();
+  for (const a of articles) {
+    if (!a || !a.author) continue;
+    count.set(a.author, (count.get(a.author) ?? 0) + 1);
+  }
+
+  return [...count.entries()]
+    .filter(([, n]) => n > 1)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([author]) => batchFromAuthor(author, articles, limit))
+    .filter((b): b is NarrowBatch => b !== null);
 }

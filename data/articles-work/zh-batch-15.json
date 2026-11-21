@@ -1,0 +1,71 @@
+[
+  {
+    "id": "aesop-lion-bear-and-fox",
+    "title": "The Lion, the Bear, and the Fox",
+    "titleZh": "狮子、熊与狐狸",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A Lion and a Bear were fighting for possession of a kid, which they had both seized at the same moment.", "zh": "一头狮子和一头熊为争夺一只小山羊而厮打，它们同时抓住了它。" },
+      { "en": "The battle was long and fierce, and at length both of them were exhausted …", "zh": "这场恶斗又久又猛烈，到最后两个都力气耗尽……" },
+      { "en": "… and lay upon the ground severely wounded and gasping for breath.", "zh": "……倒在地上，伤得很重，喘息不止。" },
+      { "en": "A Fox had all the time been prowling round and watching the fight …", "zh": "一只狐狸一直在周围徘徊，看着这场打斗……" },
+      { "en": "… and when he saw the combatants lying there too weak to move, he slipped in and seized the kid, and ran off with it.", "zh": "……见两个斗士躺在那儿连动的力气都没有，便溜进去抓起小羊跑掉了。" },
+      { "en": "They looked on helplessly, and one said to the other, \"Here we've been mauling each other all this while …", "zh": "它们无可奈何地看着，其中一个对另一个说：「我们厮打了这么久……」" },
+      { "en": "… and no one the better for it except the Fox!\"", "zh": "「……结果除了狐狸，谁也没捞着好处！」" }
+    ]
+  },
+  {
+    "id": "aesop-two-soldiers-and-the-robber",
+    "title": "The Two Soldiers and the Robber",
+    "titleZh": "两个士兵与强盗",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "Two Soldiers travelling together were set upon by a Robber.", "zh": "两个同行的士兵遭到一个强盗袭击。" },
+      { "en": "One of them ran away, but the other stood his ground …", "zh": "其中一个跑了，另一个却站住不退……" },
+      { "en": "… and laid about him so lustily with his sword that the Robber was fain to fly and leave him in peace.", "zh": "……挥剑奋勇砍杀，强盗只好逃走，不再惹他。" },
+      { "en": "When the coast was clear the timid one ran back, and, flourishing his weapon, cried in a threatening voice, \"Where is he?", "zh": "危险过去后，那个胆小的跑回来，挥舞着兵器，用威胁的口吻叫道：「他在哪儿？" },
+      { "en": "Let me get at him, and I'll soon let him know whom he's got to deal with.\"", "zh": "让我去会他，我很快就让他知道惹的是谁。」" },
+      { "en": "But the other replied, \"You are a little late, my friend …", "zh": "可另一个答道：「朋友，你来得晚了点……」" },
+      { "en": "… I only wish you had backed me up just now, even if you had done no more than speak …", "zh": "「……我只盼你刚才能给我撑腰，哪怕只是说句话也好……」" },
+      { "en": "… for I should have been encouraged, believing your words to be true.", "zh": "「……那样我也会受些鼓舞，以为你的话是真的。" },
+      { "en": "As it is, calm yourself, and put up your sword: there is no further use for it.", "zh": "事已如此，你安静些，把剑收起来吧，它已经没用了。" },
+      { "en": "You may delude others into thinking you're as brave as a lion: but I know that, at the first sign of danger, you run away like a hare.\"", "zh": "你或许能骗别人相信你勇猛如狮；可我知道，一有危险，你跑得比兔子还快。」" }
+    ]
+  },
+  {
+    "id": "aesop-wolf-mother-and-her-child",
+    "title": "The Wolf, the Mother, and Her Child",
+    "titleZh": "狼、母亲与孩子",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A hungry Wolf was prowling about in search of food.", "zh": "一只饥饿的狼四处游荡觅食。" },
+      { "en": "By and by, attracted by the cries of a Child, he came to a cottage.", "zh": "不久，他被一个孩子的哭声引来，来到一间小屋前。" },
+      { "en": "As he crouched beneath the window, he heard the Mother say to the Child, \"Stop crying, do! or I'll throw you to the Wolf.\"", "zh": "他蹲在窗下，听见母亲对孩子说：「别哭了！再哭就把你扔给狼。」" },
+      { "en": "Thinking she really meant what she said, he waited there a long time in the expectation of satisfying his hunger.", "zh": "他以为她当真如此，便在那儿等了很久，指望能填饱肚子。" },
+      { "en": "In the evening he heard the Mother fondling her Child and saying, \"If the naughty Wolf comes, he shan't get my little one …", "zh": "到了晚上，他听见母亲爱抚着孩子说：「要是那坏狼敢来，他休想碰我的小宝贝……」" },
+      { "en": "… Daddy will kill him.\"", "zh": "「……爸爸会打死他。」" },
+      { "en": "The Wolf got up in much disgust and walked away …", "zh": "狼十分厌恶地起身走开……" },
+      { "en": "… \"As for the people in that house,\" said he to himself, \"you can't believe a word they say.\"", "zh": "……「那一家人，」他自言自语，「说的话一个字都不能信。」" }
+    ]
+  },
+  {
+    "id": "aesop-cat-and-the-cock",
+    "title": "The Cat and the Cock",
+    "titleZh": "猫与公鸡",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A Cat pounced on a Cock, and cast about for some good excuse for making a meal off him, for Cats don't as a rule eat Cocks …", "zh": "一只猫扑住一只公鸡，琢磨着找个好借口把他吃掉，因为猫通常并不吃公鸡……" },
+      { "en": "… and she knew she ought not to.", "zh": "……她也知道自己不该如此。" },
+      { "en": "At last she said, \"You make a great nuisance of yourself at night by crowing and keeping people awake …", "zh": "最后她说：「你夜里打鸣，吵得人睡不着，实在讨厌……」" },
+      { "en": "… so I am going to make an end of you.\"", "zh": "「……所以我要结果了你。」" },
+      { "en": "But the Cock defended himself by saying that he crowed in order that men might wake up and set about the day's work in good time …", "zh": "公鸡为自己辩解说，他打鸣是为了让人们醒来、按时开始一天的活儿……" },
+      { "en": "… and that they really couldn't very well do without him.", "zh": "……人们实在少不得他。" },
+      { "en": "\"That may be,\" said the Cat, \"but whether they can or not, I'm not going without my dinner\"; and she killed and ate him.", "zh": "「也许吧，」猫说，「可不管他们少不少得，我总不能不吃晚饭。」说完就把他弄死吃了。" },
+      { "en": "The want of a good excuse never kept a villain from crime.", "zh": "恶人从不会因为找不到好借口就不作恶。" }
+    ]
+  }
+]

@@ -1,0 +1,78 @@
+[
+  {
+    "id": "aesop-ass-and-the-lap-dog",
+    "title": "The Ass and the Lap-dog",
+    "titleZh": "驴与哈巴狗",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "There was once a man who had an Ass and a Lap-dog.", "zh": "从前有个人，养着一头驴和一只哈巴狗。" },
+      { "en": "The Ass was housed in the stable with plenty of oats and hay to eat and was as well off as an ass could be.", "zh": "驴住在马厩里，有充足的燕麦和干草吃，日子过得再舒坦不过。" },
+      { "en": "The little Dog was made a great pet of by his master, who fondled him and often let him lie in his lap …", "zh": "那只小狗却被主人当成宝贝，主人爱抚它，常让它卧在膝上……" },
+      { "en": "… and if he went out to dinner, he would bring back a tit-bit or two to give him when he ran to meet him on his return.", "zh": "……主人外出赴宴，回来时小狗跑去迎接，他总会带回一两口好吃的东西给它。" },
+      { "en": "The Ass had, it is true, a good deal of work to do, carting or grinding the corn, or carrying the burdens of the farm …", "zh": "驴确实有不少活要干：拉车、磨谷，或者驮运农场的重物……" },
+      { "en": "… and ere long he became very jealous, contrasting his own life of labour with the ease and idleness of the Lap-dog.", "zh": "……不久它就十分嫉妒起来，拿自己劳苦的日子对比哈巴狗的安逸闲散。" },
+      { "en": "At last one day he broke his halter, and frisking into the house just as his master sat down to dinner, he pranced and capered about …", "zh": "终于有一天它挣断了缰绳，正当主人坐下吃饭时欢跳着冲进屋里，蹦来跳去……" },
+      { "en": "… mimicking the frolics of the little favourite, upsetting the table and smashing the crockery with his clumsy efforts.", "zh": "……模仿那小宠物的嬉闹，笨手笨脚地撞翻了桌子，把碗碟砸得粉碎。" },
+      { "en": "Not content with that, he even tried to jump on his master's lap, as he had so often seen the dog allowed to do.", "zh": "它还不满足，甚至想跳到主人膝上去——它常看见狗被允许这样。" },
+      { "en": "At that the servants, seeing the danger their master was in, belaboured the silly Ass with sticks and cudgels …", "zh": "这时仆人们见主人有危险，便用棍棒狠打这头蠢驴……" },
+      { "en": "… and drove him back to his stable half dead with his beating.", "zh": "……把它打得半死，赶回了马厩。" },
+      { "en": "\"Alas!\" he cried, \"all this I have brought on myself.", "zh": "「唉！」它叫道，「这都是我自找的。" },
+      { "en": "Why could I not be satisfied with my natural and honourable position, without wishing to imitate the ridiculous antics of that useless …", "zh": "我为什么不安守自己本分而体面的位置，偏要去学那没用的……" },
+      { "en": "… little Lap-dog?\"", "zh": "「……小哈巴狗的滑稽把戏呢？」" }
+    ]
+  },
+  {
+    "id": "aesop-shepherds-boy-and-the-wolf",
+    "title": "The Shepherd's Boy and the Wolf",
+    "titleZh": "牧童与狼",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A Shepherd's Boy was tending his flock near a village …", "zh": "一个牧童在村子附近放羊……" },
+      { "en": "… and thought it would be great fun to hoax the villagers by pretending that a Wolf was attacking the sheep …", "zh": "……他觉得假装有狼来袭击羊群、骗骗村里人一定很好玩……" },
+      { "en": "… so he shouted out, \"Wolf! wolf!\" and when the people came running up he laughed at them for their pains.", "zh": "……于是大喊「狼来了！狼来了！」等人们跑来，他又笑人家白忙一场。" },
+      { "en": "He did this more than once, and every time the villagers found they had been hoaxed, for there was no Wolf at all.", "zh": "他这样干了好几次，每次村民都发现自己被骗了，根本没有狼。" },
+      { "en": "At last a Wolf really did come, and the Boy cried, \"Wolf! wolf!\" as loud as he could …", "zh": "后来狼真的来了，牧童拼命大喊「狼来了！狼来了！」……" },
+      { "en": "… but the people were so used to hearing him call that they took no notice of his cries for help.", "zh": "……可人们听惯了他的喊叫，对他的求救毫不理会。" },
+      { "en": "And so the Wolf had it all his own way, and killed off sheep after sheep at his leisure.", "zh": "于是狼为所欲为，不慌不忙地把羊一只只咬死。" },
+      { "en": "You cannot believe a liar even when he tells the truth.", "zh": "爱说谎的人，即使说真话也没人信。" }
+    ]
+  },
+  {
+    "id": "aesop-bee-and-jupiter",
+    "title": "The Bee and Jupiter",
+    "titleZh": "蜜蜂与朱庇特",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A Queen Bee from Hymettus flew up to Olympus with some fresh honey from the hive as a present to Jupiter …", "zh": "一只来自许墨托斯的蜂后飞到奥林匹斯山，带着蜂巢里新鲜的蜜献给朱庇特……" },
+      { "en": "… who was so pleased with the gift that he promised to give her anything she liked to ask for.", "zh": "……朱庇特很喜欢这份礼物，便答应给她任何她想要的东西。" },
+      { "en": "She said she would be very grateful if he would give stings to the bees, to kill people who robbed them of their honey.", "zh": "她说，若他赐给蜜蜂毒刺，好刺死那些偷蜜的人，她将感激不尽。" },
+      { "en": "Jupiter was greatly displeased with this request, for he loved mankind …", "zh": "朱庇特对这个请求很不高兴，因为他爱护人类……" },
+      { "en": "… but he had given his word, so he said that stings they should have.", "zh": "……但他已许下诺言，便说既如此就赐它们刺。" },
+      { "en": "The stings he gave them, however, were of such a kind that whenever a bee stings a man the sting is left in the wound and the bee dies.", "zh": "然而他给的刺是这样的：蜂一刺人，刺便留在伤口里，而蜂自己也会死去。" },
+      { "en": "Evil wishes, like fowls, come home to roost.", "zh": "恶愿如鸡，终归自家栖处。" }
+    ]
+  },
+  {
+    "id": "aesop-ass-and-his-burdens",
+    "title": "The Ass and His Burdens",
+    "titleZh": "驴和他的担子",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A Pedlar who owned an Ass one day bought a quantity of salt, and loaded up his beast with as much as he could bear.", "zh": "一个货郎有一头驴。有一天他买了一批盐，把驴装得能驮多少就驮多少。" },
+      { "en": "On the way home the Ass stumbled as he was crossing a stream and fell into the water.", "zh": "回家路上，驴过小溪时失足跌进了水里。" },
+      { "en": "The salt got thoroughly wetted and much of it melted and drained away …", "zh": "盐全湿透了，大半化掉流走了……" },
+      { "en": "… so that, when he got on his legs again, the Ass found his load had become much less heavy.", "zh": "……所以当驴重新站起来时，发现担子轻了许多。" },
+      { "en": "His master, however, drove him back to town and bought more salt, which he added to what remained in the panniers, and started out again.", "zh": "可是主人把它赶回城里，又买了些盐，加到驮筐里剩下的那部分上，重新出发。" },
+      { "en": "No sooner had they reached a stream than the Ass lay down in it, and rose, as before, with a much lighter load.", "zh": "一到溪边，驴就趴进水里，像上次一样轻了许多地站起来。" },
+      { "en": "But his master detected the trick, and turning back once more, bought a large number of sponges, and piled them on the back of the Ass.", "zh": "可主人看穿了这个把戏，又折回去买了一大堆海绵，堆在驴背上。" },
+      { "en": "When they came to the stream the Ass again lay down …", "zh": "到了溪边，驴又趴了下去……" },
+      { "en": "… but this time, as the sponges soaked up large quantities of water, he found …", "zh": "……可这一次，海绵吸足了水，它发现……" },
+      { "en": "… when he got up on his legs, that he had a bigger burden to carry than ever.", "zh": "……站起来时，背上的担子比先前更重了。" },
+      { "en": "You may play a good card once too often.", "zh": "好牌也有打滥的时候。" }
+    ]
+  }
+]

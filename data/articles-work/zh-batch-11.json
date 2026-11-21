@@ -1,0 +1,78 @@
+[
+  {
+    "id": "aesop-goods-and-ills",
+    "title": "The Goods and the Ills",
+    "titleZh": "善与恶",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "There was a time in the youth of the world when Goods and Ills entered equally into the concerns of men …", "zh": "在世界初生的年月，善与恶同等地参与人间的事务……" },
+      { "en": "… so that the Goods did not prevail to make them altogether blessed, nor the Ills to make them wholly miserable.", "zh": "……因此善不足以使人全然有福，恶也不至于使人彻底不幸。" },
+      { "en": "But owing to the foolishness of mankind the Ills multiplied greatly in number and increased in strength, until it seemed as though they …", "zh": "可是由于人类的愚昧，恶的数目大增、势力渐强，看来它们……" },
+      { "en": "… would deprive the Goods of all share in human affairs, and banish them from the earth.", "zh": "……就要剥夺善在人间的一切份位，把它们逐出大地。" },
+      { "en": "The latter, therefore, betook themselves to heaven and complained to Jupiter of the treatment they had received, at the same time praying …", "zh": "于是善便上到天界，向朱庇特诉说所受的待遇，同时祈求……" },
+      { "en": "… him to grant them protection from the Ills, and to advise them concerning the manner of their intercourse with men.", "zh": "……他赐予保护，使它们不受害于恶，并就它们与人类往来的方式给予指点。" },
+      { "en": "Jupiter granted their request for protection, and decreed that for the future they should not go among men openly in a body …", "zh": "朱庇特应允了它们求护的请求，并规定今后它们不得成群显形地进入人间……" },
+      { "en": "… and so be liable to attack from the hostile Ills, but singly and unobserved, and at infrequent and unexpected intervals.", "zh": "……以免遭到恶的攻击，而要单个地、不为人察觉地前往，且次数稀少、时机难料。" },
+      { "en": "Hence it is that the earth is full of Ills, for they come and go as they please and are never far away …", "zh": "因此大地上满是恶，因为它们来去自如，从不远离……" },
+      { "en": "… while Goods, alas! come one by one only, and have to travel all the way from heaven, so that they are very seldom seen.", "zh": "……而善呢，唉！只能一个一个地来，还要从天上一路跋涉，所以极少为人所见。" }
+    ]
+  },
+  {
+    "id": "aesop-milkmaid-and-her-pail",
+    "title": "The Milkmaid and Her Pail",
+    "titleZh": "挤奶女与奶桶",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A farmer's daughter had been out to milk the cows, and was returning to the dairy carrying her pail of milk upon her head.", "zh": "农家的女儿出去挤了牛奶，正头顶着奶桶回奶房去。" },
+      { "en": "As she walked along, she fell a-musing after this fashion …", "zh": "走着走着，她便这样出起神来……" },
+      { "en": "… \"The milk in this pail will provide me with cream, which I will make into butter and take to market to sell.", "zh": "「这桶奶能给我提出奶油，我要把它做成黄油，拿到集市上去卖。" },
+      { "en": "With the money I will buy a number of eggs, and these, when hatched, will produce chickens …", "zh": "得了钱我就买些鸡蛋，蛋孵出来就是小鸡……" },
+      { "en": "… and by and by I shall have quite a large poultry-yard.", "zh": "……不久我就能有一大片养鸡场了。" },
+      { "en": "Then I shall sell some of my fowls, and with the money which they will bring in I will buy myself a new gown …", "zh": "然后我卖掉几只鸡，用换来的钱给自己买一件新长裙……" },
+      { "en": "… which I shall wear when I go to the fair …", "zh": "……赶集的时候就穿上它……" },
+      { "en": "… and all the young fellows will admire it, and come and make love to me, but I shall toss my head and have nothing to say to them.\"", "zh": "……所有的小伙子都会称赞它，来向我献殷勤，可我只把头一甩，理也不理他们。」" },
+      { "en": "Forgetting all about the pail, and suiting the action to the word, she tossed her head.", "zh": "她全然忘了头上的奶桶，说到做到，真把头一甩。" },
+      { "en": "Down went the pail, all the milk was spilled, and all her fine castles in the air vanished in a moment!", "zh": "奶桶摔了下来，奶全洒了，她那些空中楼阁也一下子没了踪影！" },
+      { "en": "Do not count your chickens before they are hatched.", "zh": "鸡蛋还没孵出来，别先数小鸡。" }
+    ]
+  },
+  {
+    "id": "aesop-fox-and-the-monkey",
+    "title": "The Fox and the Monkey",
+    "titleZh": "狐狸与猴子",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A Fox and a Monkey were on the road together, and fell into a dispute as to which of the two was the better born.", "zh": "一只狐狸和一只猴子同行，为了谁出身更高贵而争了起来。" },
+      { "en": "They kept it up for some time, till they came to a place where the road passed through a cemetery full of monuments …", "zh": "他们争了好一阵，直到走到一处，路从满是墓碑的墓地中穿过……" },
+      { "en": "… when the Monkey stopped and looked about him and gave a great sigh.", "zh": "……猴子停了下来，四下张望，重重叹了口气。" },
+      { "en": "\"Why do you sigh?\" said the Fox.", "zh": "「你叹什么气？」狐狸说。" },
+      { "en": "The Monkey pointed to the tombs and replied, \"All the monuments that you see here were put up in honour of my forefathers …", "zh": "猴子指着那些坟说：「你看见的这些碑，都是为了纪念我的祖先而立……」" },
+      { "en": "… who in their day were eminent men.\"", "zh": "「……他们当年都是显赫的人物。」" },
+      { "en": "The Fox was speechless for a moment, but quickly recovering he said, \"Oh! don't stop at any lie, sir …", "zh": "狐狸一时说不出话，但很快缓过神来，说：「哦！先生，尽管往下编，别停下……」" },
+      { "en": "… you're quite safe: I'm sure none of your ancestors will rise up and expose you.\"", "zh": "「……您很安全：我敢说您的祖先没有一个会爬起来揭穿您。」" },
+      { "en": "Boasters brag most when they cannot be detected.", "zh": "吹牛的人，在无人能揭穿他时吹得最凶。" }
+    ]
+  },
+  {
+    "id": "aesop-bear-and-the-travellers",
+    "title": "The Bear and the Travellers",
+    "titleZh": "熊与旅人",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "Two Travellers were on the road together, when a Bear suddenly appeared on the scene.", "zh": "两个旅人同行，忽然一头熊出现在眼前。" },
+      { "en": "Before he observed them, one made for a tree at the side of the road, and climbed up into the branches and hid there.", "zh": "还没等熊看见他们，其中一个就奔向路旁的树，爬上枝头躲了起来。" },
+      { "en": "The other was not so nimble as his companion; and, as he could not escape, he threw himself on the ground and pretended to be dead.", "zh": "另一个不如同伴灵巧，逃不掉了，便扑倒在地装死。" },
+      { "en": "The Bear came up and sniffed all round him, but he kept perfectly still and held his breath …", "zh": "熊走过来，在他周身嗅了又嗅，而他一动不动，屏住呼吸……" },
+      { "en": "… for they say that a bear will not touch a dead body.", "zh": "……因为据说熊不碰死尸。" },
+      { "en": "The Bear took him for a corpse, and went away.", "zh": "熊当他是个死人，便走开了。" },
+      { "en": "When the coast was clear, the Traveller in the tree came down …", "zh": "危险过去后，树上的旅人爬了下来……" },
+      { "en": "… and asked the other what it was the Bear had whispered to him when he put his mouth to his ear.", "zh": "……问另一个人，熊把嘴凑到他耳边时说了什么悄悄话。" },
+      { "en": "The other replied, \"He told me never again to travel with a friend who deserts you at the first sign of danger.\"", "zh": "那人答道：「它告诉我，以后别再和那种一有危险就先逃走的朋友同行。」" },
+      { "en": "Misfortune tests the sincerity of friendship.", "zh": "患难见真情。" }
+    ]
+  }
+]

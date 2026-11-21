@@ -1,0 +1,93 @@
+[
+  {
+    "id": "aesop-stag-at-the-pool",
+    "title": "The Stag at the Pool",
+    "titleZh": "池边的鹿",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A thirsty Stag went down to a pool to drink.", "zh": "一只口渴的雄鹿下到池塘边喝水。" },
+      { "en": "As he bent over the surface he saw his own reflection in the water, and was struck with admiration for his fine spreading antlers …", "zh": "它俯身水面时看见自己的倒影，为自己舒展华美的鹿角赞叹不已……" },
+      { "en": "… but at the same time he felt nothing but disgust for the weakness and slenderness of his legs.", "zh": "……可同时又嫌自己的腿细弱无力，只觉得厌恶。" },
+      { "en": "While he stood there looking at himself, he was seen and attacked by a Lion …", "zh": "它站在那里自顾自看时，被一头狮子看见了，遭到袭击……" },
+      { "en": "… but in the chase which ensued, he soon drew away from his pursuer …", "zh": "……可在随后的追逐中，它很快就甩开了追它的东西……" },
+      { "en": "… and kept his lead as long as the ground over which he ran was open and free of trees.", "zh": "……只要跑过的是开阔无树的地方，它就一直领先。" },
+      { "en": "But coming presently to a wood, he was caught by his antlers in the branches, and fell a victim to the teeth and claws of his enemy.", "zh": "可不久进了树林，它的鹿角卡在树枝里，终于死在仇敌的牙爪之下。" },
+      { "en": "\"Woe is me!\" he cried with his last breath …", "zh": "「我真是苦啊！」它用最后一口气叫道……" },
+      { "en": "… \"I despised my legs, which might have saved my life: but I gloried in my horns, and they have proved my ruin.\"", "zh": "「……我嫌弃自己的腿，而它本可以救我性命；我引以为荣的角，倒成了我的祸根。」" },
+      { "en": "What is worth most is often valued least.", "zh": "最有价值的东西，往往最不被看重。" }
+    ]
+  },
+  {
+    "id": "aesop-hercules-and-the-waggoner",
+    "title": "Hercules and the Waggoner",
+    "titleZh": "赫拉克勒斯与车夫",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A Waggoner was driving his team along a muddy lane with a full load behind them …", "zh": "一个车夫赶着一队牲口走在泥泞的小路上，后面载着满满的货物……" },
+      { "en": "… when the wheels of his waggon sank so deep in the mire that no efforts of his horses could move them.", "zh": "……车轮陷进泥里太深，他的马怎么使劲也拉不动。" },
+      { "en": "As he stood there, looking helplessly on, and calling loudly at intervals upon Hercules for assistance, the god himself appeared …", "zh": "他站在那儿无助地看着，不时高喊求赫拉克勒斯相助，这时那位神亲自出现了……" },
+      { "en": "… and said to him, \"Put your shoulder to the wheel, man, and goad on your horses, and then you may call on Hercules to assist you.", "zh": "……对他说：「汉子，先把肩膀顶上车轮，把马赶起来，然后你再求赫拉克勒斯帮忙。" },
+      { "en": "If you won't lift a finger to help yourself, you can't expect Hercules or any one else to come to your aid.\"", "zh": "你要是不肯动一根手指帮自己，就别指望赫拉克勒斯或任何人来帮你。」" },
+      { "en": "Heaven helps those who help themselves.", "zh": "天助自助者。" }
+    ]
+  },
+  {
+    "id": "aesop-mercury-and-the-sculptor",
+    "title": "Mercury and the Sculptor",
+    "titleZh": "墨丘利与雕刻师",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "Mercury was very anxious to know in what estimation he was held by mankind …", "zh": "墨丘利很想知道人类对他评价如何……" },
+      { "en": "… so he disguised himself as a man and walked into a Sculptor's studio, where there were a number of statues finished and ready for sale.", "zh": "……于是化身为人，走进一位雕刻师的工作室，那里摆着许多已完工待售的雕像。" },
+      { "en": "Seeing a statue of Jupiter among the rest, he inquired the price of it.", "zh": "他在其中看见一尊朱庇特的像，便问价钱。" },
+      { "en": "\"A crown,\" said the Sculptor.", "zh": "「一克朗。」雕刻师说。" },
+      { "en": "\"Is that all?\" said he, laughing; \"and\" (pointing to one of Juno) \"how much is that one?\"", "zh": "「就这些？」他笑着说，「那么」（指着一尊朱诺像）「那一尊多少？」" },
+      { "en": "\"That,\" was the reply, \"is half a crown.\"", "zh": "「那尊，」对方答道，「半克朗。」" },
+      { "en": "\"And how much might you be wanting for that one over there, now?\" he continued, pointing to a statue of himself.", "zh": "「那么那边那一尊，你要多少钱呢？」他接着问，指着自己的一尊像。" },
+      { "en": "\"That one?\" said the Sculptor; \"Oh, I'll throw him in for nothing if you'll buy the other two.\"", "zh": "「那一尊？」雕刻师说，「哦，您要是买下另外两尊，这个我就白送。」" }
+    ]
+  },
+  {
+    "id": "aesop-frogs-asking-for-a-king",
+    "title": "The Frogs Asking for a King",
+    "titleZh": "青蛙求王",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "Time was when the Frogs were discontented because they had no one to rule over them …", "zh": "从前，青蛙们因为没有人统治它们而心怀不满……" },
+      { "en": "… so they sent a deputation to Jupiter to ask him to give them a King.", "zh": "……于是派了个代表团去见朱庇特，求他给它们一位国王。" },
+      { "en": "Jupiter, despising the folly of their request, cast a log into the pool where they lived, and said that that should be their King.", "zh": "朱庇特觉得这请求愚不可及，便往它们住的池塘里扔了一根木头，说这就是它们的国王。" },
+      { "en": "The Frogs were terrified at first by the splash, and scuttled away into the deepest parts of the pool …", "zh": "青蛙们起初被水花吓坏了，慌忙逃进池塘最深处……" },
+      { "en": "… but by and by, when they saw that the log remained motionless, one by one they ventured to the surface again …", "zh": "……可过了一会儿，见那木头一动不动，便一只只又壮着胆子浮上来……" },
+      { "en": "… and before long, growing bolder, they began to feel such contempt for it that they even took to sitting upon it.", "zh": "……不久胆子更大，竟对它生出轻蔑之心，甚至爬上去坐着。" },
+      { "en": "Thinking that a King of that sort was an insult to their dignity, they sent to Jupiter a second time …", "zh": "它们觉得这样一位国王侮辱了它们的尊严，便第二次派人去见朱庇特……" },
+      { "en": "… and begged him to take away the sluggish King he had given them, and to give them another and a better one.", "zh": "……求他把赐给它们的这位呆滞国王收回去，另给一位更好的。" },
+      { "en": "Jupiter, annoyed at being pestered in this way, sent a Stork to rule over them …", "zh": "朱庇特被这样纠缠得恼了，便派一只鹳去统治它们……" },
+      { "en": "… who no sooner arrived among them than he began to catch and eat the Frogs as fast as he could.", "zh": "……那鹳一到它们中间，便拼命地抓青蛙来吃。" }
+    ]
+  },
+  {
+    "id": "aesop-peacock-and-juno",
+    "title": "The Peacock and Juno",
+    "titleZh": "孔雀与朱诺",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "The Peacock was greatly discontented because he had not a beautiful voice like the nightingale …", "zh": "孔雀因为没有夜莺那样动听的歌喉，十分不满……" },
+      { "en": "… and he went and complained to Juno about it.", "zh": "……便去向她朱诺抱怨。" },
+      { "en": "\"The nightingale's song,\" said he, \"is the envy of all the birds; but whenever I utter a sound I become a laughing-stock.\"", "zh": "「夜莺的歌声，」他说，「叫所有的鸟都羡慕；可我一开口，就成了笑柄。」" },
+      { "en": "The goddess tried to console him by saying, \"You have not, it is true, the power of song, but then you far excel all the rest in beauty …", "zh": "女神安慰他说：「你确实没有歌唱的本事，可你在美貌上远胜过其余所有……」" },
+      { "en": "… your neck flashes like the emerald and your splendid tail is a marvel of gorgeous colour.\"", "zh": "「……你的颈项闪亮如翡翠，你那华美的尾羽更是斑斓夺目的奇观。」" },
+      { "en": "But the Peacock was not appeased.", "zh": "可孔雀并未因此平息。" },
+      { "en": "\"What is the use,\" said he, \"of being beautiful, with a voice like mine?\"", "zh": "「生得这么美，」他说，「配上我这样的嗓子，又有什么用？」" },
+      { "en": "Then Juno replied, with a shade of sternness in her tones, \"Fate has allotted to all their destined gifts …", "zh": "朱诺便带着几分严厉答道：「命运已给众生各分了应得的禀赋……」" },
+      { "en": "… to yourself beauty, to the eagle strength, to the nightingale song, and so on to all the rest in their degree …", "zh": "「……给你美貌，给鹰力量，给夜莺歌声，其余诸类也各按本分……」" },
+      { "en": "… but you alone are dissatisfied with your portion.", "zh": "「……只有你对自己那一份不满。" },
+      { "en": "Make, then, no more complaints.", "zh": "既如此，就不要再抱怨了。" },
+      { "en": "For, if your present wish were granted, you would quickly find cause for fresh discontent.\"", "zh": "因为假若你眼下的愿望得以实现，你很快又会找到新的不满之由。」" }
+    ]
+  }
+]

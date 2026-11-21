@@ -1,0 +1,84 @@
+[
+  {
+    "id": "aesop-thieves-and-the-cock",
+    "title": "The Thieves and the Cock",
+    "titleZh": "盗贼与公鸡",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "Some Thieves broke into a house, and found nothing worth taking except a Cock, which they seized and carried off with them.", "zh": "几个盗贼闯进一户人家，除了一只公鸡，没找到什么值得拿的东西，便抓了它带着走了。" },
+      { "en": "When they were preparing their supper, one of them caught up the Cock …", "zh": "他们准备晚饭时，其中一个抓起公鸡……" },
+      { "en": "… and was about to wring his neck, when he cried out for mercy and said, \"Pray do not kill me …", "zh": "……正要拧断它的脖子，公鸡求饶道：「请别杀我……」" },
+      { "en": "… you will find me a most useful bird, for I rouse honest men to their work in the morning by my crowing.\"", "zh": "「……您会发现我是只很有用的鸟，早上我靠打鸣把老实人叫起来干活。」" },
+      { "en": "But the Thief replied with some heat, \"Yes, I know you do, making it still harder for us to get a livelihood.", "zh": "可那盗贼有些激动地答道：「是啊，我知道你干这事，这让我们更没法谋生了。" },
+      { "en": "Into the pot you go!\"", "zh": "进锅去吧！」" }
+    ]
+  },
+  {
+    "id": "aesop-swollen-fox",
+    "title": "The Swollen Fox",
+    "titleZh": "胀肚的狐狸",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A hungry Fox found in a hollow tree a quantity of bread and meat, which some shepherds had placed there against their return.", "zh": "一只饥饿的狐狸在空心树里发现了一些面包和肉，是几个牧人放在那里留着回来吃的。" },
+      { "en": "Delighted with his find he slipped in through the narrow aperture and greedily devoured it all.", "zh": "它得此发现喜出望外，从窄窄的洞口中钻进去，贪婪地吃了个精光。" },
+      { "en": "But when he tried to get out again he found himself so swollen after his big meal that he could not squeeze through the hole …", "zh": "可当它想再钻出来时，发现饱餐之后肚子胀得那么厉害，怎么也挤不出那个洞了……" },
+      { "en": "… and fell to whining and groaning over his misfortune.", "zh": "……便为自己的倒霉哀声叹气起来。" },
+      { "en": "Another Fox, happening to pass that way, came and asked him what the matter was …", "zh": "另一只狐狸恰好路过，走过来问它怎么了……" },
+      { "en": "… and, on learning the state of the case, said, \"Well, my friend, I see nothing for it but for you to stay where you are till you shrink …", "zh": "……弄清原委后说：「唉，朋友，我看没别的办法，你只能待在那儿等瘦下来……」" },
+      { "en": "… to your former size; you'll get out then easily enough.\"", "zh": "「……瘦回原来的样子，那时要出来就容易了。」" }
+    ]
+  },
+  {
+    "id": "aesop-peasant-and-the-apple-tree",
+    "title": "The Peasant and the Apple-tree",
+    "titleZh": "农夫与苹果树",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A Peasant had an Apple-tree growing in his garden, which bore no fruit …", "zh": "一个农夫园子里长着一棵苹果树，它不结果子……" },
+      { "en": "… but merely served to provide a shelter from the heat for the sparrows and grasshoppers which sat and chirped in its branches.", "zh": "……只是给在枝头栖着鸣叫的麻雀和蚱蜢遮遮暑气。" },
+      { "en": "Disappointed at its barrenness he determined to cut it down, and went and fetched his axe for the purpose.", "zh": "他嫌它不结果，便决定砍掉它，为此去取了斧头。" },
+      { "en": "But when the sparrows and the grasshoppers saw what he was about to do, they begged him to spare it …", "zh": "可麻雀和蚱蜢见他要动手，便求他放过这棵树……" },
+      { "en": "… and said to him, \"If you destroy the tree we shall have to seek shelter elsewhere …", "zh": "……对他说：「您若毁掉这棵树，我们就得另找栖身之处……」" },
+      { "en": "… and you will no longer have our merry chirping to enliven your work in the garden.\"", "zh": "「……您在园里干活时，也就再没有我们欢快的鸣叫作伴了。」" },
+      { "en": "He, however, refused to listen to them, and set to work with a will to cut through the trunk.", "zh": "可他不肯听，劲头十足地动手去砍树干。" },
+      { "en": "A few strokes showed that it was hollow inside and contained a swarm of bees and a large store of honey.", "zh": "砍了几斧，便看出里面是空的，藏着一窝蜜蜂和大量蜂蜜。" },
+      { "en": "Delighted with his find he threw down his axe, saying, \"The old tree is worth keeping after all.\"", "zh": "他因这发现大喜，扔下斧头说：「这棵老树终究还是值得留着的。」" },
+      { "en": "Utility is most men's test of worth.", "zh": "对多数人来说，有用才算有价值。" }
+    ]
+  },
+  {
+    "id": "aesop-jackdaw-and-the-pigeons",
+    "title": "The Jackdaw and the Pigeons",
+    "titleZh": "寒鸦与鸽子",
+    "level": "CET-6",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "A Jackdaw, watching some Pigeons in a farmyard, was filled with envy when he saw how well they were fed …", "zh": "一只寒鸦看着农家院子里的几只鸽子，见它们吃得多好，满心羡慕……" },
+      { "en": "… and determined to disguise himself as one of them, in order to secure a share of the good things they enjoyed.", "zh": "……便决意伪装成它们中的一员，好分得一份它们享受的好处。" },
+      { "en": "So he painted himself white from head to foot and joined the flock …", "zh": "于是他从头到脚把自己涂成白色，混进了鸽群……" },
+      { "en": "… and, so long as he was silent, they never suspected that he was not a pigeon like themselves.", "zh": "……只要他不作声，鸽子们从没怀疑过他其实不是同类。" },
+      { "en": "But one day he was unwise enough to start chattering …", "zh": "可是有一天他不小心开口叫了起来……" },
+      { "en": "… when they at once saw through his disguise and pecked him so unmercifully that he was glad to escape and join his own kind again.", "zh": "……鸽子们立刻看穿了他的伪装，毫不留情地啄他，他只好赶紧逃回去找同类。" },
+      { "en": "But the other jackdaws did not recognise him in his white dress, and would not let him feed with them, but drove him away …", "zh": "可别的寒鸦认不出他这身白装，不让他一起觅食，把他赶走了……" },
+      { "en": "… and so he became a homeless wanderer for his pains.", "zh": "……于是他白费心机，成了无家可归的流浪者。" }
+    ]
+  },
+  {
+    "id": "aesop-jupiter-and-the-tortoise",
+    "title": "Jupiter and the Tortoise",
+    "titleZh": "朱庇特与乌龟",
+    "level": "CET-4",
+    "author": "Aesop",
+    "sentences": [
+      { "en": "Jupiter was about to marry a wife, and determined to celebrate the event by inviting all the animals to a banquet.", "zh": "朱庇特要娶妻了，决定宴请所有动物来庆祝这件喜事。" },
+      { "en": "They all came except the Tortoise, who did not put in an appearance, much to Jupiter's surprise.", "zh": "大家都来了，唯独乌龟没有露面，这让朱庇特很意外。" },
+      { "en": "So when he next saw the Tortoise he asked him why he had not been at the banquet.", "zh": "所以下次见到乌龟时，他便问它为什么没来赴宴。" },
+      { "en": "\"I don't care for going out,\" said the Tortoise; \"there's no place like home.\"", "zh": "「我不爱出门，」乌龟说，「哪儿都不如家里好。」" },
+      { "en": "Jupiter was so much annoyed by this reply that he decreed that from that time forth the Tortoise should carry his house upon his back …", "zh": "朱庇特被这个回答弄得很恼火，便规定从今往后乌龟要把房子背在背上……" },
+      { "en": "… and never be able to get away from home even if he wished to.", "zh": "……即便想离开家也永远走不脱了。" }
+    ]
+  }
+]
