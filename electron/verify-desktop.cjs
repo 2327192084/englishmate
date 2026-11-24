@@ -1,32 +1,32 @@
 /**
- * 验证「已安装的 TypeFlow」这份桌面包能真正跑起来。
+ * 验证「已安装的 EnglishMate」这份桌面包能真正跑起来。
  *
- * 为什么单独写一个脚本而不是用 electron/smoke.cjs：
- * smoke.cjs 测的是仓库里的 electron/main.cjs（origin 是 app://englishmate），
- * 而实际安装的那份 main.cjs 仍是旧名 app://typeflow。两者的 IndexedDB origin
- * 不同，用 smoke 去测装的那份会得到「origin 不符」的假失败。
+ * 与 smoke.cjs 的区别：smoke.cjs 测仓库里的 electron/main.cjs 直接拉起；
+ * 这里测的是**安装/分发目录**（ISCC 编译的安装包装出来的那种布局），
+ * 断言同源（app://englishmate）与数据可见性。
  *
- * 这里直接用 playwright 拉起 TypeFlow.exe，检查：
+ * 用 playwright 拉起 EnglishMate.exe，检查：
  *  1. 页面渲染出来了（不是白屏）
- *  2. origin 是 app://typeflow（说明旧数据仍然可见）
+ *  2. origin 是 app://englishmate（IndexedDB 数据与 origin 绑定，origin 一变
+ *     库名就从 app_englishmate_0 变掉，进度当场不可见）
  *  3. IndexedDB 里能读到之前的库（englishmate 库存在）
- *  4. 新增的点词释义资源能被 fetch 到（这是这次更新的核心产物）
+ *  4. 例句/文章资源能被 fetch 到
  */
 const path = require('node:path');
 const fs = require('node:fs');
 const { _electron } = require('playwright-core');
 
 // 用法：node electron/verify-desktop.cjs [exe 所在目录]
-// 不传参数时验证「已安装」的那份；传 release/TypeFlow 可以验证待分发的包
-const APP_DIR = process.argv[2] || path.join(process.env.LOCALAPPDATA, 'Programs', 'TypeFlow');
-const EXE = path.join(APP_DIR, 'TypeFlow.exe');
+// 不传参数时验证「已安装」的那份；传 release/EnglishMate 可以验证待分发的包
+const APP_DIR = process.argv[2] || path.join(process.env.LOCALAPPDATA, 'Programs', 'EnglishMate');
+const EXE = path.join(APP_DIR, 'EnglishMate.exe');
 const SHOTS = path.join(__dirname, '..', '.tmp', 'desktop-shots');
 
 const log = (...a) => console.log(...a);
 
 async function main() {
   fs.mkdirSync(SHOTS, { recursive: true });
-  if (!fs.existsSync(EXE)) throw new Error('找不到 TypeFlow.exe: ' + EXE);
+  if (!fs.existsSync(EXE)) throw new Error('找不到 EnglishMate.exe: ' + EXE);
 
   const app = await _electron.launch({
     executablePath: EXE,
@@ -59,23 +59,23 @@ async function main() {
       return 'ok';
     });
 
-    await check('origin 是 app://typeflow（旧 IndexedDB 数据仍可见）', async () => {
+    await check('origin 是 app://englishmate（IndexedDB 数据可见）', async () => {
       const o = await win.evaluate(() => window.location.origin);
-      // 这条钉的是「装的那份用的还是旧 origin」。origin 一变，IndexedDB 就是
-      // 另一个库（app_typeflow_0 → app_englishmate_0），用户的学习进度当场消失。
-      if (o !== 'app://typeflow') throw new Error('origin=' + o);
+      // 这条钉的是 origin 与库名的绑定。origin 一变，IndexedDB 就是另一个库
+      // （app_englishmate_0 → app_xxx_0），用户的学习进度当场不可见。
+      if (o !== 'app://englishmate') throw new Error('origin=' + o);
       return o;
     });
 
     await check('preload 生效 / Node 已隔离', async () => {
       const r = await win.evaluate(() =>
         JSON.stringify({
-          desktop: !!(window.typeflow && window.typeflow.isDesktop),
+          desktop: !!(window.englishmate && window.englishmate.isDesktop),
           node: typeof process !== 'undefined' || typeof require !== 'undefined',
         }),
       );
       const o = JSON.parse(r);
-      if (!o.desktop) throw new Error('window.typeflow.isDesktop 缺失');
+      if (!o.desktop) throw new Error('window.englishmate.isDesktop 缺失');
       if (o.node) throw new Error('Node 未被隔离');
       return o;
     });
@@ -158,8 +158,8 @@ async function main() {
       return 'clean';
     });
 
-    await win.screenshot({ path: path.join(SHOTS, 'typeflow-updated.png'), fullPage: false });
-    log('\n截图: ' + path.join(SHOTS, 'typeflow-updated.png'));
+    await win.screenshot({ path: path.join(SHOTS, 'englishmate-updated.png'), fullPage: false });
+    log('\n截图: ' + path.join(SHOTS, 'englishmate-updated.png'));
     log('\n✓ 桌面包验证全部通过');
   } finally {
     await app.close();

@@ -173,7 +173,7 @@ describe('空输入与降级', () => {
 });
 
 describe('桌面端 SAPI 回落', () => {
-  it('有 typeflow 桥时会调用它（安装版暴露的是这个名字）', async () => {
+  it('有 englishmate 桥时会调用它（桌面版暴露的是这个名字）', async () => {
     installSynth(ONLY_CHINESE);
     const calls: string[] = [];
     vi.stubGlobal('window', {
@@ -183,12 +183,12 @@ describe('桌面端 SAPI 回落', () => {
         cancel: () => {},
         addEventListener: () => {},
       },
-      typeflow: {
+      englishmate: {
         tts: {
           available: async () => ({ ok: true, voice: 'Zira' }),
           synthesize: async (t: string) => {
             calls.push(t);
-            return { ok: true, url: 'app://typeflow/__tts__/t1.wav' };
+            return { ok: true, url: 'app://englishmate/__tts__/t1.wav' };
           },
         },
       },
@@ -200,33 +200,5 @@ describe('桌面端 SAPI 回落', () => {
     // 合成是异步的，等一拍
     await new Promise((r) => setTimeout(r, 120));
     expect(calls).toContain('hello from desktop');
-  });
-
-  it('有 englishmate 桥时也认（仓库版暴露的是这个名字）', async () => {
-    installSynth(ONLY_CHINESE);
-    let called = false;
-    vi.stubGlobal('window', {
-      speechSynthesis: {
-        getVoices: () => ONLY_CHINESE,
-        speak: () => {},
-        cancel: () => {},
-        addEventListener: () => {},
-      },
-      englishmate: {
-        tts: {
-          available: async () => ({ ok: true, voice: 'Zira' }),
-          synthesize: async () => {
-            called = true;
-            return { ok: true, url: 'x' };
-          },
-        },
-      },
-    });
-
-    const { speak, primeVoices } = await import('@/lib/speech');
-    primeVoices();
-    speak('test');
-    await new Promise((r) => setTimeout(r, 120));
-    expect(called).toBe(true);
   });
 });

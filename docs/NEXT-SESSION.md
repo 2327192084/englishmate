@@ -59,11 +59,12 @@
 
 | 项 | 值 |
 |---|---|
-| 分支 | `main`，HEAD = `9a5166a` |
+| 分支 | `main`，HEAD 见下方「同步」行 |
 | 同步 | 与 `origin/main` 一致（`git rev-list --count origin/main..HEAD` = 0） |
-| 验证 | `tsc` 0 错误 / **530 测试全绿**（原 382 + 148）/ `verify-data.mjs` 通过 |
-| 测试文件 | 24 个（新增 cloze、narrowListen、narrowSources、speech 四个测试） |
-| 桌面版 | 已更新到本版（含新语音链路）；装的那份 origin 仍是 `app://typeflow`，进度完好 |
+| 验证 | `tsc` 0 错误 / **529 测试全绿** / `verify-data.mjs` 通过 |
+| 测试文件 | 24 个（合并掉一条改名后重复的 speech 用例） |
+| 桌面版 | **2026-11-24 全面改名 EnglishMate 并迁移数据**：origin `app://englishmate`、安装目录 `%LOCALAPPDATA%\Programs\EnglishMate`，userWords:11/sessions:6 等全部进度已迁入；旧数据备份在 `%LOCALAPPDATA%\TypeFlow`（保留不删）。详见 HANDOVER 五.3 改名实录 |
+| 安装包 | **Inno Setup**：`packaging/englishmate.iss` → `release/installer/EnglishMate-Setup-0.1.0.exe`（101MB）。本机静默测试必须提权（error 5） |
 
 ---
 
@@ -126,6 +127,20 @@ UP 主 Relearn英语，25 分钟，3.8 万播放。
 ---
 
 ## 五、环境注意（HANDOVER 有详述，这里只挑新的）
+
+### Inno Setup 打包（2026-11-24 起，替代 NSIS）
+```bash
+# 编译（纯本地，无网络依赖；本机 Inno Setup 6 在 %LOCALAPPDATA%\Programs\Inno Setup 6）
+"%LOCALAPPDATA%/Programs/Inno Setup 6/ISCC.exe" packaging/englishmate.iss
+# 产物：release/installer/EnglishMate-Setup-<版本>.exe（~101MB，lzma2/max）
+```
+- 打包源是 `release/EnglishMate/`（exe 改名 EnglishMate.exe + 仓库版 main/preload，**不是**移植版）。
+- **本机静默测试必须提权**：`Start-Process -Verb RunAs`——非提权安装 Inno 退出码 1 且
+  不写日志（error 5，NSIS 时代同样）；普通用户机器不受影响。
+- `UsePreviousAppDir=yes` + 同 AppId 会记住上次的安装目录——**用 /DIR= 显式指定**，
+  否则测试装的临时目录会被当成正式目录。
+- 仓库没有独立 .ico：`packaging/englishmate.ico` 由 PowerShell `ExtractAssociatedIcon`
+  从主程序 exe 提取（直接把 exe 喂给 SetupIconFile 会报「File is too large」）。
 
 ### 推送：这次又多踩了两次
 M HANDOVER 五.1 已记录「会有整条 github.com:443 不通的时段」，**11-21 14:26–14:35 又遇到一次**，

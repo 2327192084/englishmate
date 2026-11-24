@@ -192,45 +192,43 @@ done
 ```bash
 cd /e/EnglishMate
 npm run build:desktop                    # ENGLISHMATE_DESKTOP=1 → vite base './'
-INST="$LOCALAPPDATA/Programs/TypeFlow/resources/app"
-cp -r "$INST/dist" ".tmp/desktop-backup/$(date +%Y%m%d-%H%M%S)"   # 先备份
-rm -rf "$INST/dist" && cp -r dist "$INST/dist"
-cp -r dist "release/TypeFlow/resources/app/dist"                   # 同步待分发包
-npm run verify:desktop                                             # 拉起真窗口，7 项断言
+# 重新组装 release/EnglishMate：见「打包」节的 englishmate.iss 全流程
+npm run verify:desktop                   # 拉起真窗口，7 项断言
 ```
 
-**为什么不能换 main/preload**：装的那份是 `app://typeflow` + `window.typeflow`，仓库版是 `app://englishmate` + `window.englishmate`。换掉会改变 IndexedDB 的 origin（`app_typeflow_0` → `app_englishmate_0`），**用户学习进度当场不可见**（数据还在磁盘上，但库名不一样了）。
+**命名与 origin（2026-11-24 全面改名后的现状）**：对外一律 **EnglishMate**——exe 是
+`EnglishMate.exe`、安装目录 `%LOCALAPPDATA%\Programs\EnglishMate`、origin
+`app://englishmate`（`main.cjs` 的 `APP_HOST='englishmate'`）、preload 全局名
+`window.englishmate`、用户数据目录 `%LOCALAPPDATA%\EnglishMate`。仓库版与安装版
+**同源同命名**，不再存在「移植归一化」层（`.tmp/port-electron.mjs` 已废弃删除）。
 
-> ⚠️ **2026-11-21 修订：红线的精确边界是「不许动 origin」，不是「这个文件不许碰」**
+> **2026-11-24 改名实录（别再做一遍，这里是结论）**
 >
-> 修英文发音时必须改 `main.cjs`（主进程要调 System.Speech）和 `preload.cjs`
-> （要暴露 TTS 桥），按旧写法这条线等于禁止修复声音问题。
+> 用户明确要求把所有 TypeFlow 改成 EnglishMate（此前是划出范围的事，这次反转）。
+> origin 从 `app://typeflow` 变为 `app://englishmate` 后 IndexedDB 是另一个库，
+> **直接拷 leveldb 目录迁移不成立**：实测 Chromium（Electron 43）把 bucket/origin
+> 元数据写在 leveldb 内部，目录改名后新 origin 打开是空库（schema v20/7 表都在，
+> 记录 0 条）。数据必须**应用级迁移**：旧 app 里 `getAll()` 全表导出 → 新 app 里
+> `put()` 导入（键原样保留）。脚本 `.tmp/migrate-idb.cjs`（一次性，gitignore）。
+> 实测 7 表全部迁移且条数一致（userWords:11 / sessions:6 / achievements:1 /
+> settings:1 / meta:1，customArticles/customBanks 空）。
+> 旧数据备份在 `%LOCALAPPDATA%\TypeFlow`（**保留不删**）；旧安装目录
+> `%LOCALAPPDATA%\Programs\TypeFlow` 已删（它本来就没有卸载器）。
 >
-> 真正的红线只有三条常量与一个通道名：
->
-> ```js
-> const SCHEME = 'app';
-> const APP_HOST = 'typeflow';   // ← 改成 englishmate 就会丢进度
-> const APP_ORIGIN = `${SCHEME}://${APP_HOST}`;
-> // 以及 ipcMain.handle('typeflow:xxx') 的通道名前缀
-> ```
->
-> 允许的改动：新增 IPC handler、新增 preload 方法、新增协议路由。
-> 禁止的改动：`APP_HOST` / `SCHEME` 的值、已有 IPC 通道改名。
->
-> **移植方法**：不要直接 `cp` 仓库版过去（那是 `app://englishmate`）。
-> 先按名字归一化再比对，确认 origin 是 typeflow 才写。本次用的脚本见
-> `.tmp/port-electron.mjs`（一次性，gitignore）。移植后必须复验：
-> `grep "APP_HOST" 安装版/main.cjs` 应为 `typeflow`，
-> 且 `npm run verify:desktop` 的 origin 断言仍为 `app://typeflow`。
->
-> 另外：`src/lib/speech.ts` 里**同时认** `window.englishmate` 和 `window.typeflow`，
-> 这是刻意的——只认一个的话，TTS 在装的那份上会静默失效。
+> 红线含义随之更新：**不许动 `APP_HOST`/`SCHEME` 的值与已有 IPC 通道名**仍然成立
+> ——再改一次 origin 就要再做一次应用级迁移。
 
-- `npm run verify:desktop` 默认验证 `%LOCALAPPDATA%\Programs\TypeFlow`，也可 `node electron/verify-desktop.cjs release/TypeFlow`。7 项：页面渲染 / `origin === 'app://typeflow'` / preload 生效且 Node 隔离 / IndexedDB 四表条数 / `article-glossary.json` 可 fetch / 导航含 `/sentences` / 首屏+刷新无 console error。截图在 `.tmp/desktop-shots/`。
-- **不要用 `electron/smoke.cjs` 验证装的那份**：它断言 `app://englishmate` + `window.englishmate`，测 TypeFlow 会假失败。
-- `src/lib/pwa.ts` 只认 `window.englishmate?.isDesktop`，在 TypeFlow 里恒为 false——但 SW 注册还有 `protocol.startsWith('http')` 兜底，桌面端不会误注册，**目前无实际影响**；真改名时必须一起处理。
-- `%APPDATA%\TypeFlow` 与 `%LOCALAPPDATA%\TypeFlow` 对 Electron 进程返回 **EPERM**（bash/PowerShell 能写，Chromium 进程不能），所以 `resolveUserDataDir()` 四级回退：`LOCALAPPDATA` → `APPDATA` → exe 同级 `data/` → tmp。**后果：装的那份数据在 `%LOCALAPPDATA%\TypeFlow`，而 `release/TypeFlow` 跑起来会落到它自己的 `data/` 便携目录，两份 profile 不互通——这是既有环境行为，不是 bug。**
+> **红线（改名后仍成立的精确边界）**：不许动 `APP_HOST` / `SCHEME` 的值与已有
+> IPC 通道名（`englishmate:xxx`）。允许的改动：新增 IPC handler、新增 preload
+> 方法、新增协议路由。修声音这类功能改动 main.cjs/preload.cjs 本身完全允许。
+>
+> `src/lib/speech.ts` 曾同时认 `window.englishmate` 与 `window.typeflow`
+> （旧安装版的全局名）；旧安装已卸载，typeflow 回落已删，现在只认 englishmate。
+
+- `npm run verify:desktop` 默认验证 `%LOCALAPPDATA%\Programs\EnglishMate`，也可 `node electron/verify-desktop.cjs release/EnglishMate`。7 项：页面渲染 / `origin === 'app://englishmate'` / preload 生效且 Node 隔离 / IndexedDB 四表条数 / `article-glossary.json` 可 fetch / 导航含 `/sentences` / 首屏+刷新无 console error。截图在 `.tmp/desktop-shots/`。
+- `electron/smoke.cjs` 与 verify-desktop 现在断言**同一套** englishmate 命名，都可用。
+- `src/lib/pwa.ts` 只认 `window.englishmate?.isDesktop`——改名后桌面端与它一致，之前「TypeFlow 里恒为 false」的问题随改名自然消失。
+- `%APPDATA%\TypeFlow` 与 `%LOCALAPPDATA%\TypeFlow` 对 Electron 进程返回 **EPERM**（bash/PowerShell 能写，Chromium 进程不能），所以 `resolveUserDataDir()` 四级回退：`LOCALAPPDATA\EnglishMate` → `APPDATA\EnglishMate` → exe 同级 `data/` → tmp。**后果：`release\EnglishMate` 直接跑会落到它自己的 `data/` 便携目录，与安装版 profile 不互通——这是既有环境行为，不是 bug。**
 - 读主进程路径别用 `npx electron xxx.cjs`（无窗口主进程会挂住不退），用 playwright `_electron.launch` + `app.evaluate(({app}) => app.getPath(...))`。
 
 ### 4. 测试相关
@@ -337,7 +335,7 @@ npm run verify:desktop                                             # 拉起真�
 2. ~~`clearAllData` / `exportAllData` / `importAllData` 都没覆盖 `customArticles`~~ **已修（2026-11-21）**。三处都补齐了，并且 `importAllData` 特别处理了向后兼容：旧备份（version 1）没有 `customArticles` 字段时**保留现状**而不是清空——「字段缺失」（旧格式）和「字段为空数组」（用户确实清空过）必须区别对待，否则从旧备份恢复会让用户的自定义文章凭空消失。四条用例在 `services/learning.test.ts` 的「备份与恢复」里。
    - 注意：`clearAllData` 仍然**不清 `settings`**，这是**有意设计**（函数注释写着「设置保留」）。清了等于把用户的快捷键、口音偏好一起抹掉。别当成漏项去"修"。
 3. `verify.yml` 注释里提到的 `docs/dict-contribution.md` **不存在**。
-4. `src/lib/pwa.ts` 只认 `window.englishmate`，桌面 TypeFlow 里恒 false（有 `protocol.startsWith('http')` 兜底，无实际影响）。
+4. ~~`src/lib/pwa.ts` 只认 `window.englishmate`，桌面 TypeFlow 里恒 false~~ 随 2026-11-24 全面改名自然消失（桌面版现在就叫 englishmate）。
 5. **完形会挖到同形专有名词**（`brown → Ms. Brown`），语义已偏离词条本义。这类占可出题量的 1.35%，仍然能练到正确词形，**决定不改**：加「小写词条大写出现就排除」的规则会把 `"She likes music."` 这种引号后句首大写也误伤，净收益为负。
 6. **窄式精听不记录学习进度**：只落一次 session（`bankId: 'listening'`），不写 `recordAttempt`，所以听完不会改变任何词的 FSRS 到期时间。这是有意的——「听过」不等于「会了」。
 
@@ -408,7 +406,7 @@ npm run verify:desktop                                             # 拉起真�
 | SAPI 用**常驻 PowerShell + done 文件**，不靠 stdout 回收 | 每次新起进程有 ~310ms 固定开销，常驻后每次只要 4–36ms。stdout 行匹配在 Electron 里会读到 `ERR bad-line` 把队列错位（合成其实成功了却判失败），改成「一个任务一个 .done 文件、轮询存在即完成」 |
 | 脚本必须写 `.ps1` 用 `-File` 执行，不能用 `-Command -` | `-Command -` 是逐行解析，多行 while 循环会被拆散、`{` 后直接卡死（握手永远等不到 READY） |
 | PowerShell 脚本模板里**不许出现反引号** | 整段在 JS 模板字符串里，反引号会截断字符串。制表符一律用 `[char]9`，说明文字写在模板外面。这个坑踩了两次（一次正文明志，一次把教训写成注释又踩回去） |
-| TTS 音频走 `app://typeflow/__tts__/<file>` 而非 `file://` | 页面 origin 是 `app://typeflow` 且 `webSecurity: true`，`file://` 属跨源会被拦且**不报错**（表现为「点了没声音」）。同源协议顺便服务音频，也避免放宽 webSecurity |
+| TTS 音频走 `app://englishmate/__tts__/<file>` 而非 `file://` | 页面 origin 是 `app://englishmate` 且 `webSecurity: true`，`file://` 属跨源会被拦且**不报错**（表现为「点了没声音」）。同源协议顺便服务音频，也避免放宽 webSecurity |
 | 不内置语音模型，也不引入 Piper | Web Speech API 标准就不支持加载自定义语音模型；浏览器内跑神经 TTS 要 WASM + 几十 MB 模型，而 Piper 依赖 espeak-ng（GPL-3.0）会传染本项目的 MIT 许可。系统自带语音是唯一零依赖、离线可用的路径 |
 
 ---

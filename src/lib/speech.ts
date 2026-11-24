@@ -54,19 +54,12 @@ interface DesktopTts {
 
 function desktopTts(): DesktopTts | null {
   if (typeof window === 'undefined') return null;
-  /**
-   * 两个全局名都要认。
-   *
-   * 仓库版 preload 暴露 `window.englishmate`，而**已安装的桌面版**
-   * （TypeFlow）暴露的是 `window.typeflow`——改名是划出范围的事，
-   * 但渲染层若只认一个，TTS 在桌面上会完全静默失效（找不到桥就返回 false）。
-   * 这是刻意兼容两个名字，不是遗留垃圾。
-   */
+  /** 桌面版 preload 暴露 `window.englishmate`（2026-11-24 全面改名后唯一名字；
+   *  曾短暂兼容旧安装版的 window.typeflow，旧安装已卸载，回落已删）。 */
   const w = window as unknown as {
     englishmate?: { tts?: DesktopTts };
-    typeflow?: { tts?: DesktopTts };
   };
-  return w.englishmate?.tts ?? w.typeflow?.tts ?? null;
+  return w.englishmate?.tts ?? null;
 }
 
 /** 主进程 SAPI 是否可用（桌面端且装了英文语音）。null = 还没探测过 */
@@ -158,7 +151,7 @@ function stopAudio(): void {
 /**
  * 走主进程 SAPI 朗读。
  *
- * url 是 app:// 同源地址（不是 file://）——`app://typeflow` 页面里
+ * url 是 app:// 同源地址（不是 file://）——`app://englishmate` 页面里
  * file:// 属于跨源，webSecurity 会拦掉且**不报错**，表现为"点了没声音"。
  */
 async function speakViaDesktop(

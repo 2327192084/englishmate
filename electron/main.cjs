@@ -148,7 +148,7 @@ const MIME = {
  * 特例：`/__tts__/<文件名>` 映射到本次会话的 TTS 临时目录。
  *
  * ── 为什么音频要走 app:// 而不是 file:// ────────────────────────────────
- * 页面 origin 是 `app://typeflow`，window 开了 `webSecurity: true`。
+ * 页面 origin 是 `app://englishmate`，window 开了 `webSecurity: true`。
  * 这种情况下 `<audio src="file://...">` 属于跨源加载本地文件，会被拦掉，
  * 表现为「点了没声音且没有任何报错」——极难排查。
  * 所以让同一个协议顺便服务 TTS 音频：同源、无需放宽 webSecurity。
@@ -594,7 +594,7 @@ ipcMain.handle('englishmate:tts-synthesize', async (_e, text) => {
   /**
    * 返回 **app:// URL 而不是文件路径**。
    *
-   * 渲染进程在 `app://typeflow` 页面里，`file://` 属于跨源，
+   * 渲染进程在 `app://englishmate` 页面里，`file://` 属于跨源，
    * webSecurity 会拦掉且不报错（"点了没声音"）。同源 URL 才能播。
    * 附带的好处：渲染进程拿不到任意磁盘路径，安全边界不扩大。
    */
