@@ -320,11 +320,10 @@ export interface Settings {
 /**
  * 默认键位。
  *
- * 与改造前写死的键位完全一致，保证升级后老用户的行为不发生任何变化——
- * 新增设置项的默认值必须是「等于旧行为」，否则用户会莫名其妙地按不动。
+ * 使用 Enter 提交，Space 留给多词拼写；其他键位保持原有习惯。
  */
 export const DEFAULT_SHORTCUTS: ShortcutMap = {
-  next: ' ',
+  next: 'Enter',
   replay: 'Tab',
   backspace: 'Backspace',
   exit: 'Escape',

@@ -73,13 +73,13 @@ async function main() {
             )
             .join('')
         : host.textContent;
-      return raw.replace(/\u00a0/g, ' ').replace(/\s/g, '');
+      return raw.replace(/\u00a0/g, ' ').trim();
     });
     if (!word) break;
     for (const ch of word) {
-      await page.keyboard.press(ch);
+      await page.keyboard.press(ch === ' ' ? 'Space' : ch);
     }
-    await page.keyboard.press('Space');
+    await page.keyboard.press('Enter');
     await page.waitForTimeout(220);
   }
 

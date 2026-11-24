@@ -129,7 +129,7 @@ async function main() {
         .then(d => ({ banks: d.banks.length, first: d.banks[0].id })).catch(e => ({ error: String(e) }))
     `);
     if (r.error) throw new Error(r.error);
-    if (r.banks !== 8) throw new Error('banks=' + r.banks);
+    if (r.banks !== 16) throw new Error('banks=' + r.banks);
     return r;
   });
 
@@ -157,7 +157,7 @@ async function main() {
         const raw = kids.length
           ? [...kids].map(k => k.querySelector('span') ? k.querySelector('span').textContent : k.textContent).join('')
           : host.textContent;
-        return raw.replace(/\u00a0/g, ' ').replace(/\s/g, '');
+        return raw.replace(/\u00a0/g, ' ').trim();
       })()
     `);
 
@@ -165,8 +165,9 @@ async function main() {
     const word = await readTargetWord();
     if (!word) throw new Error('读不到目标词');
     for (let i = 0; i < Math.min(3, word.length); i++) {
-      win.webContents.sendInputEvent({ type: 'keyDown', keyCode: word[i], key: word[i] });
-      win.webContents.sendInputEvent({ type: 'keyUp', keyCode: word[i], key: word[i] });
+      const keyCode = word[i] === ' ' ? 'Space' : word[i];
+      win.webContents.sendInputEvent({ type: 'keyDown', keyCode, key: word[i] });
+      win.webContents.sendInputEvent({ type: 'keyUp', keyCode, key: word[i] });
       await wait(80);
     }
     await wait(400);
@@ -182,16 +183,17 @@ async function main() {
     if (!word) throw new Error('读不到目标词');
     const done = await win.webContents.executeJavaScript('document.querySelectorAll(".text-correct").length');
     for (let i = done; i < word.length; i++) {
-      win.webContents.sendInputEvent({ type: 'keyDown', keyCode: word[i], key: word[i] });
-      win.webContents.sendInputEvent({ type: 'keyUp', keyCode: word[i], key: word[i] });
+      const keyCode = word[i] === ' ' ? 'Space' : word[i];
+      win.webContents.sendInputEvent({ type: 'keyDown', keyCode, key: word[i] });
+      win.webContents.sendInputEvent({ type: 'keyUp', keyCode, key: word[i] });
       await wait(45);
     }
     await wait(200);
-    // 空格提交并进入下一个词。
+    // Enter 提交并进入下一个词，Space 留给多词拼写。
     // 注意：必须用 keyDown + 明确的 key 字段。type:'char' 在 Electron 里
-    // 不会给出 e.key === ' '，React 的 onKeyDown 收不到，提交动作不会触发。
-    win.webContents.sendInputEvent({ type: 'keyDown', keyCode: 'Space', key: ' ' });
-    win.webContents.sendInputEvent({ type: 'keyUp', keyCode: 'Space', key: ' ' });
+    // 不会给出 e.key，React 的 onKeyDown 收不到，提交动作不会触发。
+    win.webContents.sendInputEvent({ type: 'keyDown', keyCode: 'Enter', key: 'Enter' });
+    win.webContents.sendInputEvent({ type: 'keyUp', keyCode: 'Enter', key: 'Enter' });
     await wait(1800);
 
     const n0 = await win.webContents.executeJavaScript(`

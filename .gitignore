@@ -39,3 +39,7 @@ release/
 *.dll
 *.pak
 *.dat
+
+# 本地开发文档（不进入公开仓库）
+docs/
+CONTRIBUTING.md

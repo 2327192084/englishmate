@@ -70,18 +70,18 @@ for (let i = 0; i < 4; i++) {
             return s ? s.textContent : k.textContent;
           })
           .join('')
-          .replace(/\u00a0/g, '')
-          .replace(/\s/g, '')
+          .replace(/\u00a0/g, ' ')
+          .trim()
       : null;
   });
   if (!w) break;
   for (const ch of w) {
     if (/^[\x20-\x7E]$/.test(ch)) {
-      await p.keyboard.press(ch);
+      await p.keyboard.press(ch === ' ' ? 'Space' : ch);
       await p.waitForTimeout(6);
     }
   }
-  await p.keyboard.press('Space');
+  await p.keyboard.press('Enter');
   await p.waitForTimeout(70);
 }
 await p.waitForTimeout(1500);

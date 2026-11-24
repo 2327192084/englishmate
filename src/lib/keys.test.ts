@@ -67,7 +67,8 @@ describe('assignableKeyError', () => {
 
 describe('matchShortcut', () => {
   it('默认配置下四个动作都能命中', () => {
-    expect(matchShortcut(DEFAULT_SHORTCUTS, ' ')).toBe('next');
+    expect(matchShortcut(DEFAULT_SHORTCUTS, 'Enter')).toBe('next');
+    expect(matchShortcut(DEFAULT_SHORTCUTS, ' ')).toBeNull();
     expect(matchShortcut(DEFAULT_SHORTCUTS, 'Tab')).toBe('replay');
     expect(matchShortcut(DEFAULT_SHORTCUTS, 'Backspace')).toBe('backspace');
     expect(matchShortcut(DEFAULT_SHORTCUTS, 'Escape')).toBe('exit');
@@ -80,7 +81,8 @@ describe('matchShortcut', () => {
 
   it('匹配走归一化，旧别名也能触发', () => {
     expect(matchShortcut(DEFAULT_SHORTCUTS, 'Esc')).toBe('exit');
-    expect(matchShortcut(DEFAULT_SHORTCUTS, 'Spacebar')).toBe('next');
+    expect(matchShortcut(DEFAULT_SHORTCUTS, 'Return')).toBe('next');
+    expect(matchShortcut(DEFAULT_SHORTCUTS, 'Spacebar')).toBeNull();
   });
 
   it('改键后旧键位失效、新键位生效', () => {
@@ -94,7 +96,7 @@ describe('assignShortcut', () => {
   it('改绑一个动作只动它自己', () => {
     const next = assignShortcut(DEFAULT_SHORTCUTS, 'replay', 'F2');
     expect(next.replay).toBe('F2');
-    expect(next.next).toBe(' ');
+    expect(next.next).toBe('Enter');
     expect(next.backspace).toBe('Backspace');
     expect(next.exit).toBe('Escape');
   });
@@ -103,7 +105,7 @@ describe('assignShortcut', () => {
     // 把「下一个」改成 Tab：Tab 原本是「再听一遍」，两者对调
     const next = assignShortcut(DEFAULT_SHORTCUTS, 'next', 'Tab');
     expect(next.next).toBe('Tab');
-    expect(next.replay).toBe(' ');
+    expect(next.replay).toBe('Enter');
   });
 
   it('交换后映射仍然一键一动作，不产生重复', () => {
@@ -120,7 +122,7 @@ describe('assignShortcut', () => {
     const original: ShortcutMap = { ...DEFAULT_SHORTCUTS };
     const next = assignShortcut(original, 'next', 'F3');
     expect(next).not.toBe(original);
-    expect(original.next).toBe(' ');
+    expect(original.next).toBe('Enter');
   });
 });
 

@@ -9,7 +9,7 @@ import 'fake-indexeddb/auto';
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, waitFor, act, fireEvent, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { db, clearAllData } from '@/db';
+import { db, clearAllData, getSettings } from '@/db';
 import * as speech from '@/lib/speech';
 import { usePractice } from '@/store/practice';
 import { useSettings } from '@/store/settings';
@@ -183,11 +183,50 @@ async function typeWord(word: string) {
 async function submitWord() {
   const area = screen.getByRole('application');
   await act(async () => {
-    fireEvent.keyDown(area, { key: ' ' });
+    fireEvent.keyDown(area, { key: 'Enter' });
   });
 }
 
 describe('练习流程', () => {
+  it('旧默认键位迁移为 Enter，自定义键位保持不变', async () => {
+    await db.settings.update(1, { shortcuts: { ...DEFAULT_SHORTCUTS, next: ' ' } });
+    expect((await getSettings()).shortcuts).toEqual(DEFAULT_SHORTCUTS);
+
+    const custom = { ...DEFAULT_SHORTCUTS, next: 'F2' };
+    await db.settings.update(1, { shortcuts: custom });
+    expect((await getSettings()).shortcuts).toEqual(custom);
+  });
+
+  it('Space 输入多词空格，Enter 提交下一个词', async () => {
+    await db.settings.update(1, { shortcuts: { ...DEFAULT_SHORTCUTS, next: ' ' } });
+    await startRound();
+    await act(async () => {
+      usePractice.getState().start({
+        mode: 'typing',
+        bankId: 'cet4',
+        queue: [{ w: 'ice cream', t: '冰淇淋' }, WORDS[0]],
+        reasons: new Map<string, 'new'>([
+          ['ice cream', 'new'],
+          ['apple', 'new'],
+        ]),
+      });
+    });
+
+    const area = screen.getByRole('application');
+    await typeWord('ice');
+    await act(async () => {
+      fireEvent.keyDown(area, { key: ' ' });
+    });
+    expect(usePractice.getState().index).toBe(0);
+    expect(usePractice.getState().typing.cursor).toBe(4);
+    expect(usePractice.getState().wordMistakes).toBe(0);
+
+    await typeWord('cream');
+    await submitWord();
+    await waitFor(() => expect(usePractice.getState().index).toBe(1));
+    expect(usePractice.getState().current()?.w).toBe('apple');
+  });
+
   it('能把一轮完整敲完并落库（单模式流程）', async () => {
     await startRound();
     const st = usePractice.getState();

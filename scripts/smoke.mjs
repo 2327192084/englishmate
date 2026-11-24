@@ -60,11 +60,13 @@ async function main() {
 
   // 读出当前目标词，然后逐字敲对
   await step('敲出第一个词', async () => {
-    const word = await page.locator('.tf-mono.font-semibold').first().innerText();
-    const clean = word.replace(/\s/g, '');
+    const word = await page
+      .locator('.tf-mono.font-semibold')
+      .first()
+      .evaluate((host) => (host.textContent ?? '').replace(/\u00a0/g, ' ').trim());
     const area = page.locator('[role="application"]');
-    for (const ch of clean) {
-      await area.press(ch);
+    for (const ch of word) {
+      await area.press(ch === ' ' ? 'Space' : ch);
       await page.waitForTimeout(15);
     }
     // WPM 区域应已出现数字
@@ -75,7 +77,7 @@ async function main() {
 
   await step('提交并进入下一个词', async () => {
     const area = page.locator('[role="application"]');
-    await area.press('Space');
+    await area.press('Enter');
     await page.waitForTimeout(300);
     const progress = await page.locator('text=/\\d+\\/\\d+/').first().innerText();
     if (!progress) throw new Error('进度未显示');

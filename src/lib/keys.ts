@@ -79,7 +79,7 @@ const MODIFIER_KEYS = new Set([
  * 核心限制：**拒绝可打印字符**。
  * 这些快捷键在输入流里被判定，如果允许绑成 'a'，那用户打任何含 a 的词
  * 都会触发退格/退出——功能直接坏掉，而且用户很难联想到是快捷键导致的。
- * 空格是唯一例外：它本来就是“提交”的默认键，输入时也只在一个词内部出现。
+ * 空格仍允许手动绑定，但默认提交键已改为 Enter，避免多词拼写时光标被提前提交。
  */
 export function assignableKeyError(rawKey: string): string | null {
   const key = normalizeKey(rawKey);

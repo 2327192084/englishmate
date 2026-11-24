@@ -23,8 +23,8 @@ const readWord = () =>
         return i ? i.textContent : k.textContent;
       })
       .join('')
-      .replace(/\u00a0/g, '')
-      .replace(/\s/g, '');
+      .replace(/\u00a0/g, ' ')
+      .trim();
   });
 
 const read = () =>
@@ -60,7 +60,7 @@ await page.waitForTimeout(500);
 // ── 1. 全程大写 ────────────────────────────────────────────
 console.log('\n[1] CapsLock 全程大写');
 let w = await readWord();
-for (const ch of w.toUpperCase()) await page.keyboard.press(ch);
+for (const ch of w.toUpperCase()) await page.keyboard.press(ch === ' ' ? 'Space' : ch);
 await page.waitForTimeout(450);
 let r = await read();
 console.log(`   目标=${w}  打对=${r.correct}/${w.length}  错=${r.mistakes}`);
@@ -69,7 +69,7 @@ results.push({
   pass: r.correct === w.length && r.mistakes === 0,
   d: `${r.correct}/${w.length} 错=${r.mistakes}`,
 });
-await page.keyboard.press('Space');
+await page.keyboard.press('Enter');
 await page.waitForTimeout(600);
 
 // ── 2. 输入法组字 ──────────────────────────────────────────
@@ -105,7 +105,7 @@ results.push({
   pass: after.correct === w.length && after.mistakes === 0,
   d: `${after.correct}/${w.length} 错=${after.mistakes}`,
 });
-await page.keyboard.press('Space');
+await page.keyboard.press('Enter');
 await page.waitForTimeout(600);
 
 // ── 3. 全角字符 ────────────────────────────────────────────
@@ -129,7 +129,7 @@ results.push({
 });
 
 // ── 4. 落库检查 ────────────────────────────────────────────
-await page.keyboard.press('Space');
+await page.keyboard.press('Enter');
 await page.waitForTimeout(1500);
 const db = await page.evaluate(
   () =>

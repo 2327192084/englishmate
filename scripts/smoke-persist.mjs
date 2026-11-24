@@ -45,15 +45,15 @@ await page.waitForSelector('[role="application"]');
 const area = page.locator('[role="application"]');
 for (let n = 0; n < 3; n++) {
   // 目标词显示在 .tf-mono.font-semibold 里
-  const word = (await page.locator('.tf-mono.font-semibold').first().innerText()).replace(
-    /\s/g,
-    '',
-  );
+  const word = await page
+    .locator('.tf-mono.font-semibold')
+    .first()
+    .evaluate((host) => (host.textContent ?? '').replace(/\u00a0/g, ' ').trim());
   for (const ch of word) {
-    await area.press(ch);
+    await area.press(ch === ' ' ? 'Space' : ch);
     await page.waitForTimeout(10);
   }
-  await area.press('Space');
+  await area.press('Enter');
   await page.waitForTimeout(120);
 }
 console.log(`   敲完 3 个词`);

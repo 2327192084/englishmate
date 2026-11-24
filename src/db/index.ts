@@ -5,8 +5,15 @@
  * 只有「可选云同步」时才会把数据推给后端，本项目 MVP 不实现云同步。
  */
 import Dexie, { type Table } from 'dexie';
-import type { PracticeSession, Settings, UnlockedAchievement, UserWord } from '@/types';
-import { DEFAULT_SETTINGS } from '@/types';
+import type {
+  PracticeSession,
+  Settings,
+  ShortcutMap,
+  UnlockedAchievement,
+  UserWord,
+} from '@/types';
+import { DEFAULT_SETTINGS, DEFAULT_SHORTCUTS } from '@/types';
+import { isDefaultShortcuts } from '@/lib/keys';
 
 /** 自定义导入的词库，存在本地 */
 export interface CustomBank {
@@ -81,13 +88,26 @@ export class EnglishMateDB extends Dexie {
 
 export const db = new EnglishMateDB();
 
+const LEGACY_DEFAULT_SHORTCUTS: ShortcutMap = {
+  next: ' ',
+  replay: 'Tab',
+  backspace: 'Backspace',
+  exit: 'Escape',
+};
+
 /** 单用户设置：固定主键 1，读不到就落默认值 */
 export async function getSettings(): Promise<Settings> {
   const row = await db.settings.get(1);
-  if (row) return { ...DEFAULT_SETTINGS, ...row };
-  const fresh: Settings = { id: 1, ...DEFAULT_SETTINGS };
-  await db.settings.put(fresh);
-  return fresh;
+  if (!row) {
+    const fresh: Settings = { id: 1, ...DEFAULT_SETTINGS };
+    await db.settings.put(fresh);
+    return fresh;
+  }
+  const settings: Settings = { ...DEFAULT_SETTINGS, ...row };
+  if (isDefaultShortcuts(settings.shortcuts, LEGACY_DEFAULT_SHORTCUTS)) {
+    return { ...settings, shortcuts: DEFAULT_SHORTCUTS };
+  }
+  return settings;
 }
 
 export async function saveSettings(patch: Partial<Settings>): Promise<Settings> {
